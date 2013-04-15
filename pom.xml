@@ -5,7 +5,22 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>GogoLogBook</name>
   <description>Simple log book	</description>
- 
+
+  <build>
+  	<plugins>
+      <!-- specify Java 6 source code and class files -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+  	</plugins>
+  </build> 
+  
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -17,6 +32,19 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
+                
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.5</version>
       <scope>test</scope>
     </dependency>
                 
