@@ -27,7 +27,7 @@ public class LogMessageCreateInteractorTest {
 	}
 
 	@Test
-	public void shouldAddValidMessage() {
+	public void shouldUseDaoToCreateLogMessage() {
 		LogMessageCreateParams params = new LogMessageCreateParams();
 		logMessageCreateInteractor.createMessage(params);
 		verify(logMessageDao).createMessage(any(LogMessage.class));
