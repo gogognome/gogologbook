@@ -2,6 +2,7 @@ package nl.gogognome.gogologbook.interactors.boundary;
 
 public class LogMessageFindResult {
 
+	public int id;
 	public String username;
 	public String project;
 	public String town;

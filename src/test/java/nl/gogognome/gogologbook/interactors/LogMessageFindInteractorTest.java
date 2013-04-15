@@ -47,7 +47,7 @@ public class LogMessageFindInteractorTest {
 
 	@Test
 	public void shouldConvertEntityToLogResult() {
-		LogMessage logMessage = new LogMessage();
+		LogMessage logMessage = new LogMessage(123);
 		logMessage.category = "cat";
 		logMessage.message = "This is a test";
 		logMessage.project = "proj";
@@ -62,6 +62,7 @@ public class LogMessageFindInteractorTest {
 		assertEquals(1, results.size());
 		LogMessageFindResult result = results.get(0);
 		assertEquals(logMessage.category, result.category);
+		assertEquals(logMessage.id, result.id);
 		assertEquals(logMessage.message, result.message);
 		assertEquals(logMessage.project, result.project);
 		assertEquals(logMessage.town, result.town);

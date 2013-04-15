@@ -28,6 +28,7 @@ class MessageToResult implements Function<LogMessage, LogMessageFindResult> {
 	public LogMessageFindResult apply(LogMessage message) {
 		LogMessageFindResult result = new LogMessageFindResult();
 		result.category = message.category;
+		result.id = message.id;
 		result.message = message.message;
 		result.project = message.project;
 		result.town = message.town;
