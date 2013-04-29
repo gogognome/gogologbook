@@ -1,19 +1,3 @@
-/*
-    This file is part of gogo account.
-
-    gogo account is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    gogo account is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with gogo account.  If not, see <http://www.gnu.org/licenses/>.
-*/
 package nl.gogognome.gogologbook.gui;
 
 import java.awt.Dimension;
@@ -59,18 +43,22 @@ public class MainFrame extends JFrame {
 
         setTitle(createTitle());
 
-        // Set icon
-        URL url = ClassLoader.getSystemResource("icon-32x32.png");
-        Image image = Toolkit.getDefaultToolkit().createImage(url);
-        setIconImage(image);
+        setIcon("icon-32x32.png");
 
         setMinimumSize(new Dimension(800, 600));
+
+        openView(LogMessageCreateView.class);
+	}
+
+	private void setIcon(String iconName) {
+		URL url = ClassLoader.getSystemResource(iconName);
+        Image image = Toolkit.getDefaultToolkit().createImage(url);
+        setIconImage(image);
 	}
 
 	private String createTitle() {
 	    return textResource.getString("mf.title");
 	}
-
 
 	private void handleExit() {
 		dispose();
