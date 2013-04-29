@@ -18,12 +18,7 @@ package nl.gogognome.lib.gui.beans;
 import javax.swing.Action;
 
 import nl.gogognome.lib.swing.WidgetFactory;
-import nl.gogognome.lib.swing.models.BooleanModel;
-import nl.gogognome.lib.swing.models.DateModel;
-import nl.gogognome.lib.swing.models.DoubleModel;
-import nl.gogognome.lib.swing.models.FileModel;
-import nl.gogognome.lib.swing.models.ListModel;
-import nl.gogognome.lib.swing.models.StringModel;
+import nl.gogognome.lib.swing.models.*;
 import nl.gogognome.lib.util.Factory;
 
 /**
@@ -79,6 +74,17 @@ public class BeanFactory {
      */
     public <T> ComboBoxBean<T> createComboBoxBean(ListModel<T> model) {
     	ComboBoxBean<T> bean = new ComboBoxBean<T>(model);
+    	bean.initBean();
+    	return bean;
+    }
+
+    /**
+     * Creates a label bean for the specified string model.
+     * @param model the string model
+     * @return the label bean
+     */
+    public LabelBean createLabelBean(StringModel model) {
+    	LabelBean bean = new LabelBean(model);
     	bean.initBean();
     	return bean;
     }
