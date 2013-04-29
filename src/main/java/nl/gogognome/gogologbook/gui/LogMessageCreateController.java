@@ -22,10 +22,10 @@ public class LogMessageCreateController {
 	}
 
 	public Action getCreateAction() {
-		return new CreateLogEntryAction();
+		return new CreateLogMessageAction();
 	}
 
-	private void onCreateLogEntry() {
+	public void createLogMessage() {
 		LogMessageCreateParams params = new LogMessageCreateParams();
 		params.category = model.categoryModel.getString();
 		params.message = model.messageModel.getString();
@@ -35,17 +35,19 @@ public class LogMessageCreateController {
 
 		try {
 			new LogMessageCreateInteractor().createMessage(params);
-			model.resultModel.setString(textResource.getString("logMessageCreateView_logEntryAdded"));
+			model.resultModel.setString(textResource.getString("logMessageCreateView_logMessageAdded"));
 		} catch (Exception e) {
-			model.resultModel.setString(textResource.getString("logMessageCreateView_logEntryFailed", e.getLocalizedMessage()));
+			model.resultModel.setString(textResource.getString("logMessageCreateView_logMessageFailed", e.getLocalizedMessage()));
 			LoggerFactory.getLogger(LogMessageCreateController.class).warn("Failed to log message", e);
 		}
 	}
 
-	private class CreateLogEntryAction extends AbstractAction {
+	private class CreateLogMessageAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			onCreateLogEntry();
+			createLogMessage();
 		}
 	}
 }
