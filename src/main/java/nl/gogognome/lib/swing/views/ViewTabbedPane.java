@@ -21,12 +21,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -40,11 +35,11 @@ import nl.gogognome.lib.util.Factory;
  */
 public class ViewTabbedPane extends JTabbedPane {
 
-    /** Contains the views that are added to this tabbed pane. */
-    private ArrayList<View> views = new ArrayList<View>();
+	private static final long serialVersionUID = 1L;
 
-    /** The frame that contains this tabbed pane. */
-    private JFrame parentFrame;
+    private final ArrayList<View> views = new ArrayList<View>();
+
+    private final JFrame parentFrame;
 
     private boolean changeInProgress;
 
@@ -205,6 +200,7 @@ public class ViewTabbedPane extends JTabbedPane {
     }
 
     private final class CloseAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
 		private final View view;
 
 		private CloseAction(View view) {

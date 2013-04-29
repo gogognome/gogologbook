@@ -27,7 +27,9 @@ import nl.gogognome.lib.swing.models.StringModel;
  */
 public class TextFieldBean extends AbstractTextFieldBean<StringModel> {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Constructor.
      * @param stringModel the string model that will reflect the content of the bean
      */
