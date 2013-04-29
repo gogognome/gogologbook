@@ -9,9 +9,9 @@ import nl.gogognome.gogologbook.entities.LogMessage;
 
 import org.junit.Test;
 
-public class LogMessageDAOImplTest {
+public class InMemoryLogMessageDAOTest {
 
-	private final LogMessageDAOImpl logMessageDao = new LogMessageDAOImpl();
+	private final InMemoryLogMessageDAO logMessageDao = new InMemoryLogMessageDAO();
 
 	@Test
 	public void shouldFindCreatedMessages() {

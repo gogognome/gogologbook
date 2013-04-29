@@ -7,7 +7,7 @@ import nl.gogognome.gogologbook.entities.LogMessage;
 
 public interface LogMessageDAO {
 
-	void createMessage(LogMessage message);
+	LogMessage createMessage(LogMessage message);
 
 	List<LogMessage> findLogMessages(FilterCriteria filter);
 

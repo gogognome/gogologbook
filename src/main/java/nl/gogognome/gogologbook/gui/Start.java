@@ -1,11 +1,12 @@
 package nl.gogognome.gogologbook.gui;
 
+import java.io.File;
 import java.util.Locale;
 
 import javax.swing.JFrame;
 
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
-import nl.gogognome.gogologbook.dbinmemory.LogMessageDAOImpl;
+import nl.gogognome.gogologbook.dbinsinglefile.SingleFileLogMessageDAO;
 import nl.gogognome.gogologbook.util.DaoFactory;
 import nl.gogognome.lib.gui.beans.BeanFactory;
 import nl.gogognome.lib.swing.SwingUtils;
@@ -17,17 +18,8 @@ import nl.gogognome.lib.util.Factory;
 public class Start {
 
 	private MainFrame mainFrame;
+	private File dbFile;
 
-	/**
-	 * Starts the application.
-	 *
-	 * @param args
-	 *            command line arguments; if one argument is passed, then it is
-	 *            used as file name of an edition that is loaded. Further, if
-	 *            the argument <tt>-lang=X</tt> is used, then the language is
-	 *            set to </tt>X</tt>. </tt>X</tt> should be a valid ISO 639
-	 *            language code.
-	 */
 	public static void main(String[] args) {
 		Start start = new Start();
 		start.startApplication(args);
@@ -55,14 +47,20 @@ public class Start {
 			if (args[i].startsWith("-lang=")) {
 				Locale locale = new Locale(args[i].substring(6));
 				initFactory(locale);
+			} else if (dbFile == null) {
+				dbFile = new File(args[i]);
 			} else {
-				throw new IllegalArgumentException("Illega argument: " + args[i]);
+				throw new IllegalArgumentException("Illegal argument: " + args[i]);
 			}
+		}
+
+		if (dbFile == null) {
+			throw new IllegalArgumentException("Path to database file is missing.");
 		}
 	}
 
 	private void registerDAOs() {
-		DaoFactory.register(LogMessageDAO.class, new LogMessageDAOImpl());
+		DaoFactory.register(LogMessageDAO.class, new SingleFileLogMessageDAO(dbFile));
 	}
 
 	private void initFrame() {

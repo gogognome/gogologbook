@@ -10,20 +10,23 @@ import nl.gogognome.gogologbook.entities.LogMessage;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class LogMessageDAOImpl implements LogMessageDAO {
+public class InMemoryLogMessageDAO implements LogMessageDAO {
 
 	private final Map<Integer, LogMessage> idToMessage = Maps.newTreeMap();
 
-	public void createMessage(LogMessage message) {
+	@Override
+	public LogMessage createMessage(LogMessage logMessage) {
 		int maxId = 0;
 		for (int id : idToMessage.keySet()) {
 			maxId = Math.max(maxId, id);
 		}
 
-		LogMessage storedMessage = cloneLogMessage(message, maxId + 1);
+		LogMessage storedMessage = cloneLogMessage(logMessage, maxId + 1);
 		idToMessage.put(storedMessage.id, storedMessage);
+		return cloneLogMessage(storedMessage, storedMessage.id);
 	}
 
+	@Override
 	public List<LogMessage> findLogMessages(FilterCriteria filter) {
 		List<LogMessage> results = Lists.newArrayListWithExpectedSize(idToMessage.size());
 		for (LogMessage message : idToMessage.values()) {
