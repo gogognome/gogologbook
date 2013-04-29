@@ -47,8 +47,7 @@ public class MainFrame extends JFrame {
 
         setMinimumSize(new Dimension(800, 600));
 
-        openView(LogMessageCreateView.class);
-        openView(LogMessageOverviewView.class);
+        openView(LogMessageCreateAndOverviewView.class);
 	}
 
 	private void setIcon(String iconName) {
