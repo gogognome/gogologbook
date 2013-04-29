@@ -18,6 +18,9 @@ package nl.gogognome.lib.text;
 import java.text.*;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class represents a text resource. It offers functionality to
  * obtain texts from resource files. It also offers easy methods to
@@ -31,6 +34,8 @@ public class TextResource {
 	private final List<ResourceBundle> stringResources = new ArrayList<ResourceBundle>();
 
 	private final Set<String> optionalIdSuffixes = new HashSet<String>();
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(TextResource.class);
 
 	/**
 	 * Constructs a text resource for the specified locale.
@@ -99,7 +104,7 @@ public class TextResource {
         	}
         }
         if (result == null && !isOptionalId(id)) {
-//        	LOGGER.warn("String resource " + id + " was not found. Have all resource bundles been loaded?");
+        	LOGGER.warn("String resource " + id + " was not found. Have all resource bundles been loaded?");
         }
         return result;
 	}
