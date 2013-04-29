@@ -4,6 +4,9 @@ import java.util.Locale;
 
 import javax.swing.JFrame;
 
+import nl.gogognome.gogologbook.dao.LogMessageDAO;
+import nl.gogognome.gogologbook.dbinmemory.LogMessageDAOImpl;
+import nl.gogognome.gogologbook.util.DaoFactory;
 import nl.gogognome.lib.gui.beans.BeanFactory;
 import nl.gogognome.lib.swing.SwingUtils;
 import nl.gogognome.lib.swing.WidgetFactory;
@@ -33,6 +36,7 @@ public class Start {
 	private void startApplication(String[] args) {
 		initFactory(Locale.getDefault());
 		parseArguments(args);
+		registerDAOs();
 		DefaultLookAndFeel.useDefaultLookAndFeel();
 		initFrame();
 	}
@@ -55,6 +59,10 @@ public class Start {
 				throw new IllegalArgumentException("Illega argument: " + args[i]);
 			}
 		}
+	}
+
+	private void registerDAOs() {
+		DaoFactory.register(LogMessageDAO.class, new LogMessageDAOImpl());
 	}
 
 	private void initFrame() {
