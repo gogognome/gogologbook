@@ -2,6 +2,7 @@ package nl.gogognome.gogologbook.gui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
@@ -23,13 +24,14 @@ public class LogMessageOverviewView extends View {
 	@Override
 	public void onInit() {
 		setLayout(new BorderLayout());
-
-		ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.LEFT);
-		buttonPanel.addButton("logMessageOverview_refresh", controller.getRefreshAction());
-		add(buttonPanel, BorderLayout.NORTH);
+		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JTable table = widgetFactory.createSortedTable(model.logMessageTableModel);
         add(widgetFactory.createScrollPane(table), BorderLayout.CENTER);
+
+        ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.LEFT);
+		buttonPanel.addButton("logMessageOverview_refresh", controller.getRefreshAction());
+		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
 	@Override
