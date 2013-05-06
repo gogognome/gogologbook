@@ -3,56 +3,55 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 import java.io.*;
 import java.util.List;
 
-import nl.gogognome.gogologbook.dao.LogMessageDAO;
-import nl.gogognome.gogologbook.dbinmemory.InMemoryLogMessageDAO;
-import nl.gogognome.gogologbook.entities.FilterCriteria;
-import nl.gogognome.gogologbook.entities.LogMessage;
+import nl.gogognome.gogologbook.dao.UserDAO;
+import nl.gogognome.gogologbook.dbinmemory.InMemoryUserDAO;
+import nl.gogognome.gogologbook.entities.User;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 
-public class SingleFileLogMessageDAO extends AbstractSingleFileDAO implements LogMessageDAO {
+public class SingleFileUserDAO extends AbstractSingleFileDAO implements UserDAO {
 
 	private final static String INSERT = "insert";
 
-	private InMemoryLogMessageDAO inMemoryLogMessageDao = new InMemoryLogMessageDAO();
+	private InMemoryUserDAO inMemoryUserDao = new InMemoryUserDAO();
 
-	public SingleFileLogMessageDAO(File dbFile) {
+	public SingleFileUserDAO(File dbFile) {
 		super(dbFile);
 	}
 
 	@Override
-	public LogMessage createMessage(LogMessage message) {
+	public User createUser(User user) {
 		try {
 			acquireLock();
 			initInMemDatabaseFromFile();
-			message = inMemoryLogMessageDao.createMessage(message);
+			user = inMemoryUserDao.createUser(user);
 			try {
-				appendRecordToFile(INSERT, message);
+				appendRecordToFile(INSERT, user);
 			} catch (IOException e) {
 				throw new RuntimeException("Problem occurred while writing record to the file " + dbFile.getAbsolutePath(), e);
 			}
 		} finally {
 			releaseLock();
 		}
-		return message;
+		return user;
 	}
 
 	@Override
-	public List<LogMessage> findLogMessages(FilterCriteria filter) {
+	public List<User> findAllUsers() {
 		initInMemDatabaseFromFile();
-		return inMemoryLogMessageDao.findLogMessages(filter);
+		return inMemoryUserDao.findAllUsers();
 	}
 
-	private void appendRecordToFile(String action, LogMessage logMessage) throws IOException {
+	private void appendRecordToFile(String action, User user) throws IOException {
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(dbFile, true));
 			writer.append(action);
 			writer.append(';');
 			Gson gson = new Gson();
-			writer.append(gson.toJson(logMessage));
+			writer.append(gson.toJson(user));
 			writer.newLine();
 		} finally {
 			writer.flush();
@@ -63,7 +62,7 @@ public class SingleFileLogMessageDAO extends AbstractSingleFileDAO implements Lo
 	private void initInMemDatabaseFromFile() {
 		BufferedReader reader = null;
 		try {
-			inMemoryLogMessageDao = new InMemoryLogMessageDAO();
+			inMemoryUserDao = new InMemoryUserDAO();
 
 			reader = Files.newReader(dbFile, Charsets.ISO_8859_1);
 			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
@@ -89,9 +88,9 @@ public class SingleFileLogMessageDAO extends AbstractSingleFileDAO implements Lo
 		if (INSERT.equals(action)) {
 			Gson gson = new Gson();
 			int index = line.indexOf(';');
-			String serializedLogMessage = line.substring(index + 1);
-			LogMessage logMessage = gson.fromJson(serializedLogMessage, LogMessage.class);
-			inMemoryLogMessageDao.createMessage(logMessage);
+			String serializedUser = line.substring(index + 1);
+			User user = gson.fromJson(serializedUser, User.class);
+			inMemoryUserDao.createUser(user);
 		}
 	}
 
@@ -102,5 +101,4 @@ public class SingleFileLogMessageDAO extends AbstractSingleFileDAO implements Lo
 		}
 		return line.substring(0, index);
 	}
-
 }
