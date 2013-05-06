@@ -2,6 +2,7 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dbinmemory.InMemoryLogMessageDAO;
@@ -9,6 +10,7 @@ import nl.gogognome.gogologbook.entities.FilterCriteria;
 import nl.gogognome.gogologbook.entities.LogMessage;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 
@@ -20,19 +22,52 @@ public class SingleFileLogMessageDAO implements LogMessageDAO {
 
 	private InMemoryLogMessageDAO inMemoryLogMessageDao = new InMemoryLogMessageDAO();
 
+	private final static Map<File, BinarySemaphoreWithFileLock> fileToSemaphoreMap = Maps.newHashMap();
+
 	public SingleFileLogMessageDAO(File dbFile) {
 		this.dbFile = dbFile;
 	}
 
 	@Override
 	public LogMessage createMessage(LogMessage message) {
-		message = inMemoryLogMessageDao.createMessage(message);
 		try {
-			appendRecordToFile(INSERT, message);
-		} catch (IOException e) {
-			throw new RuntimeException("Problem occurred while writing record to the file " + dbFile.getAbsolutePath(), e);
+			acquireLock();
+			initInMemDatabaseFromFile();
+			message = inMemoryLogMessageDao.createMessage(message);
+			try {
+				appendRecordToFile(INSERT, message);
+			} catch (IOException e) {
+				throw new RuntimeException("Problem occurred while writing record to the file " + dbFile.getAbsolutePath(), e);
+			}
+		} finally {
+			releaseLock();
 		}
 		return message;
+	}
+
+	private void acquireLock() {
+		createSemaphoreIfNeeded();
+		try {
+			fileToSemaphoreMap.get(dbFile).acquire();
+		} catch (Exception e) {
+			throw new RuntimeException("Problem occurred while releasing lock", e);
+		}
+	}
+
+	private void createSemaphoreIfNeeded() {
+		if (fileToSemaphoreMap.containsKey(dbFile)) {
+			return;
+		}
+
+		fileToSemaphoreMap.put(dbFile, new BinarySemaphoreWithFileLock(new File(dbFile.getAbsoluteFile() + ".lock")));
+	}
+
+	private void releaseLock() {
+		try {
+			fileToSemaphoreMap.get(dbFile).release();
+		} catch (Exception e) {
+			throw new RuntimeException("Problem occurred while releasing lock", e);
+		}
 	}
 
 	@Override

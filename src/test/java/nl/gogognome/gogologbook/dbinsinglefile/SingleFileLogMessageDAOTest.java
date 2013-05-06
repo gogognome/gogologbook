@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import nl.gogognome.gogologbook.entities.FilterCriteria;
 import nl.gogognome.gogologbook.entities.LogMessage;
@@ -15,6 +16,7 @@ import org.junit.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
 public class SingleFileLogMessageDAOTest {
@@ -82,6 +84,37 @@ public class SingleFileLogMessageDAOTest {
 		List<LogMessage> logMessages = logMessageDAO.findLogMessages(FilterCriteria.createFindAll());
 
 		assertFalse(logMessages.isEmpty());
+	}
+
+	@Test
+	public void testLockingMechanismWithMultipleThreads() throws Exception {
+		RecordCreationThread[] threads = new RecordCreationThread[10];
+		for (int i = 0; i < threads.length; i++) {
+			threads[i] = new RecordCreationThread(dbFile, "Thread " + i);
+			threads[i].start();
+		}
+
+		Thread.sleep(2000);
+
+		for (int i = 0; i < threads.length; i++) {
+			threads[i].setFinished(true);
+			threads[i].join();
+		}
+
+		int nrRecordsCreated = 0;
+		for (int i = 0; i < threads.length; i++) {
+			assertNull(threads[i].getError());
+			nrRecordsCreated += threads[i].getIds().size();
+			for (int j = 0; j < i; j++) {
+				Set<Integer> intersection = Sets.newHashSet(threads[i].getIds());
+				intersection.retainAll(threads[j].getIds());
+				if (!intersection.isEmpty()) {
+					fail("The ids " + Joiner.on(", ").join(intersection) + " have been created by threads " + j + " and " + i);
+				}
+			}
+		}
+
+		assertTrue(nrRecordsCreated > 0);
 	}
 
 	private String getContentsOfDbFile() throws IOException {
