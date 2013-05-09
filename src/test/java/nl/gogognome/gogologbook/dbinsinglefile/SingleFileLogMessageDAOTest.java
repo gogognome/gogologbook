@@ -2,7 +2,6 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -10,8 +9,6 @@ import java.util.Set;
 import nl.gogognome.gogologbook.entities.FilterCriteria;
 import nl.gogognome.gogologbook.entities.LogMessage;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
@@ -19,32 +16,11 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
-public class SingleFileLogMessageDAOTest {
+public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 
 	private static final String INSERT_OF_ONE_LOG_MESSAGE = "insert;LogMessage;{\"message\":\"test\",\"id\":1}";
-	private final File dbFile = new File("target/test/testdb.txt");
 	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
 	private final SingleFileLogMessageDAO logMessageDAO = new SingleFileLogMessageDAO(singleFileDatabase);
-
-	@Before
-	public void setUp() throws InterruptedException {
-		dbFile.getParentFile().mkdirs();
-		deleteDbFile();
-	}
-
-	@After
-	public void tearDown() throws InterruptedException {
-		deleteDbFile();
-	}
-
-	private void deleteDbFile() throws InterruptedException {
-		while (dbFile.exists()) {
-			dbFile.delete();
-			if (dbFile.exists()) {
-				Thread.sleep(100);
-			}
-		}
-	}
 
 	@Test
 	public void createRecordShouldWriteRecordInDbFile() throws IOException {
