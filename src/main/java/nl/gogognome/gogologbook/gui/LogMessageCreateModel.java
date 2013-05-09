@@ -1,10 +1,12 @@
 package nl.gogognome.gogologbook.gui;
 
+import nl.gogognome.gogologbook.entities.User;
+import nl.gogognome.lib.swing.models.ListModel;
 import nl.gogognome.lib.swing.models.StringModel;
 
 public class LogMessageCreateModel {
 
-	public StringModel usernameModel = new StringModel();
+	public ListModel<User> usersModel = new ListModel<User>();
 	public StringModel projectModel = new StringModel();
 	public StringModel townModel = new StringModel();
 	public StringModel categoryModel = new StringModel();

@@ -7,7 +7,9 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.lib.gui.beans.InputFieldsColumn;
+import nl.gogognome.lib.gui.beans.ObjectFormatter;
 import nl.gogognome.lib.swing.ActionWrapper;
 import nl.gogognome.lib.swing.ButtonPanel;
 import nl.gogognome.lib.swing.views.View;
@@ -18,6 +20,8 @@ public class LogMessageCreateView extends View {
 
 	private final LogMessageCreateController controller = new LogMessageCreateController();
 	private final LogMessageCreateModel model = controller.getModel();
+
+	private InputFieldsColumn ifc;
 
 	@Override
 	public String getTitle() {
@@ -30,8 +34,7 @@ public class LogMessageCreateView extends View {
 	}
 
 	@Override
-	public void onClose() {
-	}
+	public void onClose() {}
 
 	protected void addComponents() {
 		setLayout(new BorderLayout());
@@ -46,24 +49,30 @@ public class LogMessageCreateView extends View {
 
 	private JPanel createButtonPanel() {
 		ButtonPanel panel = new ButtonPanel(SwingConstants.LEFT);
-        ActionWrapper actionWrapper = widgetFactory.createAction("logMessageCreateView_add");
-        actionWrapper.setAction(controller.getCreateAction());
+		ActionWrapper actionWrapper = widgetFactory.createAction("logMessageCreateView_add");
+		actionWrapper.setAction(controller.getCreateAction());
 		panel.addButton("logMessageCreateView_add", actionWrapper);
 		panel.add(beanFactory.createLabelBean(model.resultModel));
 		return panel;
 	}
 
 	protected JComponent createCenterComponent() {
-        InputFieldsColumn ifc = new InputFieldsColumn();
-        addCloseable(ifc);
+		ifc = new InputFieldsColumn();
+		addCloseable(ifc);
 
-        ifc.addField("logMessageCreateView_username", model.usernameModel);
-        ifc.addField("logMessageCreateView_project", model.projectModel);
-        ifc.addField("logMessageCreateView_town", model.townModel);
-        ifc.addField("logMessageCreateView_category", model.categoryModel);
-        ifc.addField("logMessageCreateView_message", model.messageModel);
+		ifc.addComboBoxField("logMessageCreateView_username", model.usersModel, new UserFormatter());
+		ifc.addField("logMessageCreateView_project", model.projectModel);
+		ifc.addField("logMessageCreateView_town", model.townModel);
+		ifc.addField("logMessageCreateView_category", model.categoryModel);
+		ifc.addField("logMessageCreateView_message", model.messageModel);
 
 		return ifc;
 	}
+}
 
+class UserFormatter implements ObjectFormatter<User> {
+	@Override
+	public String format(User user) {
+		return user != null ? user.name : "";
+	}
 }

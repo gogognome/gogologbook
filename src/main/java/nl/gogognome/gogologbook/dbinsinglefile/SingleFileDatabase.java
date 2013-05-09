@@ -112,7 +112,7 @@ public class SingleFileDatabase {
 	private String getAction(String line) {
 		int index = line.indexOf(';');
 		if (index == -1) {
-			throw new RuntimeException("Line does not contain semicolon.");
+			throw new RuntimeException("Line does not contain semicolon: " + line);
 		}
 		return line.substring(0, index);
 	}
@@ -120,12 +120,12 @@ public class SingleFileDatabase {
 	private String getTableName(String line) {
 		int index = line.indexOf(';');
 		if (index == -1) {
-			throw new RuntimeException("Line does not contain semicolon.");
+			throw new RuntimeException("Line does not contain semicolon: " + line);
 		}
 		int start = index + 1;
 		index = line.indexOf(';', start);
 		if (index == -1) {
-			throw new RuntimeException("Line does not contain two semicolons.");
+			throw new RuntimeException("Line does not contain two semicolons: " + line);
 		}
 
 		return line.substring(start, index);

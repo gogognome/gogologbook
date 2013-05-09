@@ -22,7 +22,7 @@ import nl.gogognome.lib.util.Factory;
 
 public class MainFrame extends JFrame {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private final ViewTabbedPane viewTabbedPane;
 
@@ -38,26 +38,28 @@ public class MainFrame extends JFrame {
 
 		addWindowListener(new WindowAdapter() {
 			@Override
-            public void windowClosing(WindowEvent e) { handleExit(); } }
-		);
+			public void windowClosing(WindowEvent e) {
+				handleExit();
+			}
+		});
 
-        setTitle(createTitle());
+		setTitle(createTitle());
 
-        setIcon("icon-32x32.png");
+		setIcon("icon-32x32.png");
 
-        setMinimumSize(new Dimension(800, 600));
+		setMinimumSize(new Dimension(800, 600));
 
-        openView(LogMessageCreateAndOverviewView.class);
+		openView(LogMessageCreateAndOverviewView.class);
 	}
 
 	private void setIcon(String iconName) {
 		URL url = ClassLoader.getSystemResource(iconName);
-        Image image = Toolkit.getDefaultToolkit().createImage(url);
-        setIconImage(image);
+		Image image = Toolkit.getDefaultToolkit().createImage(url);
+		setIconImage(image);
 	}
 
 	private String createTitle() {
-	    return textResource.getString("mf.title");
+		return textResource.getString("mf.title");
 	}
 
 	private void handleExit() {
@@ -66,33 +68,33 @@ public class MainFrame extends JFrame {
 
 	private void openView(Class<? extends View> viewClass) {
 		View view = openViews.get(viewClass);
-	    if (view == null) {
-	    	try {
+		if (view == null) {
+			try {
 				view = createView(viewClass);
 			} catch (Exception e) {
 				MessageDialog.showErrorMessage(this, e, "mf.problemCreatingView");
 				return;
 			}
-	    	view.addViewListener(new ViewCloseListener());
-            viewTabbedPane.openView(view);
-            viewTabbedPane.selectView(view);
+			view.addViewListener(new ViewCloseListener());
+			viewTabbedPane.openView(view);
+			viewTabbedPane.selectView(view);
 
-            openViews.put(viewClass, view);
-        } else {
-            viewTabbedPane.selectView(view);
-	    }
+			openViews.put(viewClass, view);
+		} else {
+			viewTabbedPane.selectView(view);
+		}
 	}
 
-    private View createView(Class<? extends View> viewClass) throws Exception {
-    	Constructor<? extends View> c = viewClass.getConstructor();
-    	return c.newInstance();
+	private View createView(Class<? extends View> viewClass) throws Exception {
+		Constructor<? extends View> c = viewClass.getConstructor();
+		return c.newInstance();
 	}
 
-    private class ViewCloseListener implements ViewListener {
-        @Override
+	private class ViewCloseListener implements ViewListener {
+		@Override
 		public void onViewClosed(View view) {
-            view.removeViewListener(this);
-            openViews.remove(view.getClass());
-        }
-    }
+			view.removeViewListener(this);
+			openViews.remove(view.getClass());
+		}
+	}
 }
