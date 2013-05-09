@@ -21,9 +21,10 @@ import com.google.common.io.Files;
 
 public class SingleFileLogMessageDAOTest {
 
-	private static final String INSERT_OF_ONE_LOG_MESSAGE = "insert;{\"message\":\"test\",\"id\":1}";
+	private static final String INSERT_OF_ONE_LOG_MESSAGE = "insert;LogMessage;{\"message\":\"test\",\"id\":1}";
 	private final File dbFile = new File("target/test/testdb.txt");
-	private final SingleFileLogMessageDAO logMessageDAO = new SingleFileLogMessageDAO(dbFile);
+	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
+	private final SingleFileLogMessageDAO logMessageDAO = new SingleFileLogMessageDAO(singleFileDatabase);
 
 	@Before
 	public void setUp() throws InterruptedException {
@@ -90,7 +91,8 @@ public class SingleFileLogMessageDAOTest {
 	public void testLockingMechanismWithMultipleThreads() throws Exception {
 		RecordCreationThread[] threads = new RecordCreationThread[10];
 		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new RecordCreationThread(dbFile, "Thread " + i);
+			SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
+			threads[i] = new RecordCreationThread(singleFileDatabase, "Thread " + i);
 			threads[i].start();
 		}
 
@@ -98,6 +100,9 @@ public class SingleFileLogMessageDAOTest {
 
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].setFinished(true);
+		}
+
+		for (int i = 0; i < threads.length; i++) {
 			threads[i].join();
 		}
 

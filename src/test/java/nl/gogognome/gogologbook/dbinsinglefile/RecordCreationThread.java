@@ -1,6 +1,5 @@
 package nl.gogognome.gogologbook.dbinsinglefile;
 
-import java.io.File;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,8 +15,8 @@ public class RecordCreationThread extends Thread {
 	private final Set<Integer> ids = Sets.newHashSetWithExpectedSize(10000);
 	private String error;
 
-	public RecordCreationThread(File dbFile, String message) {
-		singleFileLogMessageDAO = new SingleFileLogMessageDAO(dbFile);
+	public RecordCreationThread(SingleFileDatabase singleFileDatabase, String message) {
+		singleFileLogMessageDAO = new SingleFileLogMessageDAO(singleFileDatabase);
 		this.message = message;
 	}
 

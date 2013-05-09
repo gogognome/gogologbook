@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import nl.gogognome.gogologbook.entities.User;
 
@@ -15,14 +14,14 @@ import org.junit.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
 public class SingleFileUserDAOTest {
 
-	private static final String INSERT_OF_ONE_USER = "insert;{\"name\":\"test\",\"id\":1}";
+	private static final String INSERT_OF_ONE_USER = "insert;User;{\"name\":\"test\",\"id\":1}";
 	private final File dbFile = new File("target/test/testdb.txt");
-	private final SingleFileUserDAO userDao = new SingleFileUserDAO(dbFile);
+	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
+	private final SingleFileUserDAO userDao = new SingleFileUserDAO(singleFileDatabase);
 
 	@Before
 	public void setUp() throws InterruptedException {
@@ -83,37 +82,6 @@ public class SingleFileUserDAOTest {
 		List<User> users = userDao.findAllUsers();
 
 		assertFalse(users.isEmpty());
-	}
-
-	@Test
-	public void testLockingMechanismWithMultipleThreads() throws Exception {
-		RecordCreationThread[] threads = new RecordCreationThread[10];
-		for (int i = 0; i < threads.length; i++) {
-			threads[i] = new RecordCreationThread(dbFile, "Thread " + i);
-			threads[i].start();
-		}
-
-		Thread.sleep(2000);
-
-		for (int i = 0; i < threads.length; i++) {
-			threads[i].setFinished(true);
-			threads[i].join();
-		}
-
-		int nrRecordsCreated = 0;
-		for (int i = 0; i < threads.length; i++) {
-			assertNull(threads[i].getError());
-			nrRecordsCreated += threads[i].getIds().size();
-			for (int j = 0; j < i; j++) {
-				Set<Integer> intersection = Sets.newHashSet(threads[i].getIds());
-				intersection.retainAll(threads[j].getIds());
-				if (!intersection.isEmpty()) {
-					fail("The ids " + Joiner.on(", ").join(intersection) + " have been created by threads " + j + " and " + i);
-				}
-			}
-		}
-
-		assertTrue(nrRecordsCreated > 0);
 	}
 
 	private String getContentsOfDbFile() throws IOException {

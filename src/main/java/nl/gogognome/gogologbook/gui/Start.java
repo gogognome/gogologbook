@@ -6,7 +6,10 @@ import java.util.Locale;
 import javax.swing.JFrame;
 
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
+import nl.gogognome.gogologbook.dao.UserDAO;
+import nl.gogognome.gogologbook.dbinsinglefile.SingleFileDatabase;
 import nl.gogognome.gogologbook.dbinsinglefile.SingleFileLogMessageDAO;
+import nl.gogognome.gogologbook.dbinsinglefile.SingleFileUserDAO;
 import nl.gogognome.gogologbook.util.DaoFactory;
 import nl.gogognome.lib.gui.beans.BeanFactory;
 import nl.gogognome.lib.swing.SwingUtils;
@@ -60,7 +63,9 @@ public class Start {
 	}
 
 	private void registerDAOs() {
-		DaoFactory.register(LogMessageDAO.class, new SingleFileLogMessageDAO(dbFile));
+		SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
+		DaoFactory.register(LogMessageDAO.class, new SingleFileLogMessageDAO(singleFileDatabase));
+		DaoFactory.register(UserDAO.class, new SingleFileUserDAO(singleFileDatabase));
 	}
 
 	private void initFrame() {
