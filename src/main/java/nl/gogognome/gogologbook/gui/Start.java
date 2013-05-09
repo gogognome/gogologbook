@@ -3,8 +3,10 @@ package nl.gogognome.gogologbook.gui;
 import java.io.File;
 import java.util.Locale;
 
+import nl.gogognome.gogologbook.dao.CategoryDAO;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.UserDAO;
+import nl.gogognome.gogologbook.dbinsinglefile.SingleFileCategoryDAO;
 import nl.gogognome.gogologbook.dbinsinglefile.SingleFileDatabase;
 import nl.gogognome.gogologbook.dbinsinglefile.SingleFileLogMessageDAO;
 import nl.gogognome.gogologbook.dbinsinglefile.SingleFileUserDAO;
@@ -62,6 +64,7 @@ public class Start {
 
 	private void registerDAOs() {
 		SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
+		DaoFactory.register(CategoryDAO.class, new SingleFileCategoryDAO(singleFileDatabase));
 		DaoFactory.register(LogMessageDAO.class, new SingleFileLogMessageDAO(singleFileDatabase));
 		DaoFactory.register(UserDAO.class, new SingleFileUserDAO(singleFileDatabase));
 	}

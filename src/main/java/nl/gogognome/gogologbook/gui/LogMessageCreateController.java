@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageCreateInteractor;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
@@ -20,6 +21,7 @@ public class LogMessageCreateController {
 
 	public LogMessageCreateController() {
 		model.usersModel.setItems(new UserInteractor().findAllUsers());
+		model.categoriesModel.setItems(new CategoryInteractor().findAllCategories());
 	}
 
 	public LogMessageCreateModel getModel() {
@@ -32,7 +34,7 @@ public class LogMessageCreateController {
 
 	public void createLogMessage() {
 		LogMessageCreateParams params = new LogMessageCreateParams();
-		params.category = model.categoryModel.getString();
+		params.category = model.categoriesModel.getSelectedItem().name;
 		params.message = model.messageModel.getString();
 		params.project = model.projectModel.getString();
 		params.town = model.townModel.getString();
