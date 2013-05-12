@@ -7,8 +7,12 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
+import nl.gogognome.gogologbook.dao.ProjectDAO;
+import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.entities.FilterCriteria;
 import nl.gogognome.gogologbook.entities.LogMessage;
+import nl.gogognome.gogologbook.entities.Project;
+import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindParams;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
 import nl.gogognome.gogologbook.util.DaoFactory;
@@ -21,12 +25,34 @@ import com.google.common.collect.Lists;
 
 public class LogMessageFindInteractorTest {
 
+	private static final int PROJECT_ID = 123;
+	private static final int USER_ID = 456;
+
 	private final LogMessageFindInteractor logMessageFindInteractor = new LogMessageFindInteractor();
 	private final LogMessageDAO logMessageDao = mock(LogMessageDAO.class);
+	private final ProjectDAO projectDao = mock(ProjectDAO.class);
+	private final UserDAO userDao = mock(UserDAO.class);
+
+	private Project project;
+	private User user;
 
 	@Before
-	public void registerMocks() {
+	public void setUp() {
 		DaoFactory.register(LogMessageDAO.class, logMessageDao);
+		DaoFactory.register(ProjectDAO.class, projectDao);
+		DaoFactory.register(UserDAO.class, userDao);
+
+		project = new Project(PROJECT_ID);
+		project.projectNr = "PP12345";
+		project.customer = "Piet Puk";
+		project.street = "Avenue Parmentier 12";
+		project.town = "Paris";
+
+		user = new User(USER_ID);
+		user.name = "Sander";
+
+		when(projectDao.findAllProjects()).thenReturn(Lists.newArrayList(project));
+		when(userDao.findAllUsers()).thenReturn(Lists.newArrayList(user));
 	}
 
 	@After
@@ -36,7 +62,7 @@ public class LogMessageFindInteractorTest {
 
 	@Test
 	public void shouldUseDaoToFindMessages() {
-		List<LogMessage> messages = Lists.newArrayList(new LogMessage(), new LogMessage());
+		List<LogMessage> messages = Lists.newArrayList(createLogMessage(1), createLogMessage(2));
 		when(logMessageDao.findLogMessages(any(FilterCriteria.class))).thenReturn(messages);
 		LogMessageFindParams params = new LogMessageFindParams();
 
@@ -47,12 +73,7 @@ public class LogMessageFindInteractorTest {
 
 	@Test
 	public void shouldConvertEntityToLogResult() {
-		LogMessage logMessage = new LogMessage(123);
-		logMessage.category = "cat";
-		logMessage.message = "This is a test";
-		logMessage.project = "proj";
-		logMessage.town = "Tilburg";
-		logMessage.username = "Sander";
+		LogMessage logMessage = createLogMessage(1);
 		List<LogMessage> messages = Lists.newArrayList(logMessage);
 		when(logMessageDao.findLogMessages(any(FilterCriteria.class))).thenReturn(messages);
 		LogMessageFindParams params = new LogMessageFindParams();
@@ -64,9 +85,20 @@ public class LogMessageFindInteractorTest {
 		assertEquals(logMessage.category, result.category);
 		assertEquals(logMessage.id, result.id);
 		assertEquals(logMessage.message, result.message);
-		assertEquals(logMessage.project, result.project);
-		assertEquals(logMessage.town, result.town);
-		assertEquals(logMessage.username, result.username);
+		assertEquals(project.projectNr, result.projectNr);
+		assertEquals(project.customer, result.customer);
+		assertEquals(project.street, result.street);
+		assertEquals(project.town, result.town);
+		assertEquals(user.name, result.username);
+	}
+
+	private LogMessage createLogMessage(int id) {
+		LogMessage logMessage = new LogMessage(id);
+		logMessage.category = "cat";
+		logMessage.message = "This is a test";
+		logMessage.projectId = PROJECT_ID;
+		logMessage.userId = USER_ID;
+		return logMessage;
 	}
 
 }

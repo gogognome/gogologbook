@@ -39,9 +39,8 @@ public class InMemoryLogMessageDAO implements LogMessageDAO {
 		LogMessage clonedMessage = new LogMessage(clonedId);
 		clonedMessage.category = origMessage.category;
 		clonedMessage.message = origMessage.message;
-		clonedMessage.project = origMessage.project;
-		clonedMessage.town = origMessage.town;
-		clonedMessage.username = origMessage.username;
+		clonedMessage.projectId = origMessage.projectId;
+		clonedMessage.userId = origMessage.userId;
 		return clonedMessage;
 	}
 

@@ -2,9 +2,8 @@ package nl.gogognome.gogologbook.interactors.boundary;
 
 public class LogMessageCreateParams {
 
-	public String username;
-	public String project;
-	public String town;
+	public int userId;
+	public int projectId;
 	public String category;
 	public String message;
 

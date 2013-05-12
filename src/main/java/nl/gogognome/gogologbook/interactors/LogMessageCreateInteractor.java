@@ -11,9 +11,8 @@ public class LogMessageCreateInteractor {
 		LogMessage message = new LogMessage();
 		message.category = params.category;
 		message.message = params.message;
-		message.project = params.project;
-		message.town = params.town;
-		message.username = params.username;
+		message.projectId = params.projectId;
+		message.userId = params.userId;
 
 		DaoFactory.getInstance(LogMessageDAO.class).createMessage(message);
 	}

@@ -4,8 +4,10 @@ public class LogMessageFindResult {
 
 	public int id;
 	public String username;
-	public String project;
+	public String projectNr;
+	public String customer;
 	public String town;
+	public String street;
 	public String category;
 	public String message;
 

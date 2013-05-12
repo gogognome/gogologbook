@@ -38,9 +38,8 @@ public class LogMessageCreateController {
 		LogMessageCreateParams params = new LogMessageCreateParams();
 		params.category = model.categoriesModel.getSelectedItem().name;
 		params.message = model.messageModel.getString();
-		params.project = model.projectsModel.getSelectedItem().projectNr;
-		params.town = model.townModel.getString();
-		params.username = model.usersModel.getSelectedItem().name;
+		params.projectId = model.projectsModel.getSelectedItem().id;
+		params.userId = model.usersModel.getSelectedItem().id;
 
 		try {
 			new LogMessageCreateInteractor().createMessage(params);
