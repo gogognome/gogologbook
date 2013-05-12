@@ -13,6 +13,7 @@ public class Project extends AbstractEntity {
 	}
 
 	public String projectNr;
+	public String customer;
 	public String street;
 	public String town;
 }

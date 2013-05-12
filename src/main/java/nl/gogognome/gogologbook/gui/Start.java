@@ -5,11 +5,9 @@ import java.util.Locale;
 
 import nl.gogognome.gogologbook.dao.CategoryDAO;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
+import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.dao.UserDAO;
-import nl.gogognome.gogologbook.dbinsinglefile.SingleFileCategoryDAO;
-import nl.gogognome.gogologbook.dbinsinglefile.SingleFileDatabase;
-import nl.gogognome.gogologbook.dbinsinglefile.SingleFileLogMessageDAO;
-import nl.gogognome.gogologbook.dbinsinglefile.SingleFileUserDAO;
+import nl.gogognome.gogologbook.dbinsinglefile.*;
 import nl.gogognome.gogologbook.util.DaoFactory;
 import nl.gogognome.lib.gui.beans.BeanFactory;
 import nl.gogognome.lib.swing.SwingUtils;
@@ -66,6 +64,7 @@ public class Start {
 		SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
 		DaoFactory.register(CategoryDAO.class, new SingleFileCategoryDAO(singleFileDatabase));
 		DaoFactory.register(LogMessageDAO.class, new SingleFileLogMessageDAO(singleFileDatabase));
+		DaoFactory.register(ProjectDAO.class, new SingleFileProjectDAO(singleFileDatabase));
 		DaoFactory.register(UserDAO.class, new SingleFileUserDAO(singleFileDatabase));
 	}
 

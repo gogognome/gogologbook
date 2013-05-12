@@ -8,12 +8,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import nl.gogognome.gogologbook.entities.Category;
+import nl.gogognome.gogologbook.entities.Project;
 import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.lib.gui.beans.InputFieldsColumn;
 import nl.gogognome.lib.gui.beans.ObjectFormatter;
 import nl.gogognome.lib.swing.ActionWrapper;
 import nl.gogognome.lib.swing.ButtonPanel;
 import nl.gogognome.lib.swing.views.View;
+import nl.gogognome.lib.util.StringUtil;
 
 public class LogMessageCreateView extends View {
 
@@ -62,8 +64,7 @@ public class LogMessageCreateView extends View {
 		addCloseable(ifc);
 
 		ifc.addComboBoxField("logMessageCreateView_username", model.usersModel, new UserFormatter());
-		ifc.addField("logMessageCreateView_project", model.projectModel);
-		ifc.addField("logMessageCreateView_town", model.townModel);
+		ifc.addComboBoxField("logMessageCreateView_project", model.projectsModel, new ProjectFormatter());
 		ifc.addComboBoxField("logMessageCreateView_category", model.categoriesModel, new CategoryFormatter());
 		ifc.addField("logMessageCreateView_message", model.messageModel);
 
@@ -80,7 +81,15 @@ class UserFormatter implements ObjectFormatter<User> {
 
 class CategoryFormatter implements ObjectFormatter<Category> {
 	@Override
-	public String format(Category user) {
-		return user != null ? user.name : "";
+	public String format(Category category) {
+		return category != null ? category.name : "";
+	}
+}
+
+class ProjectFormatter implements ObjectFormatter<Project> {
+	@Override
+	public String format(Project project) {
+		return project != null ? StringUtil.nullToEmptyString(project.projectNr) + " " + StringUtil.nullToEmptyString(project.customer) + " "
+				+ StringUtil.nullToEmptyString(project.town) + " " + StringUtil.nullToEmptyString(project.street) : "";
 	}
 }

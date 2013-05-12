@@ -15,17 +15,18 @@ import com.google.common.io.Files;
 
 public class SingleFileProjectDAOTest extends AbstractSingleFileDAOTest {
 
-	private static final String INSERT_OF_ONE_PROJECT = "insert;Project;{\"projectNr\":\"AB123\",\"street\":\"Sesamestreet\",\"town\":\"Hilversum\",\"id\":1}";
+	private static final String INSERT_OF_ONE_PROJECT = "insert;Project;{\"projectNr\":\"AB123\",\"customer\":\"Me \\u0027n you\",\"street\":\"Sesamestreet\",\"town\":\"Hilversum\",\"id\":1}";
 	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
 	private final SingleFileProjectDAO projectDao = new SingleFileProjectDAO(singleFileDatabase);
 
 	@Test
 	public void createRecordShouldWriteRecordInDbFile() throws IOException {
-		Project message = new Project();
-		message.projectNr = "AB123";
-		message.street = "Sesamestreet";
-		message.town = "Hilversum";
-		projectDao.createProject(message);
+		Project project = new Project();
+		project.projectNr = "AB123";
+		project.customer = "Me 'n you";
+		project.street = "Sesamestreet";
+		project.town = "Hilversum";
+		projectDao.createProject(project);
 
 		assertEquals(INSERT_OF_ONE_PROJECT, getContentsOfDbFile());
 	}

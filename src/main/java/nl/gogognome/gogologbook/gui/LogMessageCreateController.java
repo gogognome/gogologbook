@@ -7,6 +7,7 @@ import javax.swing.Action;
 
 import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageCreateInteractor;
+import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
 import nl.gogognome.lib.text.TextResource;
@@ -21,6 +22,7 @@ public class LogMessageCreateController {
 
 	public LogMessageCreateController() {
 		model.usersModel.setItems(new UserInteractor().findAllUsers());
+		model.projectsModel.setItems(new ProjectInteractor().findAllProjects());
 		model.categoriesModel.setItems(new CategoryInteractor().findAllCategories());
 	}
 
@@ -36,7 +38,7 @@ public class LogMessageCreateController {
 		LogMessageCreateParams params = new LogMessageCreateParams();
 		params.category = model.categoriesModel.getSelectedItem().name;
 		params.message = model.messageModel.getString();
-		params.project = model.projectModel.getString();
+		params.project = model.projectsModel.getSelectedItem().projectNr;
 		params.town = model.townModel.getString();
 		params.username = model.usersModel.getSelectedItem().name;
 

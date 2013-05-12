@@ -37,6 +37,7 @@ public class InMemoryProjectDAO implements ProjectDAO {
 	private Project cloneProject(Project origProject, int clonedId) {
 		Project clonedProject = new Project(clonedId);
 		clonedProject.projectNr = origProject.projectNr;
+		clonedProject.customer = origProject.customer;
 		clonedProject.street = origProject.street;
 		clonedProject.town = origProject.town;
 		return clonedProject;

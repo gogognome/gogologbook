@@ -15,7 +15,10 @@ public class InMemoryProjectDAOTest {
 	@Test
 	public void shouldFindCreatedProjects() {
 		Project project = new Project();
-		project.projectNr = "Piet Puk";
+		project.projectNr = "AB123";
+		project.customer = "Me 'n you";
+		project.street = "Sesamestreet";
+		project.town = "Hilversum";
 		projectDao.createProject(project);
 
 		List<Project> foundProjects = projectDao.findAllProjects();
@@ -24,6 +27,9 @@ public class InMemoryProjectDAOTest {
 		Project foundProject = foundProjects.get(0);
 		assertNotSame(project, foundProject);
 		assertEquals(project.projectNr, foundProject.projectNr);
+		assertEquals(project.customer, foundProject.customer);
+		assertEquals(project.street, foundProject.street);
+		assertEquals(project.town, foundProject.town);
 	}
 
 	@Test
