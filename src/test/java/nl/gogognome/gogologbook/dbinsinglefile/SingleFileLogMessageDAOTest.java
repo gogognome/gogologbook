@@ -3,6 +3,7 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -61,6 +62,24 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 		List<LogMessage> logMessages = logMessageDAO.findLogMessages(FilterCriteria.createFindAll());
 
 		assertFalse(logMessages.isEmpty());
+	}
+
+	@Test
+	public void shouldContainAllAttributesAfterReadingBackLogMessage() throws IOException {
+		LogMessage logMessage = new LogMessage();
+		logMessage.projectId = 1;
+		logMessage.userId = 2;
+		logMessage.message = "test";
+		logMessage.timestamp = new Date();
+
+		logMessageDAO.createMessage(logMessage);
+		List<LogMessage> createdLogMessages = logMessageDAO.findLogMessages(FilterCriteria.createFindAll());
+		LogMessage createdLogMessage = createdLogMessages.get(0);
+
+		assertEquals(logMessage.projectId, createdLogMessage.projectId);
+		assertEquals(logMessage.userId, createdLogMessage.userId);
+		assertEquals(logMessage.message, createdLogMessage.message);
+		assertTrue(Math.abs(logMessage.timestamp.getTime() - createdLogMessage.timestamp.getTime()) < 1000);
 	}
 
 	@Test

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Date;
 import java.util.List;
 
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
@@ -25,6 +26,7 @@ import com.google.common.collect.Lists;
 
 public class LogMessageFindInteractorTest {
 
+	private static final Date TIMESTAMP = new Date();
 	private static final int PROJECT_ID = 123;
 	private static final int USER_ID = 456;
 
@@ -82,6 +84,7 @@ public class LogMessageFindInteractorTest {
 
 		assertEquals(1, results.size());
 		LogMessageFindResult result = results.get(0);
+		assertEquals(logMessage.timestamp, result.timestamp);
 		assertEquals(logMessage.category, result.category);
 		assertEquals(logMessage.id, result.id);
 		assertEquals(logMessage.message, result.message);
@@ -94,6 +97,7 @@ public class LogMessageFindInteractorTest {
 
 	private LogMessage createLogMessage(int id) {
 		LogMessage logMessage = new LogMessage(id);
+		logMessage.timestamp = TIMESTAMP;
 		logMessage.category = "cat";
 		logMessage.message = "This is a test";
 		logMessage.projectId = PROJECT_ID;

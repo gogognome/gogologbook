@@ -48,13 +48,14 @@ public class LogMessageFindInteractor {
 
 	class MessageToResult implements Function<LogMessage, LogMessageFindResult> {
 		@Override
-		public LogMessageFindResult apply(LogMessage message) {
-			Project project = idToProject.get(message.projectId);
-			User user = idToUSer.get(message.userId);
+		public LogMessageFindResult apply(LogMessage logMessage) {
+			Project project = idToProject.get(logMessage.projectId);
+			User user = idToUSer.get(logMessage.userId);
 			LogMessageFindResult result = new LogMessageFindResult();
-			result.category = message.category;
-			result.id = message.id;
-			result.message = message.message;
+			result.category = logMessage.category;
+			result.id = logMessage.id;
+			result.message = logMessage.message;
+			result.timestamp = logMessage.timestamp;
 			result.projectNr = project.projectNr;
 			result.customer = project.customer;
 			result.street = project.street;

@@ -2,6 +2,7 @@ package nl.gogognome.gogologbook.dbinmemory;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
 import java.util.List;
 
 import nl.gogognome.gogologbook.entities.FilterCriteria;
@@ -17,6 +18,9 @@ public class InMemoryLogMessageDAOTest {
 	public void shouldFindCreatedMessages() {
 		LogMessage message = new LogMessage();
 		message.message = "test";
+		message.userId = 1;
+		message.projectId = 2;
+		message.timestamp = new Date();
 		logMessageDao.createMessage(message);
 
 		FilterCriteria filter = new FilterCriteria();
@@ -26,6 +30,9 @@ public class InMemoryLogMessageDAOTest {
 		LogMessage foundMessage = foundMessages.get(0);
 		assertNotSame(message, foundMessage);
 		assertEquals(message.message, foundMessage.message);
+		assertEquals(message.userId, foundMessage.userId);
+		assertEquals(message.projectId, foundMessage.projectId);
+		assertEquals(message.timestamp, foundMessage.timestamp);
 	}
 
 	@Test
@@ -46,7 +53,7 @@ public class InMemoryLogMessageDAOTest {
 		int id1 = foundMessage1.id;
 
 		LogMessage foundMessage2 = foundMessages.get(1);
-		assertEquals(id1+1, foundMessage2.id);
+		assertEquals(id1 + 1, foundMessage2.id);
 	}
 
 	@Test

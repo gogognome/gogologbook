@@ -1,6 +1,7 @@
 package nl.gogognome.gogologbook.gui;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
@@ -12,6 +13,8 @@ import com.google.common.collect.Lists;
 public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindResult> {
 
 	private static final long serialVersionUID = 1L;
+
+	private final static ColumnDefinition TIMESTAMP = new ColumnDefinition("LogEntryTableModel_timestamp", Date.class, 100);
 
 	private final static ColumnDefinition USERNAME = new ColumnDefinition("LogEntryTableModel_username", String.class, 100);
 
@@ -25,7 +28,7 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 
 	private final static ColumnDefinition MESSAGE = new ColumnDefinition("LogEntryTableModel_message", String.class, 300);
 
-	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists.newArrayList(USERNAME, PROJECT, TOWN, STREET, CATEGORY, MESSAGE);
+	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists.newArrayList(TIMESTAMP, USERNAME, PROJECT, TOWN, STREET, CATEGORY, MESSAGE);
 
 	public LogMessageTableModel() {
 		super(COLUMN_DEFINTIIONS, Collections.<LogMessageFindResult> emptyList());
@@ -40,6 +43,9 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 		ColumnDefinition colDef = COLUMN_DEFINTIIONS.get(columnIndex);
 		LogMessageFindResult logMessage = getRow(rowIndex);
 
+		if (TIMESTAMP == colDef) {
+			return logMessage.timestamp;
+		}
 		if (USERNAME == colDef) {
 			return logMessage.username;
 		}

@@ -1,8 +1,11 @@
 package nl.gogognome.gogologbook.interactors.boundary;
 
+import java.util.Date;
+
 public class LogMessageFindResult {
 
 	public int id;
+	public Date timestamp;
 	public String username;
 	public String projectNr;
 	public String customer;
