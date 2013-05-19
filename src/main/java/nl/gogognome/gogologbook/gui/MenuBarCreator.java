@@ -14,15 +14,18 @@ public class MenuBarCreator {
 
 	public static class ActionListeners {
 		public ActionListener openLogMessageCreateView;
+		public ActionListener openProjectsView;
 		public ActionListener exit;
 	}
 
 	public JMenuBar createMenuBar(ActionListeners listeners) {
 		JMenu viewMenu = widgetFactory.createMenu("mi.view");
 		viewMenu.add(widgetFactory.createMenuItem("mi.openLogMessageCreateView", listeners.openLogMessageCreateView));
+		viewMenu.add(widgetFactory.createMenuItem("mi.openProjectsView", listeners.openProjectsView));
+		viewMenu.addSeparator();
+		viewMenu.add(widgetFactory.createMenuItem("mi.exit", listeners.exit));
 
 		JMenu helpMenu = widgetFactory.createMenu("mi.help");
-		helpMenu.add(widgetFactory.createMenuItem("mi.exit", listeners.exit));
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(viewMenu);
