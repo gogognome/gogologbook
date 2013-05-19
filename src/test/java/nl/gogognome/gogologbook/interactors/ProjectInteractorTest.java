@@ -8,6 +8,7 @@ import java.util.List;
 
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
+import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
 import nl.gogognome.gogologbook.util.DaoFactory;
 
 import org.junit.After;
@@ -50,11 +51,11 @@ public class ProjectInteractorTest {
 		List<Project> projects = Lists.newArrayList(projectC, projectB, projectA);
 		when(projectDao.findAllProjects()).thenReturn(projects);
 
-		List<Project> foundProjects = projectInteractor.findAllProjects();
+		List<ProjectFindResult> foundProjects = projectInteractor.findAllProjects();
 
-		assertSame(projectA, foundProjects.get(0));
-		assertSame(projectB, foundProjects.get(1));
-		assertSame(projectC, foundProjects.get(2));
+		assertEquals(projectA.id, foundProjects.get(0).id);
+		assertEquals(projectB.id, foundProjects.get(1).id);
+		assertEquals(projectC.id, foundProjects.get(2).id);
 	}
 
 	private Project createProject(int id, String projectNr, String customer) {

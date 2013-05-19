@@ -6,22 +6,44 @@ import java.util.List;
 
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
+import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
 import nl.gogognome.gogologbook.util.DaoFactory;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 public class ProjectInteractor {
 
-	public List<Project> findAllProjects() {
+	public List<ProjectFindResult> findAllProjects() {
 		List<Project> projects = DaoFactory.getInstance(ProjectDAO.class).findAllProjects();
-		Collections.sort(projects, new ProjectNrComparator());
-		return projects;
+
+		List<ProjectFindResult> results = Lists.newArrayList(Iterables.transform(projects, new ProjectToProjectFindResult()));
+		Collections.sort(results, new ProjectNrComparator());
+
+		return results;
 	}
 
 }
 
-class ProjectNrComparator implements Comparator<Project> {
+class ProjectToProjectFindResult implements Function<Project, ProjectFindResult> {
 
 	@Override
-	public int compare(Project project1, Project project2) {
+	public ProjectFindResult apply(Project project) {
+		ProjectFindResult result = new ProjectFindResult();
+		result.id = project.id;
+		result.customer = project.customer;
+		result.projectNr = project.projectNr;
+		result.street = project.street;
+		result.town = project.town;
+		return result;
+	}
+}
+
+class ProjectNrComparator implements Comparator<ProjectFindResult> {
+
+	@Override
+	public int compare(ProjectFindResult project1, ProjectFindResult project2) {
 		return project1.projectNr.compareToIgnoreCase(project2.projectNr);
 	}
 

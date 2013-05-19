@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import nl.gogognome.gogologbook.entities.Category;
-import nl.gogognome.gogologbook.entities.Project;
 import nl.gogognome.gogologbook.entities.User;
+import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
 import nl.gogognome.lib.gui.beans.InputFieldsColumn;
 import nl.gogognome.lib.gui.beans.ObjectFormatter;
 import nl.gogognome.lib.swing.ActionWrapper;
@@ -86,9 +86,9 @@ class CategoryFormatter implements ObjectFormatter<Category> {
 	}
 }
 
-class ProjectFormatter implements ObjectFormatter<Project> {
+class ProjectFormatter implements ObjectFormatter<ProjectFindResult> {
 	@Override
-	public String format(Project project) {
+	public String format(ProjectFindResult project) {
 		return project != null ? StringUtil.nullToEmptyString(project.projectNr) + " " + StringUtil.nullToEmptyString(project.customer) + " "
 				+ StringUtil.nullToEmptyString(project.town) + " " + StringUtil.nullToEmptyString(project.street) : "";
 	}

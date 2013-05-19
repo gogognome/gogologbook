@@ -58,12 +58,8 @@ public class MainFrame extends JFrame {
 
 	private ActionListeners getMenuListeners() {
 		ActionListeners listeners = new ActionListeners();
-		listeners.openLogMessageCreateView = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				openView(LogMessageCreateView.class);
-			}
-		};
+		listeners.openLogMessageCreateView = new OpenViewAction(LogMessageCreateView.class);
+		listeners.openProjectsView = new OpenViewAction(ProjectsView.class);
 
 		listeners.exit = new ActionListener() {
 			@Override
@@ -119,6 +115,19 @@ public class MainFrame extends JFrame {
 		public void onViewClosed(View view) {
 			view.removeViewListener(this);
 			openViews.remove(view.getClass());
+		}
+	}
+
+	private class OpenViewAction implements ActionListener {
+		private final Class<? extends View> viewClass;
+
+		public OpenViewAction(Class<? extends View> viewClass) {
+			this.viewClass = viewClass;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			openView(viewClass);
 		}
 	}
 }
