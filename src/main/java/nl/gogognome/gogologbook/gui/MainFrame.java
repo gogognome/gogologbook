@@ -3,6 +3,8 @@ package nl.gogognome.gogologbook.gui;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.Constructor;
@@ -13,6 +15,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import nl.gogognome.gogologbook.gui.MenuBarCreator.ActionListeners;
 import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.swing.views.View;
 import nl.gogognome.lib.swing.views.ViewListener;
@@ -49,7 +52,28 @@ public class MainFrame extends JFrame {
 
 		setMinimumSize(new Dimension(800, 600));
 
+		setJMenuBar(new MenuBarCreator().createMenuBar(getMenuListeners()));
 		openView(LogMessageCreateAndOverviewView.class);
+	}
+
+	private ActionListeners getMenuListeners() {
+		ActionListeners listeners = new ActionListeners();
+		listeners.openLogMessageCreateView = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openView(LogMessageCreateView.class);
+			}
+		};
+
+		listeners.exit = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				dispose();
+			}
+		};
+
+		return listeners;
 	}
 
 	private void setIcon(String iconName) {
