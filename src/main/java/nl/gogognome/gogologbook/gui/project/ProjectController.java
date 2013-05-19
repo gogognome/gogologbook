@@ -1,5 +1,6 @@
-package nl.gogognome.gogologbook.gui;
+package nl.gogognome.gogologbook.gui.project;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -8,12 +9,15 @@ import javax.swing.Action;
 
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
+import nl.gogognome.lib.swing.views.ViewDialog;
 
 public class ProjectController {
 
 	private final ProjectsModel model = new ProjectsModel();
+	private final Component parent;
 
-	public ProjectController() {
+	public ProjectController(Component parent) {
+		this.parent = parent;
 		List<ProjectFindResult> projects = new ProjectInteractor().findAllProjects();
 		model.projectsTableModel.setProjects(projects);
 	}
@@ -50,18 +54,17 @@ public class ProjectController {
 	}
 
 	private void onAddNewProject() {
-		// TODO Auto-generated method stub
+		AddNewProjectView view = new AddNewProjectView();
+		new ViewDialog(parent, view).showDialog();
+	}
 
+	private void onEditSelectedProject() {
+		EditProjectView view = new EditProjectView(null);
+		new ViewDialog(parent, view).showDialog();
 	}
 
 	private void onDeleteSelectedProject() {
 		// TODO Auto-generated method stub
 
 	}
-
-	private void onEditSelectedProject() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

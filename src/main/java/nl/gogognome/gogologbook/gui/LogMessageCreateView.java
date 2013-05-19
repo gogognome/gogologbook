@@ -24,8 +24,6 @@ public class LogMessageCreateView extends View {
 	private final LogMessageCreateController controller = new LogMessageCreateController();
 	private final LogMessageCreateModel model = controller.getModel();
 
-	private InputFieldsColumn ifc;
-
 	@Override
 	public String getTitle() {
 		return textResource.getString("logMessageCreateView_title");
@@ -60,7 +58,7 @@ public class LogMessageCreateView extends View {
 	}
 
 	protected JComponent createCenterComponent() {
-		ifc = new InputFieldsColumn();
+		InputFieldsColumn ifc = new InputFieldsColumn();
 		addCloseable(ifc);
 
 		ifc.addComboBoxField("logMessageCreateView_username", model.usersModel, new UserFormatter());

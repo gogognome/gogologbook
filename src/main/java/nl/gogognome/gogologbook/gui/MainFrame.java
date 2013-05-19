@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import nl.gogognome.gogologbook.gui.MenuBarCreator.ActionListeners;
+import nl.gogognome.gogologbook.gui.project.ProjectsView;
 import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.swing.views.View;
 import nl.gogognome.lib.swing.views.ViewListener;

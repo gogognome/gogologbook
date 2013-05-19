@@ -1,4 +1,4 @@
-package nl.gogognome.gogologbook.gui;
+package nl.gogognome.gogologbook.gui.project;
 
 import java.util.Collections;
 import java.util.List;

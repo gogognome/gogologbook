@@ -1,4 +1,4 @@
-package nl.gogognome.gogologbook.gui;
+package nl.gogognome.gogologbook.gui.project;
 
 import java.awt.BorderLayout;
 
@@ -13,7 +13,7 @@ public class ProjectsView extends View {
 
 	private static final long serialVersionUID = 1L;
 
-	private final ProjectController controller = new ProjectController();
+	private final ProjectController controller = new ProjectController(this);
 	private final ProjectsModel model = controller.getModel();
 
 	@Override
