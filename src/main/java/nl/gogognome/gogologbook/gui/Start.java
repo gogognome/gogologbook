@@ -8,6 +8,8 @@ import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.dbinsinglefile.*;
+import nl.gogognome.gogologbook.interactors.*;
+import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.util.DaoFactory;
 import nl.gogognome.lib.gui.beans.BeanFactory;
 import nl.gogognome.lib.swing.SwingUtils;
@@ -30,6 +32,7 @@ public class Start {
 		initFactory(Locale.getDefault());
 		parseArguments(args);
 		registerDAOs();
+		registerInteractors();
 		DefaultLookAndFeel.useDefaultLookAndFeel();
 		initFrame();
 	}
@@ -66,6 +69,15 @@ public class Start {
 		DaoFactory.register(LogMessageDAO.class, new SingleFileLogMessageDAO(singleFileDatabase));
 		DaoFactory.register(ProjectDAO.class, new SingleFileProjectDAO(singleFileDatabase));
 		DaoFactory.register(UserDAO.class, new SingleFileUserDAO(singleFileDatabase));
+	}
+
+	private void registerInteractors() {
+		InteractorFactory.registerInteractor(CategoryInteractor.class, new CategoryInteractor());
+		InteractorFactory.registerInteractor(LogMessageCreateInteractor.class, new LogMessageCreateInteractor());
+		InteractorFactory.registerInteractor(LogMessageFindInteractor.class, new LogMessageFindInteractor());
+		InteractorFactory.registerInteractor(ProjectInteractor.class, new ProjectInteractor());
+		InteractorFactory.registerInteractor(UserInteractor.class, new UserInteractor());
+
 	}
 
 	private void initFrame() {

@@ -7,12 +7,14 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import nl.gogognome.gogologbook.interactors.LogMessageFindInteractor;
+import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindParams;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
 
 public class LogMessageOverviewController {
 
 	private final LogMessageOverviewModel model = new LogMessageOverviewModel();
+	private final LogMessageFindInteractor logMessageFindInteractor = InteractorFactory.getInteractor(LogMessageFindInteractor.class);
 
 	public LogMessageOverviewController() {
 		refresh();
@@ -24,7 +26,7 @@ public class LogMessageOverviewController {
 
 	public void refresh() {
 		LogMessageFindParams params = new LogMessageFindParams();
-		List<LogMessageFindResult> logMessages = new LogMessageFindInteractor().findMessages(params);
+		List<LogMessageFindResult> logMessages = logMessageFindInteractor.findMessages(params);
 		model.logMessageTableModel.setLogMessages(logMessages);
 	}
 

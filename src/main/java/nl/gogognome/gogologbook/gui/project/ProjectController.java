@@ -8,6 +8,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
+import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
 import nl.gogognome.lib.swing.views.ViewDialog;
 
@@ -15,10 +16,11 @@ public class ProjectController {
 
 	private final ProjectsModel model = new ProjectsModel();
 	private final Component parent;
+	private final ProjectInteractor projectInteractor = InteractorFactory.getInteractor(ProjectInteractor.class);
 
 	public ProjectController(Component parent) {
 		this.parent = parent;
-		List<ProjectFindResult> projects = new ProjectInteractor().findAllProjects();
+		List<ProjectFindResult> projects = projectInteractor.findAllProjects();
 		model.projectsTableModel.setProjects(projects);
 	}
 

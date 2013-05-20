@@ -9,6 +9,7 @@ import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageCreateInteractor;
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
+import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
 import nl.gogognome.lib.text.TextResource;
 import nl.gogognome.lib.util.Factory;
@@ -19,11 +20,15 @@ public class LogMessageCreateController {
 
 	private final LogMessageCreateModel model = new LogMessageCreateModel();
 	private final TextResource textResource = Factory.getInstance(TextResource.class);
+	private final LogMessageCreateInteractor logMessageCreateInteractor = InteractorFactory.getInteractor(LogMessageCreateInteractor.class);
+	private final UserInteractor userInteractor = InteractorFactory.getInteractor(UserInteractor.class);
+	private final ProjectInteractor projectInteractor = InteractorFactory.getInteractor(ProjectInteractor.class);
+	private final CategoryInteractor categoryInteractor = InteractorFactory.getInteractor(CategoryInteractor.class);
 
 	public LogMessageCreateController() {
-		model.usersModel.setItems(new UserInteractor().findAllUsers());
-		model.projectsModel.setItems(new ProjectInteractor().findAllProjects());
-		model.categoriesModel.setItems(new CategoryInteractor().findAllCategories());
+		model.usersModel.setItems(userInteractor.findAllUsers());
+		model.projectsModel.setItems(projectInteractor.findAllProjects());
+		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
 	}
 
 	public LogMessageCreateModel getModel() {
@@ -42,7 +47,7 @@ public class LogMessageCreateController {
 		params.userId = model.usersModel.getSelectedItem().id;
 
 		try {
-			new LogMessageCreateInteractor().createMessage(params);
+			logMessageCreateInteractor.createMessage(params);
 			model.resultModel.setString(textResource.getString("logMessageCreateView_logMessageAdded"));
 		} catch (Exception e) {
 			model.resultModel.setString(textResource.getString("logMessageCreateView_logMessageFailed", e.getLocalizedMessage()));
