@@ -12,26 +12,27 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package nl.gogognome.lib.gui.beans;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+
+import javax.swing.JLabel;
 
 import nl.gogognome.lib.swing.SwingUtils;
 
 /**
- * This class implements a panel containing a column of input fields.
- * Each input field consists of a label and a component (typically a text field).
- * The values of the fields are managed by models (for example, StringModel
- * and DateModel).
+ * This class implements a panel containing a column of input fields. Each input field consists of a label and a component (typically a text field). The values
+ * of the fields are managed by models (for example, StringModel and DateModel).
  */
 public class InputFieldsColumn extends AbstractInputFieldsPanel {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public InputFieldsColumn() {
-        super();
-    }
+	public InputFieldsColumn() {
+		super();
+	}
 
 	@Override
 	protected GridBagConstraints getLabelConstraints() {
@@ -47,4 +48,13 @@ public class InputFieldsColumn extends AbstractInputFieldsPanel {
 	protected GridBagConstraints getVariableSizeFieldConstraints() {
 		return SwingUtils.createTextFieldGBConstraints(1, components.size());
 	}
+
+	public void setMinimumWidth(int width) {
+		JLabel label = new JLabel();
+		label.setPreferredSize(new Dimension(width, 0));
+		GridBagConstraints constraints = getFixedSizeFieldConstraints();
+		constraints.gridy = 1000;
+		add(label, constraints);
+	}
+
 }

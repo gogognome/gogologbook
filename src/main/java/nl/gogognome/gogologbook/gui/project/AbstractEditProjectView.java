@@ -41,6 +41,7 @@ public abstract class AbstractEditProjectView extends View {
 		ifc.addField("editProject_customer", model.customerModel);
 		ifc.addField("editProject_town", model.townModel);
 		ifc.addField("editProject_street", model.streetModel);
+		ifc.setMinimumWidth(300);
 		return ifc;
 	}
 
