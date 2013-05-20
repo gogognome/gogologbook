@@ -2,6 +2,7 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.dbinmemory.InMemoryUserDAO;
 import nl.gogognome.gogologbook.entities.User;
@@ -51,6 +52,11 @@ public class SingleFileUserDAO implements UserDAO, SingleFileDatabaseDAO {
 	public void createRecordInMemoryDatabase(Object record) {
 		User user = (User) record;
 		inMemoryUserDao.createUser(user);
+	}
+
+	@Override
+	public void deleteRecordFromInMemoryDatabase(int id) {
+		throw new DAOException("Not implemented yet");
 	}
 
 	@Override

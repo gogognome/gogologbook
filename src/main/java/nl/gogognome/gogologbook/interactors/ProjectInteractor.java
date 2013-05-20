@@ -16,6 +16,8 @@ import com.google.common.collect.Lists;
 
 public class ProjectInteractor {
 
+	private final ProjectDAO projectDao = DaoFactory.getInstance(ProjectDAO.class);
+
 	public void createProject(ProjectCreateParams params) {
 		Project project = new Project();
 		project.customer = params.customer;
@@ -27,12 +29,16 @@ public class ProjectInteractor {
 	}
 
 	public List<ProjectFindResult> findAllProjects() {
-		List<Project> projects = DaoFactory.getInstance(ProjectDAO.class).findAllProjects();
+		List<Project> projects = projectDao.findAllProjects();
 
 		List<ProjectFindResult> results = Lists.newArrayList(Iterables.transform(projects, new ProjectToProjectFindResult()));
 		Collections.sort(results, new ProjectNrComparator());
 
 		return results;
+	}
+
+	public void deleteProject(int projectId) {
+		projectDao.deleteProject(projectId);
 	}
 
 }

@@ -2,6 +2,7 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dbinmemory.InMemoryLogMessageDAO;
 import nl.gogognome.gogologbook.entities.FilterCriteria;
@@ -52,6 +53,11 @@ public class SingleFileLogMessageDAO implements LogMessageDAO, SingleFileDatabas
 	public void createRecordInMemoryDatabase(Object record) {
 		LogMessage logMessage = (LogMessage) record;
 		inMemoryLogMessageDao.createMessage(logMessage);
+	}
+
+	@Override
+	public void deleteRecordFromInMemoryDatabase(int id) {
+		throw new DAOException("Not implemented yet");
 	}
 
 	@Override

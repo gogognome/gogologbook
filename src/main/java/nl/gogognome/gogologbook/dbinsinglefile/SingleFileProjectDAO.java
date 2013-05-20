@@ -43,6 +43,18 @@ public class SingleFileProjectDAO implements ProjectDAO, SingleFileDatabaseDAO {
 	}
 
 	@Override
+	public void deleteProject(int projectId) {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+			inMemoryProjectDao.deleteProject(projectId);
+			singleFileDatabase.appendDeleteToFile(TABLE_NAME, projectId);
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+	}
+
+	@Override
 	public void removeAllRecordsFromInMemoryDatabase() {
 		inMemoryProjectDao = new InMemoryProjectDAO();
 	}
@@ -51,6 +63,11 @@ public class SingleFileProjectDAO implements ProjectDAO, SingleFileDatabaseDAO {
 	public void createRecordInMemoryDatabase(Object record) {
 		Project project = (Project) record;
 		inMemoryProjectDao.createProject(project);
+	}
+
+	@Override
+	public void deleteRecordFromInMemoryDatabase(int projectId) {
+		inMemoryProjectDao.deleteProject(projectId);
 	}
 
 	@Override

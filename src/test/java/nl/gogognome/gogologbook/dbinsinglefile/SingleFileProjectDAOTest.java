@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.entities.Project;
 
 import org.junit.Test;
@@ -61,6 +62,24 @@ public class SingleFileProjectDAOTest extends AbstractSingleFileDAOTest {
 		List<Project> projects = projectDao.findAllProjects();
 
 		assertFalse(projects.isEmpty());
+	}
+
+	@Test
+	public void shouldDeleteExistingProject() {
+		Project project = new Project();
+		project.projectNr = "test1";
+		projectDao.createProject(project);
+
+		List<Project> foundProjects = projectDao.findAllProjects();
+		projectDao.deleteProject(foundProjects.get(0).id);
+
+		foundProjects = projectDao.findAllProjects();
+		assertTrue(foundProjects.isEmpty());
+	}
+
+	@Test(expected = DAOException.class)
+	public void shouldThrowExceptionWhenDeletingNonExistingProject() {
+		projectDao.deleteProject(123);
 	}
 
 	private String getContentsOfDbFile() throws IOException {

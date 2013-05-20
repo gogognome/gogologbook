@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 public class SingleFileDatabase {
 
 	private final static String INSERT = "insert";
+	private final static String DELETE = "delete";
 
 	private final File dbFile;
 	private final Map<String, SingleFileDatabaseDAO> tableNameToSingleFileDatabaseDao = Maps.newHashMap();
@@ -42,6 +43,10 @@ public class SingleFileDatabase {
 
 	public void appendInsertToFile(String tableName, Object record) {
 		appendRecordToFile(tableName, INSERT, record);
+	}
+
+	public void appendDeleteToFile(String tableName, int projectId) {
+		appendRecordToFile(tableName, DELETE, projectId);
 	}
 
 	private void appendRecordToFile(String tableName, String action, Object record) {
@@ -106,6 +111,14 @@ public class SingleFileDatabase {
 			Class<?> clazz = dao.getRecordClass();
 			Object record = gson.fromJson(serializedRecord, clazz);
 			dao.createRecordInMemoryDatabase(record);
+		} else if (DELETE.equals(action)) {
+			Gson gson = new Gson();
+			int index = line.indexOf(';');
+			index = line.indexOf(';', index + 1);
+			String serializedId = line.substring(index + 1);
+			int id = gson.fromJson(serializedId, Integer.class);
+			SingleFileDatabaseDAO dao = tableNameToSingleFileDatabaseDao.get(tableName);
+			dao.deleteRecordFromInMemoryDatabase(id);
 		}
 	}
 

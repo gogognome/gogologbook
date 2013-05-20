@@ -9,4 +9,6 @@ public interface ProjectDAO {
 	public Project createProject(Project project);
 
 	public List<Project> findAllProjects();
+
+	public void deleteProject(int projectId);
 }

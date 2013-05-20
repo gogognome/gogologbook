@@ -3,6 +3,7 @@ package nl.gogognome.gogologbook.dbinmemory;
 import java.util.List;
 import java.util.Map;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
 
@@ -41,5 +42,13 @@ public class InMemoryProjectDAO implements ProjectDAO {
 		clonedProject.street = origProject.street;
 		clonedProject.town = origProject.town;
 		return clonedProject;
+	}
+
+	@Override
+	public void deleteProject(int projectId) {
+		if (!idToProject.containsKey(projectId)) {
+			throw new DAOException("Trying to delete non-existing project " + projectId);
+		}
+		idToProject.remove(projectId);
 	}
 }

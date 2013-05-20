@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.entities.Project;
 
 import org.junit.Test;
@@ -62,14 +63,31 @@ public class InMemoryProjectDAOTest {
 		project2.projectNr = "AB4433";
 		projectDao.createProject(project2);
 
-		List<Project> foundMessages = projectDao.findAllProjects();
+		List<Project> foundProjects = projectDao.findAllProjects();
 
-		assertEquals(2, foundMessages.size());
-		Project foundproject1 = foundMessages.get(0);
+		assertEquals(2, foundProjects.size());
+		Project foundproject1 = foundProjects.get(0);
 		assertEquals(project1.projectNr, foundproject1.projectNr);
 
-		Project foundproject2 = foundMessages.get(1);
+		Project foundproject2 = foundProjects.get(1);
 		assertEquals(project2.projectNr, foundproject2.projectNr);
 	}
 
+	@Test
+	public void shouldDeleteExistingProject() {
+		Project project = new Project();
+		project.projectNr = "test1";
+		projectDao.createProject(project);
+
+		List<Project> foundProjects = projectDao.findAllProjects();
+		projectDao.deleteProject(foundProjects.get(0).id);
+
+		foundProjects = projectDao.findAllProjects();
+		assertTrue(foundProjects.isEmpty());
+	}
+
+	@Test(expected = DAOException.class)
+	public void shouldThrowExceptionWhenDeletingNonExistingProject() {
+		projectDao.deleteProject(123);
+	}
 }

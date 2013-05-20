@@ -8,4 +8,6 @@ public interface SingleFileDatabaseDAO {
 
 	Class<?> getRecordClass();
 
+	void deleteRecordFromInMemoryDatabase(int id);
+
 }

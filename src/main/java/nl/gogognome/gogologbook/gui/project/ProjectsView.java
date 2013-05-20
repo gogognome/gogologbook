@@ -27,6 +27,7 @@ public class ProjectsView extends View {
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JTable table = widgetFactory.createSortedTable(model.projectsTableModel);
+		table.setSelectionModel(model.selectionModel);
 		add(widgetFactory.createScrollPane(table), BorderLayout.CENTER);
 
 		ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.LEFT);
