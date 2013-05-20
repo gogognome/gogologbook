@@ -20,6 +20,7 @@ public abstract class AbstractEditProjectView extends View {
 
 	@Override
 	public void onInit() {
+		model.parent = this;
 		controller.setCloseAction(closeAction);
 
 		setLayout(new BorderLayout());
