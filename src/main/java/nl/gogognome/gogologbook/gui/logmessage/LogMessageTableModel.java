@@ -20,6 +20,8 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 
 	private final static ColumnDefinition PROJECT = new ColumnDefinition("LogEntryTableModel_project", String.class, 100);
 
+	private final static ColumnDefinition CUSTOMER = new ColumnDefinition("LogEntryTableModel_customer", String.class, 100);
+
 	private final static ColumnDefinition TOWN = new ColumnDefinition("LogEntryTableModel_town", String.class, 100);
 
 	private final static ColumnDefinition STREET = new ColumnDefinition("LogEntryTableModel_street", String.class, 100);
@@ -28,7 +30,8 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 
 	private final static ColumnDefinition MESSAGE = new ColumnDefinition("LogEntryTableModel_message", String.class, 300);
 
-	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists.newArrayList(TIMESTAMP, USERNAME, PROJECT, TOWN, STREET, CATEGORY, MESSAGE);
+	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists
+			.newArrayList(TIMESTAMP, USERNAME, PROJECT, CUSTOMER, TOWN, STREET, CATEGORY, MESSAGE);
 
 	public LogMessageTableModel() {
 		super(COLUMN_DEFINTIIONS, Collections.<LogMessageFindResult> emptyList());
@@ -51,6 +54,9 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 		}
 		if (PROJECT == colDef) {
 			return logMessage.projectNr;
+		}
+		if (CUSTOMER == colDef) {
+			return logMessage.customer;
 		}
 		if (TOWN == colDef) {
 			return logMessage.town;
