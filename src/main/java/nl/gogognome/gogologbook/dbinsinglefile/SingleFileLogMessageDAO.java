@@ -45,6 +45,17 @@ public class SingleFileLogMessageDAO implements LogMessageDAO, SingleFileDatabas
 	}
 
 	@Override
+	public boolean isProjectUsed(int projectId) {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+		return inMemoryLogMessageDao.isProjectUsed(projectId);
+	}
+
+	@Override
 	public void removeAllRecordsFromInMemoryDatabase() {
 		inMemoryLogMessageDao = new InMemoryLogMessageDAO();
 	}

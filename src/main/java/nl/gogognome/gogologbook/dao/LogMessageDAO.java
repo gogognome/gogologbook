@@ -11,4 +11,6 @@ public interface LogMessageDAO {
 
 	List<LogMessage> findLogMessages(FilterCriteria filter);
 
+	boolean isProjectUsed(int projectId);
+
 }

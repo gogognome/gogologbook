@@ -77,4 +77,13 @@ public class InMemoryLogMessageDAOTest {
 		assertEquals(message2.message, foundMessage2.message);
 	}
 
+	@Test
+	public void testProjectUsed() {
+		LogMessage message = new LogMessage();
+		message.projectId = 2;
+		logMessageDao.createMessage(message);
+
+		assertTrue(logMessageDao.isProjectUsed(message.projectId));
+		assertFalse(logMessageDao.isProjectUsed(message.projectId + 1));
+	}
 }

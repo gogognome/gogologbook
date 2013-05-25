@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
@@ -20,6 +21,7 @@ import com.google.common.collect.Lists;
 
 public class ProjectInteractorTest extends UnitTest {
 
+	private final LogMessageDAO logMessageDao = mockAndRegisterDAO(LogMessageDAO.class);
 	private final ProjectDAO projectDao = mockAndRegisterDAO(ProjectDAO.class);
 	private final ProjectInteractor projectInteractor = new ProjectInteractor();
 
@@ -40,6 +42,7 @@ public class ProjectInteractorTest extends UnitTest {
 
 	@Test
 	public void shouldUseDaoToDeleteProject() {
+		when(logMessageDao.isProjectUsed(anyInt())).thenReturn(false);
 		projectInteractor.deleteProject(123);
 
 		verify(projectDao).deleteProject(eq(123));

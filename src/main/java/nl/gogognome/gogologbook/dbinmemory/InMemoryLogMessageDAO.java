@@ -35,6 +35,16 @@ public class InMemoryLogMessageDAO implements LogMessageDAO {
 		return results;
 	}
 
+	@Override
+	public boolean isProjectUsed(int projectId) {
+		for (LogMessage logMessage : idToMessage.values()) {
+			if (logMessage.projectId == projectId) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private LogMessage cloneLogMessage(LogMessage origMessage, int clonedId) {
 		LogMessage clonedMessage = new LogMessage(clonedId);
 		clonedMessage.category = origMessage.category;

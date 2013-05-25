@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectCreateParams;
@@ -17,6 +18,7 @@ import com.google.common.collect.Lists;
 
 public class ProjectInteractor {
 
+	private final LogMessageDAO logMessageDao = DaoFactory.getInstance(LogMessageDAO.class);
 	private final ProjectDAO projectDao = DaoFactory.getInstance(ProjectDAO.class);
 
 	public void createProject(ProjectCreateParams params) {
@@ -49,6 +51,9 @@ public class ProjectInteractor {
 	}
 
 	public void deleteProject(int projectId) {
+		if (logMessageDao.isProjectUsed(projectId)) {
+			throw new CannotDeleteProjectThatIsInUseException();
+		}
 		projectDao.deleteProject(projectId);
 	}
 
