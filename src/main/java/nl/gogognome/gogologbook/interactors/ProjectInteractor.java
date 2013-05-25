@@ -8,6 +8,7 @@ import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectCreateParams;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
+import nl.gogognome.gogologbook.interactors.boundary.ProjectUpdateParams;
 import nl.gogognome.gogologbook.util.DaoFactory;
 
 import com.google.common.base.Function;
@@ -26,6 +27,16 @@ public class ProjectInteractor {
 		project.town = params.town;
 
 		DaoFactory.getInstance(ProjectDAO.class).createProject(project);
+	}
+
+	public void updateProject(ProjectUpdateParams params) {
+		Project project = new Project(params.id);
+		project.customer = params.customer;
+		project.projectNr = params.projectNr;
+		project.street = params.street;
+		project.town = params.town;
+
+		DaoFactory.getInstance(ProjectDAO.class).updateProject(project);
 	}
 
 	public List<ProjectFindResult> findAllProjects() {

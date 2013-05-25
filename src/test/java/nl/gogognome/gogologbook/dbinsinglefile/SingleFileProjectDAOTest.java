@@ -64,6 +64,28 @@ public class SingleFileProjectDAOTest extends AbstractSingleFileDAOTest {
 		assertFalse(projects.isEmpty());
 	}
 
+	@Test(expected = DAOException.class)
+	public void updateNonExistingProjectShouldThrowException() {
+		Project project = new Project();
+		project.projectNr = "AB1234";
+		projectDao.updateProject(project);
+	}
+
+	@Test
+	public void shouldUpdateExistingProject() {
+		Project project = new Project();
+		project.projectNr = "AB1234";
+		project = projectDao.createProject(project);
+
+		Project newProject = new Project(project.id);
+		newProject.projectNr = "CD5678";
+		projectDao.updateProject(newProject);
+
+		List<Project> foundProjects = projectDao.findAllProjects();
+		assertEquals(1, foundProjects.size());
+		assertEquals(newProject.projectNr, foundProjects.get(0).projectNr);
+	}
+
 	@Test
 	public void shouldDeleteExistingProject() {
 		Project project = new Project();

@@ -6,6 +6,8 @@ public interface SingleFileDatabaseDAO {
 
 	void createRecordInMemoryDatabase(Object record);
 
+	void updateRecordInMemoryDatabase(Object record);
+
 	Class<?> getRecordClass();
 
 	void deleteRecordFromInMemoryDatabase(int id);

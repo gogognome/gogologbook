@@ -27,6 +27,16 @@ public class InMemoryProjectDAO implements ProjectDAO {
 	}
 
 	@Override
+	public void updateProject(Project project) {
+		if (!idToProject.containsKey(project.id)) {
+			throw new DAOException("Project with " + project.id + " does not exist. It cannot be updated.");
+		}
+
+		Project storedProject = cloneProject(project, project.id);
+		idToProject.put(storedProject.id, storedProject);
+	}
+
+	@Override
 	public List<Project> findAllProjects() {
 		List<Project> results = Lists.newArrayListWithExpectedSize(idToProject.size());
 		for (Project project : idToProject.values()) {

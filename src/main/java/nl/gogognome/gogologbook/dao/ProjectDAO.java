@@ -6,9 +6,12 @@ import nl.gogognome.gogologbook.entities.Project;
 
 public interface ProjectDAO {
 
-	public Project createProject(Project project);
+	Project createProject(Project project);
 
-	public List<Project> findAllProjects();
+	void updateProject(Project project);
 
-	public void deleteProject(int projectId);
+	List<Project> findAllProjects();
+
+	void deleteProject(int projectId);
+
 }

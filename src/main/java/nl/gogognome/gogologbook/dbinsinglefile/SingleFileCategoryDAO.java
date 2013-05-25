@@ -55,6 +55,11 @@ public class SingleFileCategoryDAO implements CategoryDAO, SingleFileDatabaseDAO
 	}
 
 	@Override
+	public void updateRecordInMemoryDatabase(Object record) {
+		throw new DAOException("Unsupported operation");
+	}
+
+	@Override
 	public void deleteRecordFromInMemoryDatabase(int id) {
 		throw new DAOException("Not implemented yet");
 	}

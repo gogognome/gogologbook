@@ -3,6 +3,8 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 import java.io.*;
 import java.util.Map;
 
+import nl.gogognome.gogologbook.dao.DAOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,7 @@ import com.google.gson.Gson;
 public class SingleFileDatabase {
 
 	private final static String INSERT = "insert";
+	private final static String UPDATE = "update";
 	private final static String DELETE = "delete";
 
 	private final File dbFile;
@@ -43,6 +46,10 @@ public class SingleFileDatabase {
 
 	public void appendInsertToFile(String tableName, Object record) {
 		appendRecordToFile(tableName, INSERT, record);
+	}
+
+	public void appendUpdateToFile(String tableName, Object record) {
+		appendRecordToFile(tableName, UPDATE, record);
 	}
 
 	public void appendDeleteToFile(String tableName, int projectId) {
@@ -111,6 +118,15 @@ public class SingleFileDatabase {
 			Class<?> clazz = dao.getRecordClass();
 			Object record = gson.fromJson(serializedRecord, clazz);
 			dao.createRecordInMemoryDatabase(record);
+		} else if (UPDATE.equals(action)) {
+			Gson gson = new Gson();
+			int index = line.indexOf(';');
+			index = line.indexOf(';', index + 1);
+			String serializedRecord = line.substring(index + 1);
+			SingleFileDatabaseDAO dao = tableNameToSingleFileDatabaseDao.get(tableName);
+			Class<?> clazz = dao.getRecordClass();
+			Object record = gson.fromJson(serializedRecord, clazz);
+			dao.updateRecordInMemoryDatabase(record);
 		} else if (DELETE.equals(action)) {
 			Gson gson = new Gson();
 			int index = line.indexOf(';');
@@ -119,6 +135,8 @@ public class SingleFileDatabase {
 			int id = gson.fromJson(serializedId, Integer.class);
 			SingleFileDatabaseDAO dao = tableNameToSingleFileDatabaseDao.get(tableName);
 			dao.deleteRecordFromInMemoryDatabase(id);
+		} else {
+			throw new DAOException("Unknown action in database file: " + action);
 		}
 	}
 
