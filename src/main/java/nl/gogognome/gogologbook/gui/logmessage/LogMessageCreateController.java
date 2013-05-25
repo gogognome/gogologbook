@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import nl.gogognome.gogologbook.gui.project.ProjectChangedEvent;
 import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
 import nl.gogognome.gogologbook.gui.session.SessionListener;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
@@ -69,8 +70,8 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 
 	@Override
 	public void sessionChanged(SessionChangeEvent event) {
-		if (event instanceof LogMessageCreatedEvent) {
-
+		if (event instanceof ProjectChangedEvent) {
+			model.projectsModel.setItems(projectInteractor.findAllProjects());
 		}
 	}
 

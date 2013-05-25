@@ -31,6 +31,7 @@ public class LogMessageCreateView extends View {
 
 	@Override
 	public void onInit() {
+		addCloseable(controller);
 		addComponents();
 	}
 

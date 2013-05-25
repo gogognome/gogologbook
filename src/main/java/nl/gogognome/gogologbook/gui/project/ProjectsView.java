@@ -23,6 +23,7 @@ public class ProjectsView extends View {
 
 	@Override
 	public void onInit() {
+		addCloseable(controller);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

@@ -14,13 +14,16 @@ public class Session {
 
 	public void addSessionListener(SessionListener listener) {
 		sessionListeners.add(listener);
+		logger.debug("Added listener " + listener);
 	}
 
 	public void removeSessionListener(SessionListener listener) {
 		sessionListeners.remove(listener);
+		logger.debug("Removed listener " + listener);
 	}
 
 	public void notifyListeners(SessionChangeEvent event) {
+		logger.debug("Notifying " + sessionListeners.size() + " about event " + event);
 		for (SessionListener listener : Lists.newArrayList(sessionListeners)) {
 			try {
 				listener.sessionChanged(event);

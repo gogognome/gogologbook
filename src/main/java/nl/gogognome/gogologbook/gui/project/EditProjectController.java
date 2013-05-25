@@ -1,5 +1,6 @@
 package nl.gogognome.gogologbook.gui.project;
 
+import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
 
 public class EditProjectController extends AbstractEditProjectController {
@@ -19,6 +20,8 @@ public class EditProjectController extends AbstractEditProjectController {
 	@Override
 	public void save() {
 		closeAction.actionPerformed(null);
+
+		SessionManager.getInstance().notifyListeners(new ProjectChangedEvent());
 	}
 
 }

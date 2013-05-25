@@ -1,5 +1,6 @@
 package nl.gogognome.gogologbook.gui.project;
 
+import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectCreateParams;
@@ -26,6 +27,7 @@ public class AddNewProjectController extends AbstractEditProjectController {
 		try {
 			projectInteractor.createProject(params);
 			closeAction.actionPerformed(null);
+			SessionManager.getInstance().notifyListeners(new ProjectChangedEvent());
 		} catch (Exception e) {
 			LoggerFactory.getLogger(getClass()).warn("Failed to create project", e);
 			MessageDialog.showErrorMessage(model.parent, "editProjects_failedToCreateProject", e.getMessage());

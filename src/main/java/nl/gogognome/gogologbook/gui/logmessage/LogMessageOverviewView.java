@@ -23,19 +23,19 @@ public class LogMessageOverviewView extends View {
 
 	@Override
 	public void onInit() {
+		addCloseable(controller);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JTable table = widgetFactory.createSortedTable(model.logMessageTableModel);
-        add(widgetFactory.createScrollPane(table), BorderLayout.CENTER);
+		add(widgetFactory.createScrollPane(table), BorderLayout.CENTER);
 
-        ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.LEFT);
+		ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.LEFT);
 		buttonPanel.addButton("logMessageOverview_refresh", controller.getRefreshAction());
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
 	@Override
-	public void onClose() {
-	}
+	public void onClose() {}
 
 }

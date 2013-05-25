@@ -8,13 +8,17 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ListSelectionModel;
 
+import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
+import nl.gogognome.gogologbook.gui.session.SessionListener;
+import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
+import nl.gogognome.lib.gui.Closeable;
 import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.swing.views.ViewDialog;
 
-public class ProjectController {
+public class ProjectController implements Closeable, SessionListener {
 
 	private final ProjectsModel model = new ProjectsModel();
 	private final Component parent;
@@ -22,13 +26,30 @@ public class ProjectController {
 
 	public ProjectController(Component parent) {
 		this.parent = parent;
-		List<ProjectFindResult> projects = projectInteractor.findAllProjects();
-		model.projectsTableModel.setProjects(projects);
+		refreshProjects();
 		model.selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		SessionManager.getInstance().addSessionListener(this);
 	}
 
 	public ProjectsModel getModel() {
 		return model;
+	}
+
+	@Override
+	public void close() {
+		SessionManager.getInstance().removeSessionListener(this);
+	}
+
+	@Override
+	public void sessionChanged(SessionChangeEvent event) {
+		if (event instanceof ProjectChangedEvent) {
+			refreshProjects();
+		}
+	}
+
+	private void refreshProjects() {
+		List<ProjectFindResult> projects = projectInteractor.findAllProjects();
+		model.projectsTableModel.setProjects(projects);
 	}
 
 	public Action getAddAction() {
