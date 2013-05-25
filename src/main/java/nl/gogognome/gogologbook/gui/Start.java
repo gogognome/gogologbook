@@ -8,6 +8,8 @@ import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.dbinsinglefile.*;
+import nl.gogognome.gogologbook.gui.session.Session;
+import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.*;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.util.DaoFactory;
@@ -29,12 +31,17 @@ public class Start {
 	}
 
 	private void startApplication(String[] args) {
+		initSession();
 		initFactory(Locale.getDefault());
 		DefaultLookAndFeel.useDefaultLookAndFeel();
 		parseArguments(args);
 		registerDAOs();
 		registerInteractors();
 		initFrame();
+	}
+
+	private Session initSession() {
+		return SessionManager.getInstance();
 	}
 
 	public void initFactory(Locale locale) {

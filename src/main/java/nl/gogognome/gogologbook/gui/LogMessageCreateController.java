@@ -5,18 +5,22 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
+import nl.gogognome.gogologbook.gui.session.SessionListener;
+import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageCreateInteractor;
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
+import nl.gogognome.lib.gui.Closeable;
 import nl.gogognome.lib.text.TextResource;
 import nl.gogognome.lib.util.Factory;
 
 import org.slf4j.LoggerFactory;
 
-public class LogMessageCreateController {
+public class LogMessageCreateController implements Closeable, SessionListener {
 
 	private final LogMessageCreateModel model = new LogMessageCreateModel();
 	private final TextResource textResource = Factory.getInstance(TextResource.class);
@@ -29,6 +33,12 @@ public class LogMessageCreateController {
 		model.usersModel.setItems(userInteractor.findAllUsers());
 		model.projectsModel.setItems(projectInteractor.findAllProjects());
 		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
+		SessionManager.getInstance().addSessionListener(this);
+	}
+
+	@Override
+	public void close() {
+		SessionManager.getInstance().removeSessionListener(this);
 	}
 
 	public LogMessageCreateModel getModel() {
@@ -52,6 +62,15 @@ public class LogMessageCreateController {
 		} catch (Exception e) {
 			model.resultModel.setString(textResource.getString("logMessageCreateView_logMessageFailed", e.getLocalizedMessage()));
 			LoggerFactory.getLogger(LogMessageCreateController.class).warn("Failed to log message", e);
+		}
+
+		SessionManager.getInstance().notifyListeners(new LogMessageCreatedEvent());
+	}
+
+	@Override
+	public void sessionChanged(SessionChangeEvent event) {
+		if (event instanceof LogMessageCreatedEvent) {
+
 		}
 	}
 
