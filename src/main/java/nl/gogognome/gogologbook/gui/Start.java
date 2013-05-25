@@ -30,10 +30,10 @@ public class Start {
 
 	private void startApplication(String[] args) {
 		initFactory(Locale.getDefault());
+		DefaultLookAndFeel.useDefaultLookAndFeel();
 		parseArguments(args);
 		registerDAOs();
 		registerInteractors();
-		DefaultLookAndFeel.useDefaultLookAndFeel();
 		initFrame();
 	}
 
