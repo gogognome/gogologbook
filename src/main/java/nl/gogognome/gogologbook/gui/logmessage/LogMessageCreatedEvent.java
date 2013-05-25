@@ -1,4 +1,4 @@
-package nl.gogognome.gogologbook.gui;
+package nl.gogognome.gogologbook.gui.logmessage;
 
 import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
 
