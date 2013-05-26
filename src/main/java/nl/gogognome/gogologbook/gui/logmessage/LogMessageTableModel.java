@@ -5,8 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
-import nl.gogognome.lib.swing.AbstractListTableModel;
-import nl.gogognome.lib.swing.ColumnDefinition;
+import nl.gogognome.lib.swing.table.AbstractListTableModel;
+import nl.gogognome.lib.swing.table.ColumnDefinition;
+import nl.gogognome.lib.swing.table.MultilineCellRenderer;
 
 import com.google.common.collect.Lists;
 
@@ -28,7 +29,8 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 
 	private final static ColumnDefinition CATEGORY = new ColumnDefinition("LogEntryTableModel_category", String.class, 100);
 
-	private final static ColumnDefinition MESSAGE = new ColumnDefinition("LogEntryTableModel_message", String.class, 300);
+	private final static ColumnDefinition MESSAGE = new ColumnDefinition.Builder("LogEntryTableModel_message", String.class, 300).add(
+			new MultilineCellRenderer()).build();
 
 	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists
 			.newArrayList(TIMESTAMP, USERNAME, PROJECT, CUSTOMER, TOWN, STREET, CATEGORY, MESSAGE);
