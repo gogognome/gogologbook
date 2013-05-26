@@ -20,6 +20,7 @@ import nl.gogognome.gogologbook.gui.logmessage.LogMessageCreateAndOverviewView;
 import nl.gogognome.gogologbook.gui.project.ProjectsView;
 import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.swing.views.View;
+import nl.gogognome.lib.swing.views.ViewDialog;
 import nl.gogognome.lib.swing.views.ViewListener;
 import nl.gogognome.lib.swing.views.ViewTabbedPane;
 import nl.gogognome.lib.text.TextResource;
@@ -60,6 +61,7 @@ public class MainFrame extends JFrame {
 
 	private ActionListeners getMenuListeners() {
 		ActionListeners listeners = new ActionListeners();
+		listeners.openAboutView = new OpenViewInDialogAction(AboutView.class);
 		listeners.openLogMessageCreateView = new OpenViewAction(LogMessageCreateAndOverviewView.class);
 		listeners.openProjectsView = new OpenViewAction(ProjectsView.class);
 
@@ -132,4 +134,22 @@ public class MainFrame extends JFrame {
 			openView(viewClass);
 		}
 	}
+
+	private class OpenViewInDialogAction implements ActionListener {
+		private final Class<? extends View> viewClass;
+
+		public OpenViewInDialogAction(Class<? extends View> viewClass) {
+			this.viewClass = viewClass;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			try {
+				new ViewDialog(MainFrame.this, viewClass.newInstance()).showDialog();
+			} catch (Exception e) {
+				MessageDialog.showErrorMessage(MainFrame.this, "gen.problem_occurred", e);
+			}
+		}
+	}
+
 }

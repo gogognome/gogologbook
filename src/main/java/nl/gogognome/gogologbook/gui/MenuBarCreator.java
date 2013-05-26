@@ -13,6 +13,7 @@ public class MenuBarCreator {
 	private final WidgetFactory widgetFactory = Factory.getInstance(WidgetFactory.class);
 
 	public static class ActionListeners {
+		public ActionListener openAboutView;
 		public ActionListener openLogMessageCreateView;
 		public ActionListener openProjectsView;
 		public ActionListener exit;
@@ -26,6 +27,7 @@ public class MenuBarCreator {
 		viewMenu.add(widgetFactory.createMenuItem("mi.exit", listeners.exit));
 
 		JMenu helpMenu = widgetFactory.createMenu("mi.help");
+		helpMenu.add(widgetFactory.createMenuItem("mi.about", listeners.openAboutView));
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(viewMenu);
