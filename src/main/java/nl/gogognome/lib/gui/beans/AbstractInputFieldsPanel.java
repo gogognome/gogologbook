@@ -173,6 +173,11 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 		addLabelAndFieldWithConstraints(labelId, beanFactory.createDateSelectionBean(model), getFixedSizeFieldConstraints());
 	}
 
+	public void addTetxtArea(String labelId, StringModel model) {
+		addVariableSizeField(labelId, beanFactory.createTextAreaBean(model, 0, 5));
+
+	}
+
 	/**
 	 * Adds a combo box to select a single item from a list of items.
 	 * 
