@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
-import nl.gogognome.lib.swing.AbstractListTableModel;
-import nl.gogognome.lib.swing.ColumnDefinition;
+import nl.gogognome.lib.swing.table.AbstractListTableModel;
+import nl.gogognome.lib.swing.table.ColumnDefinition;
 
 import com.google.common.collect.Lists;
 

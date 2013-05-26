@@ -14,30 +14,20 @@
     You should have received a copy of the GNU General Public License
     along with gogo account.  If not, see <http://www.gnu.org/licenses/>.
 */
-package nl.gogognome.lib.swing;
+package nl.gogognome.lib.swing.table;
 
-import java.awt.Component;
-import java.util.Date;
-
-import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import nl.gogognome.lib.text.TextResource;
-import nl.gogognome.lib.util.Factory;
-
 /**
- * Table cell renderere for dates.
+ * Table cell renderer that right aligns its contents.
  *
  * @author Sander Kooijmans
  */
-public class DateRenderer extends DefaultTableCellRenderer {
-
+public class RightAlignedRenderer extends DefaultTableCellRenderer {
     @Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-            boolean hasFocus, int row, int column) {
-        if (value instanceof Date) {
-            value = Factory.getInstance(TextResource.class).formatDate("gen.dateFormat", (Date) value);
-        }
-        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	public void setValue(Object value) {
+        super.setValue(value);
+        setHorizontalAlignment(SwingConstants.RIGHT);
     }
 }

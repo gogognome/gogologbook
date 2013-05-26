@@ -35,6 +35,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.*;
 
+import nl.gogognome.lib.swing.table.AbstractTableModel;
+import nl.gogognome.lib.swing.table.ColumnDefinition;
 import nl.gogognome.lib.text.TextResource;
 import nl.gogognome.lib.util.Factory;
 

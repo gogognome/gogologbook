@@ -30,8 +30,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import nl.gogognome.lib.swing.DateRenderer;
-import nl.gogognome.lib.swing.InitialValueSelectingCellEditor;
+import nl.gogognome.lib.swing.table.DateRenderer;
+import nl.gogognome.lib.swing.table.InitialValueSelectingCellEditor;
 
 /**
  * The default look and feel for a table.

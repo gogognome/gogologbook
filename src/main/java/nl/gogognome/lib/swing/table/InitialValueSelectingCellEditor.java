@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package nl.gogognome.lib.swing;
+package nl.gogognome.lib.swing.table;
 
 import java.awt.Component;
 import java.util.EventObject;
