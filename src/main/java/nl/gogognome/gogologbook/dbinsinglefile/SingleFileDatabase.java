@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -25,17 +26,17 @@ public class SingleFileDatabase {
 	private final Gson gson = new Gson();
 	private final ParserHelper parserHelper = new ParserHelper();
 	private final SingleFileDatabaseDAORegistry daoRegistry = new SingleFileDatabaseDAORegistry();
-	private final Map<String, Parser> actionToParser = Maps.newHashMap();
+
+	private final Map<String, Parser> actionToParser = ImmutableMap.of(
+			INSERT, new InsertParser(),
+			UPDATE, new UpdateParser(),
+			DELETE, new DeleteParser());
 
 	private final static Map<File, BinarySemaphoreWithFileLock> FILE_TO_SEMAPHORE = Maps.newHashMap();
 
 	public SingleFileDatabase(File dbFile) {
 		this.dbFile = dbFile;
 		this.semaphore = getSemaphoreForFile(dbFile);
-
-		actionToParser.put(INSERT, new InsertParser());
-		actionToParser.put(UPDATE, new UpdateParser());
-		actionToParser.put(DELETE, new DeleteParser());
 	}
 
 	private static synchronized BinarySemaphoreWithFileLock getSemaphoreForFile(File dbFile) {
@@ -59,8 +60,8 @@ public class SingleFileDatabase {
 		appendRecordToFile(tableName, UPDATE, record);
 	}
 
-	public void appendDeleteToFile(String tableName, int projectId) {
-		appendRecordToFile(tableName, DELETE, projectId);
+	public void appendDeleteToFile(String tableName, int id) {
+		appendRecordToFile(tableName, DELETE, id);
 	}
 
 	private void appendRecordToFile(String tableName, String action, Object record) {
@@ -71,7 +72,8 @@ public class SingleFileDatabase {
 			writer.append(';');
 			writer.append(tableName);
 			writer.append(';');
-			writer.append(gson.toJson(record));
+			Parser parser = actionToParser.get(action);
+			writer.append(parser.serializeObject(record));
 			writer.newLine();
 		} catch (IOException e) {
 			throw new RuntimeException("Problem occurred while writing action " + action + " for table " + tableName + " to the file "
@@ -121,7 +123,7 @@ public class SingleFileDatabase {
 
 		SingleFileDatabaseDAO dao = getSingleFileDatabaseDAO(line);
 		String serializedRecord = parserHelper.getSerializedRecord(line);
-		parser.parseAction(dao, serializedRecord);
+		parser.parseSerializedLineAndExecuteActionInDAO(dao, serializedRecord);
 	}
 
 	private SingleFileDatabaseDAO getSingleFileDatabaseDAO(String line) {
