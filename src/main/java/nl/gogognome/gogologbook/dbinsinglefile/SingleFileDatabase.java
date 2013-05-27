@@ -20,15 +20,21 @@ public class SingleFileDatabase {
 	private final static String DELETE = "delete";
 
 	private final File dbFile;
-	private final Map<String, SingleFileDatabaseDAO> tableNameToSingleFileDatabaseDao = Maps.newHashMap();
-	private final BinarySemaphoreWithFileLock semaphore; // TODO: create one semaphore per dbFile. Cache semaphore per file.
+	private final BinarySemaphoreWithFileLock semaphore;
 	private final Logger logger = LoggerFactory.getLogger(SingleFileDatabase.class);
+	private final ParserHelper parserHelper = new ParserHelper();
+	private final SingleFileDatabaseDAORegistry daoRegistry = new SingleFileDatabaseDAORegistry();
+	private final Map<String, Parser> actionToParser = Maps.newHashMap();
 
 	private final static Map<File, BinarySemaphoreWithFileLock> FILE_TO_SEMAPHORE = Maps.newHashMap();
 
 	public SingleFileDatabase(File dbFile) {
 		this.dbFile = dbFile;
 		this.semaphore = getSemaphoreForFile(dbFile);
+
+		actionToParser.put(INSERT, new InsertParser(daoRegistry));
+		actionToParser.put(UPDATE, new UpdateParser(daoRegistry));
+		actionToParser.put(DELETE, new DeleteParser(daoRegistry));
 	}
 
 	private static synchronized BinarySemaphoreWithFileLock getSemaphoreForFile(File dbFile) {
@@ -41,7 +47,7 @@ public class SingleFileDatabase {
 	}
 
 	public void registerDao(String tableName, SingleFileDatabaseDAO dao) {
-		tableNameToSingleFileDatabaseDao.put(tableName, dao);
+		daoRegistry.registerDao(tableName, dao);
 	}
 
 	public void appendInsertToFile(String tableName, Object record) {
@@ -83,7 +89,7 @@ public class SingleFileDatabase {
 	public void initInMemDatabaseFromFile() {
 		BufferedReader reader = null;
 		try {
-			for (SingleFileDatabaseDAO dao : tableNameToSingleFileDatabaseDao.values()) {
+			for (SingleFileDatabaseDAO dao : daoRegistry.getAllDAOs()) {
 				dao.removeAllRecordsFromInMemoryDatabase();
 			}
 
@@ -107,59 +113,12 @@ public class SingleFileDatabase {
 	}
 
 	private void parseAndExecuteStatement(String line) {
-		String action = getAction(line);
-		String tableName = getTableName(line);
-		if (INSERT.equals(action)) {
-			Gson gson = new Gson();
-			int index = line.indexOf(';');
-			index = line.indexOf(';', index + 1);
-			String serializedRecord = line.substring(index + 1);
-			SingleFileDatabaseDAO dao = tableNameToSingleFileDatabaseDao.get(tableName);
-			Class<?> clazz = dao.getRecordClass();
-			Object record = gson.fromJson(serializedRecord, clazz);
-			dao.createRecordInMemoryDatabase(record);
-		} else if (UPDATE.equals(action)) {
-			Gson gson = new Gson();
-			int index = line.indexOf(';');
-			index = line.indexOf(';', index + 1);
-			String serializedRecord = line.substring(index + 1);
-			SingleFileDatabaseDAO dao = tableNameToSingleFileDatabaseDao.get(tableName);
-			Class<?> clazz = dao.getRecordClass();
-			Object record = gson.fromJson(serializedRecord, clazz);
-			dao.updateRecordInMemoryDatabase(record);
-		} else if (DELETE.equals(action)) {
-			Gson gson = new Gson();
-			int index = line.indexOf(';');
-			index = line.indexOf(';', index + 1);
-			String serializedId = line.substring(index + 1);
-			int id = gson.fromJson(serializedId, Integer.class);
-			SingleFileDatabaseDAO dao = tableNameToSingleFileDatabaseDao.get(tableName);
-			dao.deleteRecordFromInMemoryDatabase(id);
-		} else {
+		String action = parserHelper.getAction(line);
+		Parser parser = actionToParser.get(action);
+		if (parser == null) {
 			throw new DAOException("Unknown action in database file: " + action);
 		}
-	}
-
-	private String getAction(String line) {
-		int index = line.indexOf(';');
-		if (index == -1) {
-			throw new RuntimeException("Line does not contain semicolon: " + line);
-		}
-		return line.substring(0, index);
-	}
-
-	private String getTableName(String line) {
-		int index = line.indexOf(';');
-		if (index == -1) {
-			throw new RuntimeException("Line does not contain semicolon: " + line);
-		}
-		int start = index + 1;
-		index = line.indexOf(';', start);
-		if (index == -1) {
-			throw new RuntimeException("Line does not contain two semicolons: " + line);
-		}
-
-		return line.substring(start, index);
+		parser.parseAction(line);
 	}
 
 	public void acquireLock() {
