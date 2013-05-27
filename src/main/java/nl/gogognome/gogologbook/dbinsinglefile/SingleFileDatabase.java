@@ -22,6 +22,7 @@ public class SingleFileDatabase {
 	private final File dbFile;
 	private final BinarySemaphoreWithFileLock semaphore;
 	private final Logger logger = LoggerFactory.getLogger(SingleFileDatabase.class);
+	private final Gson gson = new Gson();
 	private final ParserHelper parserHelper = new ParserHelper();
 	private final SingleFileDatabaseDAORegistry daoRegistry = new SingleFileDatabaseDAORegistry();
 	private final Map<String, Parser> actionToParser = Maps.newHashMap();
@@ -32,9 +33,9 @@ public class SingleFileDatabase {
 		this.dbFile = dbFile;
 		this.semaphore = getSemaphoreForFile(dbFile);
 
-		actionToParser.put(INSERT, new InsertParser(daoRegistry));
-		actionToParser.put(UPDATE, new UpdateParser(daoRegistry));
-		actionToParser.put(DELETE, new DeleteParser(daoRegistry));
+		actionToParser.put(INSERT, new InsertParser());
+		actionToParser.put(UPDATE, new UpdateParser());
+		actionToParser.put(DELETE, new DeleteParser());
 	}
 
 	private static synchronized BinarySemaphoreWithFileLock getSemaphoreForFile(File dbFile) {
@@ -70,7 +71,6 @@ public class SingleFileDatabase {
 			writer.append(';');
 			writer.append(tableName);
 			writer.append(';');
-			Gson gson = new Gson();
 			writer.append(gson.toJson(record));
 			writer.newLine();
 		} catch (IOException e) {
@@ -118,7 +118,16 @@ public class SingleFileDatabase {
 		if (parser == null) {
 			throw new DAOException("Unknown action in database file: " + action);
 		}
-		parser.parseAction(line);
+
+		SingleFileDatabaseDAO dao = getSingleFileDatabaseDAO(line);
+		String serializedRecord = parserHelper.getSerializedRecord(line);
+		parser.parseAction(dao, serializedRecord);
+	}
+
+	private SingleFileDatabaseDAO getSingleFileDatabaseDAO(String line) {
+		String tableName = parserHelper.getTableName(line);
+		SingleFileDatabaseDAO dao = daoRegistry.getDAOForTable(tableName);
+		return dao;
 	}
 
 	public void acquireLock() {

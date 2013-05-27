@@ -4,26 +4,13 @@ import com.google.gson.Gson;
 
 public class UpdateParser implements Parser {
 
-	private final SingleFileDatabaseDAORegistry daoRegistry;
-	private final ParserHelper parserHelper = new ParserHelper();
 	private final Gson gson = new Gson();
 
-	public UpdateParser(SingleFileDatabaseDAORegistry daoRegistry) {
-		this.daoRegistry = daoRegistry;
-	}
-
 	@Override
-	public void parseAction(String line) {
-		SingleFileDatabaseDAO dao = getSingleFileDatabaseDAO(line);
+	public void parseAction(SingleFileDatabaseDAO dao, String serializedRecord) {
 		Class<?> clazz = dao.getRecordClass();
-		Object record = gson.fromJson(parserHelper.getSerializedRecord(line), clazz);
+		Object record = gson.fromJson(serializedRecord, clazz);
 		dao.updateRecordInMemoryDatabase(record);
-	}
-
-	private SingleFileDatabaseDAO getSingleFileDatabaseDAO(String line) {
-		String tableName = parserHelper.getTableName(line);
-		SingleFileDatabaseDAO dao = daoRegistry.getDAOForTable(tableName);
-		return dao;
 	}
 
 }
