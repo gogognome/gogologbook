@@ -1,6 +1,10 @@
 package nl.gogognome.gogologbook.gui.logmessage;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +19,8 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 
 	private static final long serialVersionUID = 1L;
 
-	private final static ColumnDefinition TIMESTAMP = new ColumnDefinition("LogEntryTableModel_timestamp", Date.class, 100);
+	private final static ColumnDefinition TIMESTAMP = new ColumnDefinition.Builder("LogEntryTableModel_timestamp", String.class, 100)
+			.add(new DateComparator()).build();
 
 	private final static ColumnDefinition USERNAME = new ColumnDefinition("LogEntryTableModel_username", String.class, 100);
 
@@ -29,11 +34,13 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 
 	private final static ColumnDefinition CATEGORY = new ColumnDefinition("LogEntryTableModel_category", String.class, 100);
 
-	private final static ColumnDefinition MESSAGE = new ColumnDefinition.Builder("LogEntryTableModel_message", String.class, 300).add(
-			new MultilineCellRenderer()).build();
+	private final static ColumnDefinition MESSAGE = new ColumnDefinition.Builder("LogEntryTableModel_message", String.class, 300)
+			.add(new MultilineCellRenderer()).build();
 
 	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists
 			.newArrayList(TIMESTAMP, USERNAME, PROJECT, CUSTOMER, TOWN, STREET, CATEGORY, MESSAGE);
+
+	private final static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
 	public LogMessageTableModel() {
 		super(COLUMN_DEFINTIIONS, Collections.<LogMessageFindResult> emptyList());
@@ -49,7 +56,7 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 		LogMessageFindResult logMessage = getRow(rowIndex);
 
 		if (TIMESTAMP == colDef) {
-			return logMessage.timestamp;
+			return logMessage.timestamp != null ? dateFormat.format(logMessage.timestamp) : null;
 		}
 		if (USERNAME == colDef) {
 			return logMessage.username;
@@ -73,5 +80,37 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 			return logMessage.message;
 		}
 		return null;
+	}
+
+	private static class DateComparator implements Comparator<Object> {
+
+		@Override
+		public int compare(Object o1, Object o2) {
+			Date d1;
+			try {
+				d1 = dateFormat.parse((String) o1);
+			} catch (ParseException e) {
+				d1 = null;
+			}
+			Date d2;
+			try {
+				d2 = dateFormat.parse((String) o2);
+			} catch (ParseException e) {
+				d2 = null;
+			}
+
+			if (d1 == null && d2 == null) {
+				return 0;
+			}
+			if (d1 == null) {
+				return 1;
+			}
+			if (d2 == null) {
+				return -1;
+			}
+
+			return d1.compareTo(d2);
+		}
+
 	}
 }
