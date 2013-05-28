@@ -34,14 +34,14 @@ public class SingleFileLogMessageDAO implements LogMessageDAO, SingleFileDatabas
 	}
 
 	@Override
-	public List<LogMessage> findLogMessages(FilterCriteria filter) {
+	public List<LogMessage> findLogMessagesByDescendingDate(FilterCriteria filter) {
 		try {
 			singleFileDatabase.acquireLock();
 			singleFileDatabase.initInMemDatabaseFromFile();
 		} finally {
 			singleFileDatabase.releaseLock();
 		}
-		return inMemoryLogMessageDao.findLogMessages(filter);
+		return inMemoryLogMessageDao.findLogMessagesByDescendingDate(filter);
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 		logMessage.message = "msg2";
 		logMessageDAO.createMessage(logMessage);
 
-		List<LogMessage> logMessages = logMessageDAO.findLogMessages(FilterCriteria.createFindAll());
+		List<LogMessage> logMessages = logMessageDAO.findLogMessagesByDescendingDate(FilterCriteria.createFindAll());
 
 		assertEquals(2, logMessages.size());
 	}
@@ -50,7 +50,7 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 	public void absentDbFileLeadsToEmptyDatabase() {
 		assertFalse(dbFile.exists());
 
-		List<LogMessage> logMessages = logMessageDAO.findLogMessages(FilterCriteria.createFindAll());
+		List<LogMessage> logMessages = logMessageDAO.findLogMessagesByDescendingDate(FilterCriteria.createFindAll());
 
 		assertTrue(logMessages.isEmpty());
 	}
@@ -59,7 +59,7 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 	public void dbShouldHaveOneLogMessageAfterReadingOneLogMessageFromFile() throws IOException {
 		Files.write(INSERT_OF_ONE_LOG_MESSAGE, dbFile, Charsets.ISO_8859_1);
 
-		List<LogMessage> logMessages = logMessageDAO.findLogMessages(FilterCriteria.createFindAll());
+		List<LogMessage> logMessages = logMessageDAO.findLogMessagesByDescendingDate(FilterCriteria.createFindAll());
 
 		assertFalse(logMessages.isEmpty());
 	}
@@ -73,7 +73,7 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 		logMessage.timestamp = new Date();
 
 		logMessageDAO.createMessage(logMessage);
-		List<LogMessage> createdLogMessages = logMessageDAO.findLogMessages(FilterCriteria.createFindAll());
+		List<LogMessage> createdLogMessages = logMessageDAO.findLogMessagesByDescendingDate(FilterCriteria.createFindAll());
 		LogMessage createdLogMessage = createdLogMessages.get(0);
 
 		assertEquals(logMessage.projectId, createdLogMessage.projectId);

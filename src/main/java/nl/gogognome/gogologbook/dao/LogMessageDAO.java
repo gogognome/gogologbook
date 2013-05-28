@@ -9,7 +9,7 @@ public interface LogMessageDAO {
 
 	LogMessage createMessage(LogMessage message);
 
-	List<LogMessage> findLogMessages(FilterCriteria filter);
+	List<LogMessage> findLogMessagesByDescendingDate(FilterCriteria filter);
 
 	boolean isProjectUsed(int projectId);
 

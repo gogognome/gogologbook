@@ -1,5 +1,7 @@
 package nl.gogognome.gogologbook.dbinmemory;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +29,12 @@ public class InMemoryLogMessageDAO implements LogMessageDAO {
 	}
 
 	@Override
-	public List<LogMessage> findLogMessages(FilterCriteria filter) {
+	public List<LogMessage> findLogMessagesByDescendingDate(FilterCriteria filter) {
 		List<LogMessage> results = Lists.newArrayListWithExpectedSize(idToMessage.size());
 		for (LogMessage message : idToMessage.values()) {
 			results.add(cloneLogMessage(message, message.id));
 		}
+		Collections.sort(results, new DescendingDateComparator());
 		return results;
 	}
 
@@ -53,6 +56,24 @@ public class InMemoryLogMessageDAO implements LogMessageDAO {
 		clonedMessage.timestamp = origMessage.timestamp;
 		clonedMessage.userId = origMessage.userId;
 		return clonedMessage;
+	}
+
+}
+
+class DescendingDateComparator implements Comparator<LogMessage> {
+
+	@Override
+	public int compare(LogMessage lm1, LogMessage lm2) {
+		if (lm1.timestamp == null && lm2.timestamp == null) {
+			return 0;
+		}
+		if (lm1.timestamp == null) {
+			return -1;
+		}
+		if (lm2.timestamp == null) {
+			return 1;
+		}
+		return -lm1.timestamp.compareTo(lm2.timestamp);
 	}
 
 }

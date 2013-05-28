@@ -65,22 +65,22 @@ public class LogMessageFindInteractorTest {
 	@Test
 	public void shouldUseDaoToFindMessages() {
 		List<LogMessage> messages = Lists.newArrayList(createLogMessage(1), createLogMessage(2));
-		when(logMessageDao.findLogMessages(any(FilterCriteria.class))).thenReturn(messages);
+		when(logMessageDao.findLogMessagesByDescendingDate(any(FilterCriteria.class))).thenReturn(messages);
 		LogMessageFindParams params = new LogMessageFindParams();
 
-		logMessageFindInteractor.findMessages(params);
+		logMessageFindInteractor.findLogMessagesByDescendingDate(params);
 
-		verify(logMessageDao).findLogMessages(any(FilterCriteria.class));
+		verify(logMessageDao).findLogMessagesByDescendingDate(any(FilterCriteria.class));
 	}
 
 	@Test
 	public void shouldConvertEntityToLogResult() {
 		LogMessage logMessage = createLogMessage(1);
 		List<LogMessage> messages = Lists.newArrayList(logMessage);
-		when(logMessageDao.findLogMessages(any(FilterCriteria.class))).thenReturn(messages);
+		when(logMessageDao.findLogMessagesByDescendingDate(any(FilterCriteria.class))).thenReturn(messages);
 		LogMessageFindParams params = new LogMessageFindParams();
 
-		List<LogMessageFindResult> results = logMessageFindInteractor.findMessages(params);
+		List<LogMessageFindResult> results = logMessageFindInteractor.findLogMessagesByDescendingDate(params);
 
 		assertEquals(1, results.size());
 		LogMessageFindResult result = results.get(0);

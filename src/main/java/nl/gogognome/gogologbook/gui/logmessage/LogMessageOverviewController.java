@@ -37,7 +37,7 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 
 	public void refresh() {
 		LogMessageFindParams params = new LogMessageFindParams();
-		List<LogMessageFindResult> logMessages = logMessageFindInteractor.findMessages(params);
+		List<LogMessageFindResult> logMessages = logMessageFindInteractor.findLogMessagesByDescendingDate(params);
 		model.logMessageTableModel.setLogMessages(logMessages);
 	}
 

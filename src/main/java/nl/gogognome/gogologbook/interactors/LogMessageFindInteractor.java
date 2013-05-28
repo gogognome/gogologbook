@@ -24,9 +24,9 @@ public class LogMessageFindInteractor {
 	private final Map<Integer, User> idToUSer = Maps.newHashMap();
 	private final Map<Integer, Project> idToProject = Maps.newHashMap();
 
-	public List<LogMessageFindResult> findMessages(LogMessageFindParams params) {
+	public List<LogMessageFindResult> findLogMessagesByDescendingDate(LogMessageFindParams params) {
 		FilterCriteria filter = new FilterCriteria();
-		List<LogMessage> messages = DaoFactory.getInstance(LogMessageDAO.class).findLogMessages(filter);
+		List<LogMessage> messages = DaoFactory.getInstance(LogMessageDAO.class).findLogMessagesByDescendingDate(filter);
 		initIdToProjectMap();
 		initIdToUsers();
 		return Lists.newArrayList(Iterables.transform(messages, new MessageToResult()));

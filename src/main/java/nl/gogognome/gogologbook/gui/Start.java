@@ -3,6 +3,8 @@ package nl.gogognome.gogologbook.gui;
 import java.io.File;
 import java.util.Locale;
 
+import javax.swing.JFrame;
+
 import nl.gogognome.gogologbook.dao.CategoryDAO;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
@@ -91,6 +93,7 @@ public class Start {
 		mainFrame = new MainFrame();
 		mainFrame.setVisible(true);
 		SwingUtils.center(mainFrame);
+		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 
 }
