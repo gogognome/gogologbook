@@ -18,6 +18,7 @@ import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
 import nl.gogognome.lib.gui.Closeable;
 import nl.gogognome.lib.text.TextResource;
 import nl.gogognome.lib.util.Factory;
+import nl.gogognome.lib.util.StringUtil;
 
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 	public void createLogMessage() {
 		LogMessageCreateParams params = new LogMessageCreateParams();
 		params.category = model.categoriesModel.getSelectedItem().name;
-		params.message = model.messageModel.getString();
+		params.message = StringUtil.nullToEmptyString(model.messageModel.getString()).trim();
 		params.projectId = model.projectsModel.getSelectedItem().id;
 		params.userId = model.usersModel.getSelectedItem().id;
 
