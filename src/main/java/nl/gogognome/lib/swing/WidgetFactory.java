@@ -35,7 +35,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.*;
 
-import nl.gogognome.lib.swing.table.AbstractTableModel;
+import nl.gogognome.lib.swing.table.AbstractTableModelWithColumnDefinitions;
 import nl.gogognome.lib.swing.table.ColumnDefinition;
 import nl.gogognome.lib.text.TextResource;
 import nl.gogognome.lib.util.Factory;
@@ -392,7 +392,7 @@ public class WidgetFactory {
      * @param tableModel the table model
      * @return the table
      */
-    public JTable createTable(AbstractTableModel tableModel) {
+    public JTable createTable(AbstractTableModelWithColumnDefinitions tableModel) {
     	JTable table = new JTable(tableModel);
     	initTableColumns(table, tableModel);
     	return table;
@@ -405,16 +405,16 @@ public class WidgetFactory {
      * @param tableModel the table model
      * @return the table
      */
-    public JTable createSortedTable(AbstractTableModel tableModel) {
+    public JTable createSortedTable(AbstractTableModelWithColumnDefinitions tableModel) {
     	JTable table = new JTable(tableModel);
-    	TableRowSorter<AbstractTableModel> sorter = new TableRowSorter<AbstractTableModel>(tableModel);
+    	TableRowSorter<AbstractTableModelWithColumnDefinitions> sorter = new TableRowSorter<AbstractTableModelWithColumnDefinitions>(tableModel);
     	initTableColumns(table, tableModel);
     	initSorterForTableModel(sorter, tableModel);
     	table.setRowSorter(sorter);
     	return table;
     }
 
-	private void initTableColumns(JTable table, AbstractTableModel tableModel) {
+	private void initTableColumns(JTable table, AbstractTableModelWithColumnDefinitions tableModel) {
         TableColumnModel columnModel = table.getColumnModel();
         int nrCols = tableModel.getColumnCount();
 
@@ -438,8 +438,8 @@ public class WidgetFactory {
         }
 	}
 
-	private void initSorterForTableModel(TableRowSorter<AbstractTableModel> sorter,
-			AbstractTableModel tableModel) {
+	private void initSorterForTableModel(TableRowSorter<AbstractTableModelWithColumnDefinitions> sorter,
+			AbstractTableModelWithColumnDefinitions tableModel) {
 		for (int c=0; c<tableModel.getColumnCount(); c++) {
     		ColumnDefinition colDef = tableModel.getColumnDefinition(c);
     		Comparator<?> comparator =  colDef.getComparator();

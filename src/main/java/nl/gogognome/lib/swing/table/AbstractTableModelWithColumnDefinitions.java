@@ -27,58 +27,59 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Sander Kooijmans
  */
-public abstract class AbstractTableModel extends javax.swing.table.AbstractTableModel {
+public abstract class AbstractTableModelWithColumnDefinitions extends javax.swing.table.AbstractTableModel {
 
-    /** The column definitions. */
-    private List<ColumnDefinition> columnDefinitions;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Constructor.
-     * @param columnDefinitions the column definitions
-     */
-    public AbstractTableModel(List<ColumnDefinition> columnDefinitions) {
-        super();
-        this.columnDefinitions = columnDefinitions;
-    }
+	/** The column definitions. */
+	private final List<ColumnDefinition> columnDefinitions;
 
-    @Override
-    public String getColumnName(int column) {
-        return columnDefinitions.get(column).getName();
-    }
+	/**
+	 * Constructor.
+	 * @param columnDefinitions the column definitions
+	 */
+	public AbstractTableModelWithColumnDefinitions(List<ColumnDefinition> columnDefinitions) {
+		this.columnDefinitions = columnDefinitions;
+	}
 
-    @Override
-    public Class<?> getColumnClass(int column) {
-        return columnDefinitions.get(column).getClassOfValues();
-    }
+	@Override
+	public String getColumnName(int column) {
+		return columnDefinitions.get(column).getName();
+	}
+
+	@Override
+	public Class<?> getColumnClass(int column) {
+		return columnDefinitions.get(column).getClassOfValues();
+	}
 
 	public int getColumnWidth(int column) {
-        return columnDefinitions.get(column).getWidthInPixels();
-    }
+		return columnDefinitions.get(column).getWidthInPixels();
+	}
 
 	public Comparator<Object> getComparator(int column) {
-        return columnDefinitions.get(column).getComparator();
-    }
+		return columnDefinitions.get(column).getComparator();
+	}
 
 	public TableCellRenderer getRendererForColumn(int column) {
-        return columnDefinitions.get(column).getTableCellRenderer();
-    }
+		return columnDefinitions.get(column).getTableCellRenderer();
+	}
 
 	public TableCellEditor getEditorForColumn(int column) {
-        return columnDefinitions.get(column).getTableCellEditor();
-    }
+		return columnDefinitions.get(column).getTableCellEditor();
+	}
 
-    @Override
+	@Override
 	public int getColumnCount() {
-        return columnDefinitions.size();
-    }
+		return columnDefinitions.size();
+	}
 
-    /**
-     * Gets the column definition for the specified column.
-     * @param column the index of the column
-     * @return the column definition
-     */
-    public ColumnDefinition getColumnDefinition(int column) {
-        return columnDefinitions.get(column);
-    }
+	/**
+	 * Gets the column definition for the specified column.
+	 * @param column the index of the column
+	 * @return the column definition
+	 */
+	public ColumnDefinition getColumnDefinition(int column) {
+		return columnDefinitions.get(column);
+	}
 
 }

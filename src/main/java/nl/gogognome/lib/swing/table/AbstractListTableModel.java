@@ -29,7 +29,7 @@ import java.util.List;
  * @param <T> the type of rows
  * @author Sander Kooijmans
  */
-public abstract class AbstractListTableModel<T> extends AbstractTableModel {
+public abstract class AbstractListTableModel<T> extends AbstractTableModelWithColumnDefinitions {
 	private List<T> rows;
 
     /**
