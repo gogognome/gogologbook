@@ -16,7 +16,8 @@ import com.google.common.io.Files;
 
 public class SingleFileProjectDAOTest extends AbstractSingleFileDAOTest {
 
-	private static final String INSERT_OF_ONE_PROJECT = "insert;Project;{\"projectNr\":\"AB123\",\"customer\":\"Me \\u0027n you\",\"street\":\"Sesamestreet\",\"town\":\"Hilversum\",\"id\":1}";
+	private static final String INSERT_OF_ONE_PROJECT = METADATA
+			+ "insert;Project;{\"projectNr\":\"AB123\",\"customer\":\"Me \\u0027n you\",\"street\":\"Sesamestreet\",\"town\":\"Hilversum\",\"id\":1}";
 	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
 	private final SingleFileProjectDAO projectDao = new SingleFileProjectDAO(singleFileDatabase);
 

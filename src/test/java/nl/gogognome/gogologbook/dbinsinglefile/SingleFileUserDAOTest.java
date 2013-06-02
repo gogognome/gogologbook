@@ -15,7 +15,7 @@ import com.google.common.io.Files;
 
 public class SingleFileUserDAOTest extends AbstractSingleFileDAOTest {
 
-	private static final String INSERT_OF_ONE_USER = "insert;User;{\"name\":\"test\",\"id\":1}";
+	private static final String INSERT_OF_ONE_USER = METADATA + "insert;User;{\"name\":\"test\",\"id\":1}";
 	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
 	private final SingleFileUserDAO userDao = new SingleFileUserDAO(singleFileDatabase);
 

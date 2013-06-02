@@ -19,7 +19,7 @@ import com.google.common.io.Files;
 
 public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 
-	private static final String INSERT_OF_ONE_LOG_MESSAGE = "insert;LogMessage;{\"userId\":0,\"projectId\":0,\"message\":\"test\",\"id\":1}";
+	private static final String INSERT_OF_ONE_LOG_MESSAGE = METADATA + "insert;LogMessage;{\"userId\":0,\"projectId\":0,\"message\":\"test\",\"id\":1}";
 	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
 	private final SingleFileLogMessageDAO logMessageDAO = new SingleFileLogMessageDAO(singleFileDatabase);
 

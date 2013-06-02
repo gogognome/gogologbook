@@ -15,7 +15,7 @@ import com.google.common.io.Files;
 
 public class SingleFileCategoryDAOTest extends AbstractSingleFileDAOTest {
 
-	private static final String INSERT_OF_ONE_USER = "insert;Category;{\"name\":\"test\",\"id\":1}";
+	private static final String INSERT_OF_ONE_USER = METADATA + "insert;Category;{\"name\":\"test\",\"id\":1}";
 	private final SingleFileDatabase singleFileDatabase = new SingleFileDatabase(dbFile);
 	private final SingleFileCategoryDAO userDao = new SingleFileCategoryDAO(singleFileDatabase);
 

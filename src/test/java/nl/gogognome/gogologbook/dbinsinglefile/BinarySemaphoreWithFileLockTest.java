@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.google.common.base.Charsets;
+
 public class BinarySemaphoreWithFileLockTest {
 
 	private final BinarySemaphoreWithFileLock semaphore;
@@ -27,7 +29,7 @@ public class BinarySemaphoreWithFileLockTest {
 	private void startTerminal() throws IOException, InterruptedException {
 		printCommands();
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, Charsets.ISO_8859_1));
 		try {
 			for (String command = reader.readLine(); command != null; command = reader.readLine()) {
 				if ("acquire".equals(command)) {

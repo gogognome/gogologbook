@@ -23,20 +23,24 @@ public class SingleFileDatabase {
 	private final File dbFile;
 	private final BinarySemaphoreWithFileLock semaphore;
 	private final Logger logger = LoggerFactory.getLogger(SingleFileDatabase.class);
-	private final Gson gson = new Gson();
 	private final ParserHelper parserHelper = new ParserHelper();
 	private final SingleFileDatabaseDAORegistry daoRegistry = new SingleFileDatabaseDAORegistry();
+	private final Gson gson = new Gson();
 
 	private final Map<String, Parser> actionToParser = ImmutableMap.of(
 			INSERT, new InsertParser(),
 			UPDATE, new UpdateParser(),
 			DELETE, new DeleteParser());
 
+	private final Metadata metadata;
+
 	private final static Map<File, BinarySemaphoreWithFileLock> FILE_TO_SEMAPHORE = Maps.newHashMap();
 
 	public SingleFileDatabase(File dbFile) {
 		this.dbFile = dbFile;
 		this.semaphore = getSemaphoreForFile(dbFile);
+		this.metadata = new Metadata();
+		this.metadata.databaseVersion = 1;
 	}
 
 	private static synchronized BinarySemaphoreWithFileLock getSemaphoreForFile(File dbFile) {
@@ -65,9 +69,10 @@ public class SingleFileDatabase {
 	}
 
 	private void appendRecordToFile(String tableName, String action, Object record) {
+		ensureMetadataIsWritten();
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(dbFile, true));
+			writer = createBufferedWriter();
 			writer.append(action);
 			writer.append(';');
 			writer.append(tableName);
@@ -80,10 +85,36 @@ public class SingleFileDatabase {
 					+ dbFile.getAbsolutePath(), e);
 		} finally {
 			try {
-				writer.flush();
-				writer.close();
+				if (writer != null) {
+					writer.close();
+				}
 			} catch (IOException e) {
 				logger.warn("Problem occurred while closing file " + dbFile.getAbsolutePath(), e);
+			}
+		}
+	}
+
+	private BufferedWriter createBufferedWriter() throws FileNotFoundException {
+		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dbFile, true), Charsets.ISO_8859_1));
+	}
+
+	private void ensureMetadataIsWritten() {
+		if (dbFile.length() == 0) {
+			BufferedWriter writer = null;
+			try {
+				writer = createBufferedWriter();
+				writer.append(gson.toJson(metadata));
+				writer.newLine();
+			} catch (IOException e) {
+				throw new RuntimeException("Problem occurred while writing metadata to the file " + dbFile.getAbsolutePath(), e);
+			} finally {
+				try {
+					if (writer != null) {
+						writer.close();
+					}
+				} catch (IOException e) {
+					logger.warn("Problem occurred while closing file " + dbFile.getAbsolutePath(), e);
+				}
 			}
 		}
 	}
@@ -91,11 +122,19 @@ public class SingleFileDatabase {
 	public void initInMemDatabaseFromFile() {
 		BufferedReader reader = null;
 		try {
+			reader = Files.newReader(dbFile, Charsets.ISO_8859_1);
+			String serializedMetadata = reader.readLine();
+			if (serializedMetadata != null) {
+				Metadata fileMetadata = gson.fromJson(serializedMetadata, Metadata.class);
+				if (fileMetadata.databaseVersion != metadata.databaseVersion) {
+					throw new RuntimeException("File cotains database version " + fileMetadata.databaseVersion + " while version " +
+							metadata.databaseVersion + " is expected.");
+				}
+			}
 			for (SingleFileDatabaseDAO dao : daoRegistry.getAllDAOs()) {
 				dao.removeAllRecordsFromInMemoryDatabase();
 			}
 
-			reader = Files.newReader(dbFile, Charsets.ISO_8859_1);
 			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
 				parseAndExecuteStatement(line);
 			}

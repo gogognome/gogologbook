@@ -7,6 +7,7 @@ import org.junit.Before;
 
 public class AbstractSingleFileDAOTest {
 
+	protected final static String METADATA = "{\"databaseVersion\":1}\n";
 	protected final File dbFile = new File("target/test/testdb.txt");
 
 	@Before
