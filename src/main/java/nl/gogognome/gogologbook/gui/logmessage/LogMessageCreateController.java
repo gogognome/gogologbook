@@ -1,5 +1,6 @@
 package nl.gogognome.gogologbook.gui.logmessage;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -16,6 +17,7 @@ import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
 import nl.gogognome.lib.gui.Closeable;
+import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.text.TextResource;
 import nl.gogognome.lib.util.Factory;
 import nl.gogognome.lib.util.StringUtil;
@@ -24,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class LogMessageCreateController implements Closeable, SessionListener {
 
+	private final Component parentComponent;
 	private final LogMessageCreateModel model = new LogMessageCreateModel();
 	private final TextResource textResource = Factory.getInstance(TextResource.class);
 	private final LogMessageCreateInteractor logMessageCreateInteractor = InteractorFactory.getInteractor(LogMessageCreateInteractor.class);
@@ -31,7 +34,8 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 	private final ProjectInteractor projectInteractor = InteractorFactory.getInteractor(ProjectInteractor.class);
 	private final CategoryInteractor categoryInteractor = InteractorFactory.getInteractor(CategoryInteractor.class);
 
-	public LogMessageCreateController() {
+	public LogMessageCreateController(Component parentComponent) {
+		this.parentComponent = parentComponent;
 		model.usersModel.setItems(userInteractor.findAllUsers());
 		model.projectsModel.setItems(projectInteractor.findAllProjects());
 		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
@@ -52,6 +56,9 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 	}
 
 	public void createLogMessage() {
+		if (!validateInput()) {
+			return;
+		}
 		LogMessageCreateParams params = new LogMessageCreateParams();
 		params.category = model.categoriesModel.getSelectedItem().name;
 		params.message = StringUtil.nullToEmptyString(model.messageModel.getString()).trim();
@@ -60,13 +67,32 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 
 		try {
 			logMessageCreateInteractor.createMessage(params);
-			model.resultModel.setString(textResource.getString("logMessageCreateView_logMessageAdded"));
 		} catch (Exception e) {
-			model.resultModel.setString(textResource.getString("logMessageCreateView_logMessageFailed", e.getLocalizedMessage()));
 			LoggerFactory.getLogger(LogMessageCreateController.class).warn("Failed to log message", e);
+			MessageDialog.showErrorMessage(parentComponent, "logMessageCreateView_logMessageFailed", e.getLocalizedMessage());
 		}
 
 		SessionManager.getInstance().notifyListeners(new LogMessageCreatedEvent());
+	}
+
+	private boolean validateInput() {
+		if (model.usersModel.getSelectedItem() == null) {
+			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_user_selected");
+			return false;
+		}
+		if (model.projectsModel.getSelectedItem() == null) {
+			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_project_selected");
+			return false;
+		}
+		if (model.categoriesModel.getSelectedItem() == null) {
+			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_category_selected");
+			return false;
+		}
+		if (StringUtil.isNullOrEmpty(model.messageModel.getString())) {
+			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_message_entered");
+			return false;
+		}
+		return true;
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class LogMessageCreateView extends View {
 
 	private static final long serialVersionUID = 1L;
 
-	private final LogMessageCreateController controller = new LogMessageCreateController();
+	private final LogMessageCreateController controller = new LogMessageCreateController(this);
 	private final LogMessageCreateModel model = controller.getModel();
 
 	@Override
@@ -54,7 +54,6 @@ public class LogMessageCreateView extends View {
 		ActionWrapper actionWrapper = widgetFactory.createAction("logMessageCreateView_add");
 		actionWrapper.setAction(controller.getCreateAction());
 		panel.addButton("logMessageCreateView_add", actionWrapper);
-		panel.add(beanFactory.createLabelBean(model.resultModel));
 		return panel;
 	}
 

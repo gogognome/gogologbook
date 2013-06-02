@@ -10,9 +10,6 @@ public class LogMessageCreateModel {
 
 	public ListModel<User> usersModel = new ListModel<User>();
 	public ListModel<ProjectFindResult> projectsModel = new ListModel<ProjectFindResult>();
-	public StringModel townModel = new StringModel();
 	public ListModel<Category> categoriesModel = new ListModel<Category>();
 	public StringModel messageModel = new StringModel();
-
-	public StringModel resultModel = new StringModel();
 }
