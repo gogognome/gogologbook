@@ -36,7 +36,15 @@ public class Start {
 		initSession();
 		initFactory(Locale.getDefault());
 		DefaultLookAndFeel.useDefaultLookAndFeel();
-		parseArguments(args);
+
+		try {
+			parseArguments(args);
+		} catch (Exception e) {
+			System.out.println("Invalid arguments specified: " + e.getLocalizedMessage());
+			new UsagePrint(Factory.getInstance(TextResource.class)).printUsage();
+			return;
+		}
+
 		registerDAOs();
 		registerInteractors();
 		initFrame();
@@ -95,5 +103,4 @@ public class Start {
 		SwingUtils.center(mainFrame);
 		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
-
 }
