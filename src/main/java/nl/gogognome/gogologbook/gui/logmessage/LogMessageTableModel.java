@@ -34,7 +34,7 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 
 	private final static ColumnDefinition CATEGORY = new ColumnDefinition("LogEntryTableModel_category", String.class, 100);
 
-	private final static ColumnDefinition MESSAGE = new ColumnDefinition.Builder("LogEntryTableModel_message", String.class, 300)
+	private final static ColumnDefinition MESSAGE = new ColumnDefinition.Builder("LogEntryTableModel_message", String.class, 500)
 			.add(new MultilineCellRenderer()).build();
 
 	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists

@@ -21,16 +21,28 @@ public class SingleFileLogMessageDAO implements LogMessageDAO, SingleFileDatabas
 	}
 
 	@Override
-	public LogMessage createMessage(LogMessage message) {
+	public LogMessage createMessage(LogMessage logMessage) {
 		try {
 			singleFileDatabase.acquireLock();
 			singleFileDatabase.initInMemDatabaseFromFile();
-			message = inMemoryLogMessageDao.createMessage(message);
-			singleFileDatabase.appendInsertToFile(TABLE_NAME, message);
+			logMessage = inMemoryLogMessageDao.createMessage(logMessage);
+			singleFileDatabase.appendInsertToFile(TABLE_NAME, logMessage);
 		} finally {
 			singleFileDatabase.releaseLock();
 		}
-		return message;
+		return logMessage;
+	}
+
+	@Override
+	public void updateMessage(LogMessage logMessage) {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+			inMemoryLogMessageDao.updateMessage(logMessage);
+			singleFileDatabase.appendUpdateToFile(TABLE_NAME, logMessage);
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
 	}
 
 	@Override
@@ -68,7 +80,8 @@ public class SingleFileLogMessageDAO implements LogMessageDAO, SingleFileDatabas
 
 	@Override
 	public void updateRecordInMemoryDatabase(Object record) {
-		throw new DAOException("Unsupported operation");
+		LogMessage logMessage = (LogMessage) record;
+		inMemoryLogMessageDao.updateMessage(logMessage);
 	}
 
 	@Override

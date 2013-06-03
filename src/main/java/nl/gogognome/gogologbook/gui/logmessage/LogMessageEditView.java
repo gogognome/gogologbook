@@ -7,27 +7,31 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
 import nl.gogognome.lib.gui.beans.InputFieldsColumn;
-import nl.gogognome.lib.swing.ActionWrapper;
 import nl.gogognome.lib.swing.ButtonPanel;
 import nl.gogognome.lib.swing.views.View;
 
-public class LogMessageCreateView extends View {
+public class LogMessageEditView extends View {
 
 	private static final long serialVersionUID = 1L;
 
-	private final LogMessageCreateController controller = new LogMessageCreateController(this);
-	private final LogMessageCreateModel model = controller.getModel();
+	private final LogMessageEditController controller = new LogMessageEditController(this);
+	private final LogMessageEditModel model = controller.getModel();
+
+	public LogMessageEditView(LogMessageFindResult logMessageUnderEdit) {
+		controller.setLogMessageUnderEdit(logMessageUnderEdit);
+	}
 
 	@Override
 	public String getTitle() {
-		return textResource.getString("logMessageCreateView_title");
+		return textResource.getString("logMessageEditView_title");
 	}
 
 	@Override
 	public void onInit() {
-		addCloseable(controller);
 		addComponents();
+		controller.setCloseAction(closeAction);
 	}
 
 	@Override
@@ -46,9 +50,8 @@ public class LogMessageCreateView extends View {
 
 	private JPanel createButtonPanel() {
 		ButtonPanel panel = new ButtonPanel(SwingConstants.LEFT);
-		ActionWrapper actionWrapper = widgetFactory.createAction("logMessageCreateView_add");
-		actionWrapper.setAction(controller.getCreateAction());
-		panel.addButton("logMessageCreateView_add", actionWrapper);
+		panel.addButton("gen.ok", controller.getOkAction());
+		panel.addButton("gen.cancel", closeAction);
 		return panel;
 	}
 

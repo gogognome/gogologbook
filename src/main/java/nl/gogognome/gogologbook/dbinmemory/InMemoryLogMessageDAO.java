@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.entities.FilterCriteria;
 import nl.gogognome.gogologbook.entities.LogMessage;
@@ -26,6 +27,18 @@ public class InMemoryLogMessageDAO implements LogMessageDAO {
 		LogMessage storedMessage = cloneLogMessage(logMessage, maxId + 1);
 		idToMessage.put(storedMessage.id, storedMessage);
 		return cloneLogMessage(storedMessage, storedMessage.id);
+	}
+
+	@Override
+	public void updateMessage(LogMessage logMessage) {
+		LogMessage oldLogMessage = idToMessage.get(logMessage.id);
+		if (oldLogMessage == null) {
+			throw new DAOException("Cannot update message " + logMessage.id + " because no record with this id exists.");
+		}
+
+		LogMessage storedMessage = cloneLogMessage(logMessage, logMessage.id);
+		storedMessage.timestamp = oldLogMessage.timestamp;
+		idToMessage.put(storedMessage.id, storedMessage);
 	}
 
 	@Override

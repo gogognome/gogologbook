@@ -9,6 +9,8 @@ public interface LogMessageDAO {
 
 	LogMessage createMessage(LogMessage message);
 
+	void updateMessage(LogMessage message);
+
 	List<LogMessage> findLogMessagesByDescendingDate(FilterCriteria filter);
 
 	boolean isProjectUsed(int projectId);

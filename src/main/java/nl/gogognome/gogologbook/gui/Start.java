@@ -90,7 +90,7 @@ public class Start {
 
 	private void registerInteractors() {
 		InteractorFactory.registerInteractor(CategoryInteractor.class, new CategoryInteractor());
-		InteractorFactory.registerInteractor(LogMessageCreateInteractor.class, new LogMessageCreateInteractor());
+		InteractorFactory.registerInteractor(LogMessageInteractor.class, new LogMessageInteractor());
 		InteractorFactory.registerInteractor(LogMessageFindInteractor.class, new LogMessageFindInteractor());
 		InteractorFactory.registerInteractor(ProjectInteractor.class, new ProjectInteractor());
 		InteractorFactory.registerInteractor(UserInteractor.class, new UserInteractor());

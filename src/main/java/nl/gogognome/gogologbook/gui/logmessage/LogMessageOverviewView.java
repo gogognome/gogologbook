@@ -13,7 +13,7 @@ public class LogMessageOverviewView extends View {
 
 	private static final long serialVersionUID = 1L;
 
-	private final LogMessageOverviewController controller = new LogMessageOverviewController();
+	private final LogMessageOverviewController controller = new LogMessageOverviewController(this);
 	private final LogMessageOverviewModel model = controller.getModel();
 
 	@Override
@@ -28,10 +28,12 @@ public class LogMessageOverviewView extends View {
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		JTable table = widgetFactory.createSortedTable(model.logMessageTableModel);
+		table.setSelectionModel(controller.getModel().selectionModel);
 		add(widgetFactory.createScrollPane(table), BorderLayout.CENTER);
 
 		ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.LEFT);
 		buttonPanel.addButton("logMessageOverview_refresh", controller.getRefreshAction());
+		buttonPanel.addButton("logMessageOverview_edit", controller.getEditAction());
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 

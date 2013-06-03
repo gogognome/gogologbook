@@ -2,9 +2,9 @@ package nl.gogognome.gogologbook.dbinmemory;
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.entities.FilterCriteria;
 import nl.gogognome.gogologbook.entities.LogMessage;
 import nl.gogognome.lib.util.DateUtil;
@@ -17,23 +17,23 @@ public class InMemoryLogMessageDAOTest {
 
 	@Test
 	public void shouldFindCreatedMessages() {
-		LogMessage message = new LogMessage();
-		message.message = "test";
-		message.userId = 1;
-		message.projectId = 2;
-		message.timestamp = new Date();
-		logMessageDao.createMessage(message);
+		LogMessage logMessage = createSomeLogMessage();
+		logMessageDao.createMessage(logMessage);
 
 		FilterCriteria filter = new FilterCriteria();
 		List<LogMessage> foundMessages = logMessageDao.findLogMessagesByDescendingDate(filter);
 
 		assertEquals(1, foundMessages.size());
 		LogMessage foundMessage = foundMessages.get(0);
-		assertNotSame(message, foundMessage);
-		assertEquals(message.message, foundMessage.message);
-		assertEquals(message.userId, foundMessage.userId);
-		assertEquals(message.projectId, foundMessage.projectId);
-		assertEquals(message.timestamp, foundMessage.timestamp);
+		assertNotSame(logMessage, foundMessage);
+		assertAttributesEqual(logMessage, foundMessage);
+	}
+
+	private void assertAttributesEqual(LogMessage expectedLogMessage, LogMessage actualLogMessage) {
+		assertEquals(expectedLogMessage.message, actualLogMessage.message);
+		assertEquals(expectedLogMessage.userId, actualLogMessage.userId);
+		assertEquals(expectedLogMessage.projectId, actualLogMessage.projectId);
+		assertEquals(expectedLogMessage.timestamp, actualLogMessage.timestamp);
 	}
 
 	@Test
@@ -98,6 +98,46 @@ public class InMemoryLogMessageDAOTest {
 
 		LogMessage foundMessage2 = foundMessages.get(1);
 		assertEquals(message2.message, foundMessage2.message);
+	}
+
+	@Test(expected = DAOException.class)
+	public void shouldFailWhenUpdatingNonExistingLogMessage() {
+		LogMessage logMessage = new LogMessage(1);
+		logMessageDao.updateMessage(logMessage);
+	}
+
+	@Test
+	public void shouldUpdateAllFieldsExceptTimestamp() {
+		LogMessage logMessage1 = createSomeLogMessage();
+		logMessage1 = logMessageDao.createMessage(logMessage1);
+
+		LogMessage logMessage2 = new LogMessage(logMessage1.id);
+		logMessage2.message = "test update";
+		logMessage2.userId = 2;
+		logMessage2.projectId = 3;
+		logMessage2.timestamp = DateUtil.createDate(2013, 5, 10);
+
+		logMessageDao.updateMessage(logMessage2);
+
+		FilterCriteria filter = new FilterCriteria();
+		List<LogMessage> foundMessages = logMessageDao.findLogMessagesByDescendingDate(filter);
+
+		assertEquals(1, foundMessages.size());
+		LogMessage foundMessage = foundMessages.get(0);
+		assertNotSame(logMessage2, foundMessage);
+		assertEquals(logMessage2.message, foundMessage.message);
+		assertEquals(logMessage2.userId, foundMessage.userId);
+		assertEquals(logMessage2.projectId, foundMessage.projectId);
+		assertEquals(logMessage1.timestamp, foundMessage.timestamp);
+	}
+
+	private LogMessage createSomeLogMessage() {
+		LogMessage logMessage = new LogMessage();
+		logMessage.message = "test";
+		logMessage.userId = 1;
+		logMessage.projectId = 2;
+		logMessage.timestamp = DateUtil.createDate(2013, 1, 1);
+		return logMessage;
 	}
 
 	@Test

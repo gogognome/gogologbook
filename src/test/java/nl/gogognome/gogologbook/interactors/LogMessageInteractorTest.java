@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.entities.LogMessage;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
+import nl.gogognome.gogologbook.interactors.boundary.LogMessageUpdateParams;
 import nl.gogognome.gogologbook.util.DaoFactory;
 
 import org.junit.After;
@@ -13,9 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class LogMessageCreateInteractorTest {
+public class LogMessageInteractorTest {
 
-	private final LogMessageCreateInteractor logMessageCreateInteractor = new LogMessageCreateInteractor();
+	private final LogMessageInteractor logMessageCreateInteractor = new LogMessageInteractor();
 	private final LogMessageDAO logMessageDao = mock(LogMessageDAO.class);
 
 	@Before
@@ -44,5 +45,12 @@ public class LogMessageCreateInteractorTest {
 
 		verify(logMessageDao).createMessage(logMessageArgument.capture());
 		assertNotNull(logMessageArgument.getValue().timestamp);
+	}
+
+	@Test
+	public void shouldUseDaoToUpdateLogMessage() {
+		LogMessageUpdateParams params = new LogMessageUpdateParams();
+		logMessageCreateInteractor.updateMessage(params);
+		verify(logMessageDao).updateMessage(any(LogMessage.class));
 	}
 }

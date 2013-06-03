@@ -2,74 +2,109 @@ package nl.gogognome.gogologbook.gui.logmessage;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import nl.gogognome.gogologbook.gui.project.ProjectChangedEvent;
-import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
-import nl.gogognome.gogologbook.gui.session.SessionListener;
+import nl.gogognome.gogologbook.entities.Category;
+import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageInteractor;
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
-import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
-import nl.gogognome.lib.gui.Closeable;
+import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
+import nl.gogognome.gogologbook.interactors.boundary.LogMessageUpdateParams;
+import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
 import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.util.StringUtil;
 
 import org.slf4j.LoggerFactory;
 
-public class LogMessageCreateController implements Closeable, SessionListener {
+import com.google.common.base.Objects;
+
+public class LogMessageEditController {
 
 	private final Component parentComponent;
-	private final LogMessageCreateModel model = new LogMessageCreateModel();
-	private final LogMessageInteractor logMessageCreateInteractor = InteractorFactory.getInteractor(LogMessageInteractor.class);
+	private final LogMessageEditModel model = new LogMessageEditModel();
+	private final LogMessageInteractor logMessageInteractor = InteractorFactory.getInteractor(LogMessageInteractor.class);
 	private final UserInteractor userInteractor = InteractorFactory.getInteractor(UserInteractor.class);
 	private final ProjectInteractor projectInteractor = InteractorFactory.getInteractor(ProjectInteractor.class);
 	private final CategoryInteractor categoryInteractor = InteractorFactory.getInteractor(CategoryInteractor.class);
+	private Action closeAction;
 
-	public LogMessageCreateController(Component parentComponent) {
+	public LogMessageEditController(Component parentComponent) {
 		this.parentComponent = parentComponent;
+
 		model.usersModel.setItems(userInteractor.findAllUsers());
 		model.projectsModel.setItems(projectInteractor.findAllProjects());
 		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
-		SessionManager.getInstance().addSessionListener(this);
 	}
 
-	@Override
-	public void close() {
-		SessionManager.getInstance().removeSessionListener(this);
-	}
-
-	public LogMessageCreateModel getModel() {
+	public LogMessageEditModel getModel() {
 		return model;
 	}
 
-	public Action getCreateAction() {
-		return new CreateLogMessageAction();
+	public void setLogMessageUnderEdit(LogMessageFindResult logMessageUnderEdit) {
+		model.logMessageUnderEdit = logMessageUnderEdit;
+
+		List<User> users = model.usersModel.getItems();
+		for (int i = 0; i < users.size(); i++) {
+			if (Objects.equal(users.get(i).name, logMessageUnderEdit.username)) {
+				model.usersModel.setSelectedIndex(i, null);
+				break;
+			}
+		}
+
+		List<ProjectFindResult> projects = model.projectsModel.getItems();
+		for (int i = 0; i < projects.size(); i++) {
+			if (Objects.equal(projects.get(i).projectNr, logMessageUnderEdit.projectNr)) {
+				model.projectsModel.setSelectedIndex(i, null);
+				break;
+			}
+		}
+
+		List<Category> categories = model.categoriesModel.getItems();
+		for (int i = 0; i < categories.size(); i++) {
+			if (Objects.equal(categories.get(i).name, logMessageUnderEdit.category)) {
+				model.categoriesModel.setSelectedIndex(i, null);
+				break;
+			}
+		}
+
+		model.messageModel.setString(logMessageUnderEdit.message);
 	}
 
-	public void createLogMessage() {
+	public void setCloseAction(Action closeAction) {
+		this.closeAction = closeAction;
+	}
+
+	public Action getOkAction() {
+		return new UpdateLogMessageAction();
+	}
+
+	public void updateLogMessage() {
 		if (!validateInput()) {
 			return;
 		}
-		LogMessageCreateParams params = new LogMessageCreateParams();
+		LogMessageUpdateParams params = new LogMessageUpdateParams();
+		params.id = model.logMessageUnderEdit.id;
 		params.category = model.categoriesModel.getSelectedItem().name;
 		params.message = StringUtil.nullToEmptyString(model.messageModel.getString()).trim();
 		params.projectId = model.projectsModel.getSelectedItem().id;
 		params.userId = model.usersModel.getSelectedItem().id;
 
 		try {
-			logMessageCreateInteractor.createMessage(params);
+			logMessageInteractor.updateMessage(params);
+			closeAction.actionPerformed(null);
 		} catch (Exception e) {
 			LoggerFactory.getLogger(LogMessageCreateController.class).warn("Failed to log message", e);
-			MessageDialog.showErrorMessage(parentComponent, "logMessageCreateView_logMessageFailed", e.getLocalizedMessage());
+			MessageDialog.showErrorMessage(parentComponent, "logMessageEditView_logEntryUpdateFailed", e.getLocalizedMessage());
 		}
 
-		SessionManager.getInstance().notifyListeners(new LogMessageCreatedEvent());
+		SessionManager.getInstance().notifyListeners(new LogMessageUpdateEvent());
 	}
 
 	private boolean validateInput() {
@@ -92,19 +127,13 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 		return true;
 	}
 
-	@Override
-	public void sessionChanged(SessionChangeEvent event) {
-		if (event instanceof ProjectChangedEvent) {
-			model.projectsModel.setItems(projectInteractor.findAllProjects());
-		}
-	}
-
-	private class CreateLogMessageAction extends AbstractAction {
+	private class UpdateLogMessageAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			createLogMessage();
+			updateLogMessage();
 		}
 	}
+
 }
