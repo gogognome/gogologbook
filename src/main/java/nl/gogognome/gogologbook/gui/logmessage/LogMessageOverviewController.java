@@ -8,11 +8,15 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ListSelectionModel;
 
+import nl.gogognome.gogologbook.entities.Category;
+import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.gogologbook.gui.project.ProjectChangedEvent;
 import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
 import nl.gogognome.gogologbook.gui.session.SessionListener;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
+import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageFindInteractor;
+import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindParams;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
@@ -24,11 +28,15 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 
 	private final LogMessageOverviewModel model = new LogMessageOverviewModel();
 	private final LogMessageFindInteractor logMessageFindInteractor = InteractorFactory.getInteractor(LogMessageFindInteractor.class);
+	private final CategoryInteractor categoryInteractor = InteractorFactory.getInteractor(CategoryInteractor.class);
+	private final UserInteractor userInteractor = InteractorFactory.getInteractor(UserInteractor.class);
 	private final Component parentComponent;
 
 	public LogMessageOverviewController(Component parentComponent) {
 		SessionManager.getInstance().addSessionListener(this);
 		this.parentComponent = parentComponent;
+		model.usersModel.setItems(userInteractor.findAllUsers());
+		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
 		model.selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		refresh();
 	}
@@ -43,9 +51,7 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 	}
 
 	public void refresh() {
-		LogMessageFindParams params = new LogMessageFindParams();
-		List<LogMessageFindResult> logMessages = logMessageFindInteractor.findLogMessagesByDescendingDate(params);
-		model.logMessageTableModel.setLogMessages(logMessages);
+		filterMessages();
 	}
 
 	public void editLogMessage() {
@@ -58,12 +64,37 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 		new ViewDialog(parentComponent, view).showDialog();
 	}
 
+	public void filterMessages() {
+		LogMessageFindParams params = createLogMessageFindParameters();
+		List<LogMessageFindResult> logMessages = logMessageFindInteractor.findLogMessagesByDescendingDate(params);
+		model.logMessageTableModel.setLogMessages(logMessages);
+	}
+
+	private LogMessageFindParams createLogMessageFindParameters() {
+		LogMessageFindParams params = new LogMessageFindParams();
+		params.from = model.fromDate.getDate();
+		params.to = model.toDate.getDate();
+		User user = model.usersModel.getSelectedItem();
+		params.user = user != null ? user.name : null;
+		params.project = model.project.getString();
+		params.customer = model.customer.getString();
+		params.town = model.town.getString();
+		Category category = model.categoriesModel.getSelectedItem();
+		params.category = category != null ? category.name : null;
+		params.message = model.message.getString();
+		return params;
+	}
+
 	public Action getRefreshAction() {
 		return new RefreshAction();
 	}
 
 	public Action getEditAction() {
 		return new EditAction();
+	}
+
+	public Action getFilterAction() {
+		return new FilterAction();
 	}
 
 	@Override
@@ -90,4 +121,14 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 			editLogMessage();
 		}
 	}
+
+	private class FilterAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			filterMessages();
+		}
+	}
+
 }

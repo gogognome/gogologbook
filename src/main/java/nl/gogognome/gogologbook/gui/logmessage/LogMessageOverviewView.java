@@ -5,8 +5,11 @@ import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
+import nl.gogognome.lib.gui.beans.InputFieldsRow;
 import nl.gogognome.lib.swing.ButtonPanel;
+import nl.gogognome.lib.swing.SwingUtils;
 import nl.gogognome.lib.swing.views.View;
 
 public class LogMessageOverviewView extends View {
@@ -35,6 +38,20 @@ public class LogMessageOverviewView extends View {
 		buttonPanel.addButton("logMessageOverview_refresh", controller.getRefreshAction());
 		buttonPanel.addButton("logMessageOverview_edit", controller.getEditAction());
 		add(buttonPanel, BorderLayout.SOUTH);
+
+		InputFieldsRow searchCriteria = new InputFieldsRow();
+		searchCriteria.setBorder(new EmptyBorder(0, 0, 10, 0));
+		searchCriteria.addField("logMessageOverview_fromDate", model.fromDate);
+		searchCriteria.addField("logMessageOverview_toDate", model.toDate);
+		searchCriteria.addComboBoxField("logMessageOverview_user", model.usersModel, new UserFormatter());
+		searchCriteria.addField("logMessageOverview_project", model.project);
+		searchCriteria.addField("logMessageOverview_customer", model.customer);
+		searchCriteria.addField("logMessageOverview_town", model.town);
+		searchCriteria.addComboBoxField("logMessageOverview_category", model.categoriesModel, new CategoryFormatter());
+		searchCriteria.addField("logMessageOverview_message", model.message);
+		searchCriteria.add(widgetFactory.createButton("logMessageOverview_filter", controller.getFilterAction()),
+				SwingUtils.createLabelGBConstraints(22, 0));
+		add(searchCriteria, BorderLayout.NORTH);
 	}
 
 	@Override
