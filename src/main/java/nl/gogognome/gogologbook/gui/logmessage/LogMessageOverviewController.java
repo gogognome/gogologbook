@@ -35,8 +35,10 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 	public LogMessageOverviewController(Component parentComponent) {
 		SessionManager.getInstance().addSessionListener(this);
 		this.parentComponent = parentComponent;
-		model.usersModel.setItems(userInteractor.findAllUsers());
-		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
+		model.usersModel.addItem(new User());
+		model.usersModel.addItems(userInteractor.findAllUsers());
+		model.categoriesModel.addItem(new Category());
+		model.categoriesModel.addItems(categoryInteractor.findAllCategories());
 		model.selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		refresh();
 	}

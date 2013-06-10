@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 /**
  * This class implements a model for a list of items.
  *
@@ -26,12 +28,11 @@ import java.util.List;
  */
 public class ListModel<T> extends AbstractModel {
 
-	private List<T> items;
+	private final List<T> items = Lists.newArrayList();
 
 	private int[] selectedIndices = new int[0];
 
-	public ListModel() {
-	}
+	public ListModel() {}
 
 	public ListModel(List<T> items) {
 		setItems(items);
@@ -49,21 +50,50 @@ public class ListModel<T> extends AbstractModel {
 	 * Sets the items for the list model.
 	 * @param items the items
 	 * @param source the model change listener that sets the items.  It will not
-     *        get notified. It may be null.
+	 *        get notified. It may be null.
 	 */
 	public void setItems(List<T> items, ModelChangeListener source) {
-		this.items = new ArrayList<T>(items);
+		this.items.clear();
+		this.items.addAll(items);
 		notifyListeners(source);
 	}
 
 	/**
 	 * Adds an item to the list model.
 	 * @param item the item
+	 */
+	public void addItem(T item) {
+		addItem(item, null);
+	}
+
+	/**
+	 * Adds an item to the list model.
+	 * @param item the item
 	 * @param source the model change listener that sets the items.  It will not
-     *        get notified. It may be null.
+	 *        get notified. It may be null.
 	 */
 	public void addItem(T item, ModelChangeListener source) {
 		items.add(item);
+		notifyListeners(source);
+	}
+
+	/**
+	 * Adds items to the list model.
+	 * @param items the items
+	 */
+	public void addItems(Iterable<T> items) {
+		addItems(items, null);
+	}
+
+	/**
+	 * Adds items to the list model.
+	 * @param items the items
+	 * @param source the model change listener that sets the items.  It will not get notified. It may be null.
+	 */
+	public void addItems(Iterable<T> items, ModelChangeListener source) {
+		for (T item : items) {
+			this.items.add(item);
+		}
 		notifyListeners(source);
 	}
 
@@ -75,7 +105,7 @@ public class ListModel<T> extends AbstractModel {
 	 * Sets the selected index.
 	 * @param selectedIndex the selected index. -1 indicates that no item is selected
 	 * @param source the model change listener that sets the items.  It will not
-     *        get notified. It may be <code>null</code>.
+	 *        get notified. It may be <code>null</code>.
 	 */
 	public void setSelectedIndex(int selectedIndex, ModelChangeListener source) {
 		int[] indices;
@@ -91,7 +121,7 @@ public class ListModel<T> extends AbstractModel {
 	 * Sets the selected indices.
 	 * @param selectedIndices the selected indices
 	 * @param source the model change listener that sets the items.  It will not
-     *        get notified. It may be <code>null</code>.
+	 *        get notified. It may be <code>null</code>.
 	 */
 	public void setSelectedIndices(int[] selectedIndices, ModelChangeListener source) {
 		if (!Arrays.equals(this.selectedIndices, selectedIndices)) {
@@ -134,7 +164,7 @@ public class ListModel<T> extends AbstractModel {
 	 * Selects a single item.
 	 * @param item the item
 	 * @param source the model change listener that sets the items.  It will not
-     *        get notified. It may be <code>null</code>.
+	 *        get notified. It may be <code>null</code>.
 	 */
 	public void setSelectedItem(T item, ModelChangeListener source) {
 		int index = items.indexOf(item);
