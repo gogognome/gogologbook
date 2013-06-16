@@ -161,18 +161,6 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 		addLabelAndFieldWithConstraints(labelId, component, getVariableSizeFieldConstraints());
 	}
 
-	/**
-	 * Adds a field to edit a string.
-	 * 
-	 * @param labelId
-	 *            the id of the label that is put in front of the text field
-	 * @param model
-	 *            the model controlling the text field
-	 */
-	public void addField(String labelId, DateModel model) {
-		addLabelAndFieldWithConstraints(labelId, beanFactory.createDateSelectionBean(model), getFixedSizeFieldConstraints());
-	}
-
 	public void addTetxtArea(String labelId, StringModel model) {
 		addVariableSizeField(labelId, beanFactory.createTextAreaBean(model, 0, 5));
 
@@ -190,6 +178,29 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 		ComboBoxBean<T> bean = beanFactory.createComboBoxBean(model);
 		bean.setItemFormatter(itemFormatter);
 		addLabelAndFieldWithConstraints(labelId, bean, getFixedSizeFieldConstraints());
+	}
+
+	/**
+	 * Adds a field to edit a date.
+	 * 
+	 * @param labelId
+	 *            the id of the label that is put in front of the text field
+	 * @param model
+	 *            the model controlling the text field
+	 */
+	public void addDateField(String labelId, DateModel model) {
+		addLabelAndFieldWithConstraints(labelId, beanFactory.createDateSelectionBean(model), getFixedSizeFieldConstraints());
+	}
+
+	/**
+	 * Adds a field to edit a timestamp with minute accuracy.
+	 * @param labelId
+	 *            the id of the label that is put in front of the text field
+	 * @param model
+	 *            the model controlling the text field
+	 */
+	public void addTimestampFieldWithMinuteAccuracy(String labelId, DateModel model) {
+		addLabelAndFieldWithConstraints(labelId, beanFactory.createTimestampSelectionBeanWithMinuteAccuracy(model), getFixedSizeFieldConstraints());
 	}
 
 	protected void addLabelAndFieldWithConstraints(String labelId, JComponent component, GridBagConstraints constraints) {

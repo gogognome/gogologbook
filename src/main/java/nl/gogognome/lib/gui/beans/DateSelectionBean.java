@@ -38,45 +38,55 @@ import nl.gogognome.lib.util.Factory;
 public class DateSelectionBean extends AbstractTextFieldBean<DateModel> {
 
 	private static final long serialVersionUID = 1L;
+	private final String dateFormatId;
 
-    /**
-     * Constructor.
-     * @param dateModel the date model that will reflect the content of the bean
-     */
-    protected DateSelectionBean(DateModel dateModel) {
-    	super(dateModel, 10);
-    }
+	public static DateSelectionBean createBeanForTimestampWithMinuteAccuracy(DateModel model) {
+		return new DateSelectionBean(model, "gen.timestampFormat.hhmm", 12);
+	}
 
-    @Override
-    public void initBean() {
-    	super.initBean();
-    	WidgetFactory wf = Factory.getInstance(WidgetFactory.class);
-    	JButton button = wf.createIconButton("gen.btnCalendar", new ShowCalendarPopupAction(), 21);
-    	add(button);
-    }
+	public static DateSelectionBean createBeanForTimestampWithSecondAccuracy(DateModel model) {
+		return new DateSelectionBean(model, "gen.timestampFormat.hhmmss", 14);
+	}
+
+	public static DateSelectionBean createBeanForDate(DateModel model) {
+		return new DateSelectionBean(model, "gen.dateFormat", 10);
+	}
+
+	private DateSelectionBean(DateModel dateModel, String dateFormatId, int nrColumns) {
+		super(dateModel, nrColumns);
+		this.dateFormatId = dateFormatId;
+	}
 
 	@Override
-    protected String getStringFromModel() {
-        Date date = model.getDate();
-        if (date != null) {
-            return Factory.getInstance(TextResource.class).formatDate("gen.dateFormat", date);
-        } else {
-            return "";
-        }
-    }
+	public void initBean() {
+		super.initBean();
+		WidgetFactory wf = Factory.getInstance(WidgetFactory.class);
+		JButton button = wf.createIconButton("gen.btnCalendar", new ShowCalendarPopupAction(), 21);
+		add(button);
+	}
 
-    @Override
-    protected void parseUserInput(String text,
-    		ModelChangeListener modelChangeListener) throws ParseException {
-    	Date date = null;
-        try {
-            date = Factory.getInstance(TextResource.class).parseDate("gen.dateFormat", text);
-        } finally {
-        	// Set the date in the finally block. This ensures that the
-        	// model is cleared in case a ParseException is thrown
-            model.setDate(date, modelChangeListener);
-        }
-    }
+	@Override
+	protected String getStringFromModel() {
+		Date date = model.getDate();
+		if (date != null) {
+			return Factory.getInstance(TextResource.class).formatDate(dateFormatId, date);
+		} else {
+			return "";
+		}
+	}
+
+	@Override
+	protected void parseUserInput(String text,
+			ModelChangeListener modelChangeListener) throws ParseException {
+		Date date = null;
+		try {
+			date = Factory.getInstance(TextResource.class).parseDate(dateFormatId, text);
+		} finally {
+			// Set the date in the finally block. This ensures that the
+			// model is cleared in case a ParseException is thrown
+			model.setDate(date, modelChangeListener);
+		}
+	}
 
 	private void showCalendarPopup() {
 		CalendarView calendarPanel = new CalendarView(model);
@@ -90,4 +100,5 @@ public class DateSelectionBean extends AbstractTextFieldBean<DateModel> {
 			showCalendarPopup();
 		}
 	}
+
 }

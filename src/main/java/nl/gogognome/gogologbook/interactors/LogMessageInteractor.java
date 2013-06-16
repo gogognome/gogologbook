@@ -1,7 +1,5 @@
 package nl.gogognome.gogologbook.interactors;
 
-import java.util.Date;
-
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.entities.LogMessage;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
@@ -16,7 +14,7 @@ public class LogMessageInteractor {
 		message.message = params.message;
 		message.projectId = params.projectId;
 		message.userId = params.userId;
-		message.timestamp = new Date();
+		message.timestamp = params.timestamp;
 
 		DaoFactory.getInstance(LogMessageDAO.class).createMessage(message);
 	}

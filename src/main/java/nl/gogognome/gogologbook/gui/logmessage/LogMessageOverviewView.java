@@ -41,8 +41,8 @@ public class LogMessageOverviewView extends View {
 
 		InputFieldsRow searchCriteria = new InputFieldsRow();
 		searchCriteria.setBorder(new EmptyBorder(0, 0, 10, 0));
-		searchCriteria.addField("logMessageOverview_fromDate", model.fromDate);
-		searchCriteria.addField("logMessageOverview_toDate", model.toDate);
+		searchCriteria.addDateField("logMessageOverview_fromDate", model.fromDate);
+		searchCriteria.addDateField("logMessageOverview_toDate", model.toDate);
 		searchCriteria.addComboBoxField("logMessageOverview_user", model.usersModel, new UserFormatter());
 		searchCriteria.addField("logMessageOverview_project", model.project);
 		searchCriteria.addField("logMessageOverview_customer", model.customer);

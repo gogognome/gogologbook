@@ -179,7 +179,13 @@ public class BeanFactory {
 	 * @return the date field bean
 	 */
 	public DateSelectionBean createDateSelectionBean(DateModel model) {
-		DateSelectionBean bean = new DateSelectionBean(model);
+		DateSelectionBean bean = DateSelectionBean.createBeanForDate(model);
+		bean.initBean();
+		return bean;
+	}
+
+	public JComponent createTimestampSelectionBeanWithMinuteAccuracy(DateModel model) {
+		DateSelectionBean bean = DateSelectionBean.createBeanForTimestampWithMinuteAccuracy(model);
 		bean.initBean();
 		return bean;
 	}
@@ -189,4 +195,5 @@ public class BeanFactory {
 		bean.initBean();
 		return bean;
 	}
+
 }

@@ -2,6 +2,7 @@ package nl.gogognome.gogologbook.gui.logmessage;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.Date;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -18,11 +19,13 @@ import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageCreateParams;
 import nl.gogognome.lib.gui.Closeable;
 import nl.gogognome.lib.swing.MessageDialog;
+import nl.gogognome.lib.swing.models.AbstractModel;
+import nl.gogognome.lib.swing.models.ModelChangeListener;
 import nl.gogognome.lib.util.StringUtil;
 
 import org.slf4j.LoggerFactory;
 
-public class LogMessageCreateController implements Closeable, SessionListener {
+public class LogMessageCreateController implements Closeable, SessionListener, ModelChangeListener {
 
 	private final Component parentComponent;
 	private final LogMessageCreateModel model = new LogMessageCreateModel();
@@ -36,12 +39,17 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 		model.usersModel.setItems(userInteractor.findAllUsers());
 		model.projectsModel.setItems(projectInteractor.findAllProjects());
 		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
+		model.manuallySpecifyTimestamp.addModelChangeListener(this);
+		model.manuallySpecifyTimestamp.setBoolean(false, this);
+		model.manuallySpecifiedTimestamp.setDate(new Date(), this);
+		enableOrDisableManuallySpecifiedTimestamp();
 		SessionManager.getInstance().addSessionListener(this);
 	}
 
 	@Override
 	public void close() {
 		SessionManager.getInstance().removeSessionListener(this);
+		model.manuallySpecifyTimestamp.removeModelChangeListener(this);
 	}
 
 	public LogMessageCreateModel getModel() {
@@ -61,6 +69,7 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 		params.message = StringUtil.nullToEmptyString(model.messageModel.getString()).trim();
 		params.projectId = model.projectsModel.getSelectedItem().id;
 		params.userId = model.usersModel.getSelectedItem().id;
+		params.timestamp = model.manuallySpecifyTimestamp.getBoolean() ? model.manuallySpecifiedTimestamp.getDate() : new Date();
 
 		try {
 			logMessageCreateInteractor.createMessage(params);
@@ -73,6 +82,10 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 	}
 
 	private boolean validateInput() {
+		if (model.manuallySpecifyTimestamp.getBoolean() && model.manuallySpecifiedTimestamp.getDate() == null) {
+			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_timestamp_entered");
+			return false;
+		}
 		if (model.usersModel.getSelectedItem() == null) {
 			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_user_selected");
 			return false;
@@ -106,5 +119,14 @@ public class LogMessageCreateController implements Closeable, SessionListener {
 		public void actionPerformed(ActionEvent e) {
 			createLogMessage();
 		}
+	}
+
+	@Override
+	public void modelChanged(AbstractModel changedModel) {
+		enableOrDisableManuallySpecifiedTimestamp();
+	}
+
+	private void enableOrDisableManuallySpecifiedTimestamp() {
+		model.manuallySpecifiedTimestamp.setEnabled(model.manuallySpecifyTimestamp.getBoolean(), this);
 	}
 }

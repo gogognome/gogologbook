@@ -56,6 +56,8 @@ public class LogMessageCreateView extends View {
 		InputFieldsColumn ifc = new InputFieldsColumn();
 		addCloseable(ifc);
 
+		ifc.addField("logMessageCreateView_specifiyTimestampManually", model.manuallySpecifyTimestamp);
+		ifc.addTimestampFieldWithMinuteAccuracy("logMessageCreateView_timestamp", model.manuallySpecifiedTimestamp);
 		ifc.addComboBoxField("logMessageCreateView_username", model.usersModel, new UserFormatter());
 		ifc.addComboBoxField("logMessageCreateView_project", model.projectsModel, new ProjectFormatter());
 		ifc.addComboBoxField("logMessageCreateView_category", model.categoriesModel, new CategoryFormatter());
