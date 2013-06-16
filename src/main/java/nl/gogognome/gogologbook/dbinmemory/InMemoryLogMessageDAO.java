@@ -37,7 +37,6 @@ public class InMemoryLogMessageDAO implements LogMessageDAO {
 		}
 
 		LogMessage storedMessage = cloneLogMessage(logMessage, logMessage.id);
-		storedMessage.timestamp = oldLogMessage.timestamp;
 		idToMessage.put(storedMessage.id, storedMessage);
 	}
 

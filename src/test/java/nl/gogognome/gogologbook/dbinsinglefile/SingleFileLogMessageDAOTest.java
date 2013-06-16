@@ -55,7 +55,7 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 	}
 
 	@Test
-	public void shouldUpdateAllFieldsExceptTimestamp() {
+	public void shouldUpdateAllFields() {
 		LogMessage logMessage1 = createSomeLogMessage();
 		logMessage1 = logMessageDao.createMessage(logMessage1);
 
@@ -76,7 +76,7 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 		assertEquals(logMessage2.message, foundMessage.message);
 		assertEquals(logMessage2.userId, foundMessage.userId);
 		assertEquals(logMessage2.projectId, foundMessage.projectId);
-		assertEquals(logMessage1.timestamp, foundMessage.timestamp);
+		assertEquals(logMessage2.timestamp, foundMessage.timestamp);
 	}
 
 	private LogMessage createSomeLogMessage() {

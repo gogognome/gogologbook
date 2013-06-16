@@ -24,6 +24,7 @@ public class LogMessageInteractor {
 		message.category = params.category;
 		message.message = params.message;
 		message.projectId = params.projectId;
+		message.timestamp = params.timestamp;
 		message.userId = params.userId;
 
 		DaoFactory.getInstance(LogMessageDAO.class).updateMessage(message);

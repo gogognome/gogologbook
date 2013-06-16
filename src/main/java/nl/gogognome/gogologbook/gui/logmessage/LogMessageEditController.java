@@ -50,6 +50,8 @@ public class LogMessageEditController {
 	public void setLogMessageUnderEdit(LogMessageFindResult logMessageUnderEdit) {
 		model.logMessageUnderEdit = logMessageUnderEdit;
 
+		model.timestampModel.setDate(logMessageUnderEdit.timestamp);
+
 		List<User> users = model.usersModel.getItems();
 		for (int i = 0; i < users.size(); i++) {
 			if (Objects.equal(users.get(i).name, logMessageUnderEdit.username)) {
@@ -94,6 +96,7 @@ public class LogMessageEditController {
 		params.category = model.categoriesModel.getSelectedItem().name;
 		params.message = StringUtil.nullToEmptyString(model.messageModel.getString()).trim();
 		params.projectId = model.projectsModel.getSelectedItem().id;
+		params.timestamp = model.timestampModel.getDate();
 		params.userId = model.usersModel.getSelectedItem().id;
 
 		try {
@@ -108,6 +111,10 @@ public class LogMessageEditController {
 	}
 
 	private boolean validateInput() {
+		if (model.timestampModel.getDate() == null) {
+			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_timestamp_entered");
+			return false;
+		}
 		if (model.usersModel.getSelectedItem() == null) {
 			MessageDialog.showWarningMessage(parentComponent, "logMessageCreateView_no_user_selected");
 			return false;
