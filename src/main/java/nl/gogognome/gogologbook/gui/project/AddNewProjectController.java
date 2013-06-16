@@ -30,7 +30,7 @@ public class AddNewProjectController extends AbstractEditProjectController {
 			SessionManager.getInstance().notifyListeners(new ProjectChangedEvent());
 		} catch (Exception e) {
 			LoggerFactory.getLogger(getClass()).warn("Failed to create project", e);
-			MessageDialog.showErrorMessage(model.parent, "editProjects_failedToCreateProject", e.getMessage());
+			MessageDialog.showErrorMessage(model.parent, "editProject_failedToCreateProject", e.getMessage());
 		}
 	}
 }

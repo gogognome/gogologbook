@@ -33,6 +33,18 @@ public class SingleFileUserDAO implements UserDAO, SingleFileDatabaseDAO {
 	}
 
 	@Override
+	public void updateUser(User user) {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+			inMemoryUserDao.updateUser(user);
+			singleFileDatabase.appendUpdateToFile(TABLE_NAME, user);
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+	}
+
+	@Override
 	public List<User> findAllUsers() {
 		try {
 			singleFileDatabase.acquireLock();
@@ -56,7 +68,8 @@ public class SingleFileUserDAO implements UserDAO, SingleFileDatabaseDAO {
 
 	@Override
 	public void updateRecordInMemoryDatabase(Object record) {
-		throw new DAOException("Unsupported operation");
+		User user = (User) record;
+		inMemoryUserDao.updateUser(user);
 	}
 
 	@Override

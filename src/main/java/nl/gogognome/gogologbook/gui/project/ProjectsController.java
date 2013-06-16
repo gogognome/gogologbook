@@ -19,13 +19,13 @@ import nl.gogognome.lib.gui.Closeable;
 import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.swing.views.ViewDialog;
 
-public class ProjectController implements Closeable, SessionListener {
+public class ProjectsController implements Closeable, SessionListener {
 
 	private final ProjectsModel model = new ProjectsModel();
 	private final Component parent;
 	private final ProjectInteractor projectInteractor = InteractorFactory.getInteractor(ProjectInteractor.class);
 
-	public ProjectController(Component parent) {
+	public ProjectsController(Component parent) {
 		this.parent = parent;
 		refreshProjects();
 		model.selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -88,7 +88,7 @@ public class ProjectController implements Closeable, SessionListener {
 	private void onEditSelectedProject() {
 		int index = model.selectionModel.getMaxSelectionIndex();
 		if (index == -1) {
-			MessageDialog.showInfoMessage(parent, "editProjects_selectRowFirst");
+			MessageDialog.showInfoMessage(parent, "editProject_selectRowFirst");
 			return;
 		}
 
@@ -100,18 +100,18 @@ public class ProjectController implements Closeable, SessionListener {
 	private void onDeleteSelectedProject() {
 		int index = model.selectionModel.getMaxSelectionIndex();
 		if (index == -1) {
-			MessageDialog.showInfoMessage(parent, "editProjects_selectRowFirst");
+			MessageDialog.showInfoMessage(parent, "editProject_selectRowFirst");
 			return;
 		}
 
 		ProjectFindResult project = model.projectsTableModel.getRow(index);
-		int choice = MessageDialog.showYesNoQuestion(parent, "gen.confirmation", "editProjects_confirm_delete_project", project.projectNr);
+		int choice = MessageDialog.showYesNoQuestion(parent, "gen.confirmation", "editProject_confirm_delete_project", project.projectNr);
 		if (choice == MessageDialog.YES_OPTION) {
 			try {
 				projectInteractor.deleteProject(project.id);
 				SessionManager.getInstance().notifyListeners(new ProjectDeletedEvent(project.id));
 			} catch (CannotDeleteProjectThatIsInUseException e) {
-				MessageDialog.showWarningMessage(parent, "editProjects_cannotDeleteProjectBecauseItIsUsed", project.projectNr);
+				MessageDialog.showWarningMessage(parent, "editProject_cannotDeleteProjectBecauseItIsUsed", project.projectNr);
 			}
 		}
 

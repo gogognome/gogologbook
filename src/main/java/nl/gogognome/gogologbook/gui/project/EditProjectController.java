@@ -38,7 +38,7 @@ public class EditProjectController extends AbstractEditProjectController {
 			SessionManager.getInstance().notifyListeners(new ProjectChangedEvent());
 		} catch (Exception e) {
 			LoggerFactory.getLogger(getClass()).warn("Failed to update project " + params.id, e);
-			MessageDialog.showErrorMessage(model.parent, "editProjects_failedToUpdateProject", e.getMessage());
+			MessageDialog.showErrorMessage(model.parent, "editProject_failedToUpdateProject", e.getMessage());
 		}
 	}
 

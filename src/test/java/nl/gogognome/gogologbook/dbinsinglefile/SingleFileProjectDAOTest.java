@@ -67,7 +67,7 @@ public class SingleFileProjectDAOTest extends AbstractSingleFileDAOTest {
 
 	@Test(expected = DAOException.class)
 	public void updateNonExistingProjectShouldThrowException() {
-		Project project = new Project();
+		Project project = new Project(123);
 		project.projectNr = "AB1234";
 		projectDao.updateProject(project);
 	}

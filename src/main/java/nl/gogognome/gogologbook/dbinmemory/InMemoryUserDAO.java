@@ -3,6 +3,7 @@ package nl.gogognome.gogologbook.dbinmemory;
 import java.util.List;
 import java.util.Map;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.entities.User;
 
@@ -23,6 +24,16 @@ public class InMemoryUserDAO implements UserDAO {
 		User storedUser = cloneUser(user, maxId + 1);
 		idToUser.put(storedUser.id, storedUser);
 		return cloneUser(storedUser, storedUser.id);
+	}
+
+	@Override
+	public void updateUser(User user) {
+		if (!idToUser.containsKey(user.id)) {
+			throw new DAOException("User with " + user.id + " does not exist. It cannot be updated.");
+		}
+
+		User storedUser = cloneUser(user, user.id);
+		idToUser.put(storedUser.id, storedUser);
 	}
 
 	@Override

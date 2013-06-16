@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.entities.User;
 
 import org.junit.Test;
@@ -58,6 +59,28 @@ public class SingleFileUserDAOTest extends AbstractSingleFileDAOTest {
 		List<User> users = userDao.findAllUsers();
 
 		assertFalse(users.isEmpty());
+	}
+
+	@Test(expected = DAOException.class)
+	public void updateNonExistingUserShouldThrowException() {
+		User user = new User(123);
+		user.name = "Piet";
+		userDao.updateUser(user);
+	}
+
+	@Test
+	public void shouldUpdateExistingUser() {
+		User user = new User();
+		user.name = "Piet";
+		user = userDao.createUser(user);
+
+		User newUser = new User(user.id);
+		newUser.name = "Peter";
+		userDao.updateUser(newUser);
+
+		List<User> foundUsers = userDao.findAllUsers();
+		assertEquals(1, foundUsers.size());
+		assertEquals(newUser.name, foundUsers.get(0).name);
 	}
 
 	private String getContentsOfDbFile() throws IOException {

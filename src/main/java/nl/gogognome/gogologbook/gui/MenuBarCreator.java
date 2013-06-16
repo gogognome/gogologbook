@@ -16,6 +16,7 @@ public class MenuBarCreator {
 		public ActionListener openAboutView;
 		public ActionListener openLogMessageCreateView;
 		public ActionListener openProjectsView;
+		public ActionListener openUsersView;
 		public ActionListener exit;
 	}
 
@@ -23,6 +24,7 @@ public class MenuBarCreator {
 		JMenu viewMenu = widgetFactory.createMenu("mi.view");
 		viewMenu.add(widgetFactory.createMenuItem("mi.openLogMessageCreateView", listeners.openLogMessageCreateView));
 		viewMenu.add(widgetFactory.createMenuItem("mi.openProjectsView", listeners.openProjectsView));
+		viewMenu.add(widgetFactory.createMenuItem("mi.openUsersView", listeners.openUsersView));
 		viewMenu.addSeparator();
 		viewMenu.add(widgetFactory.createMenuItem("mi.exit", listeners.exit));
 

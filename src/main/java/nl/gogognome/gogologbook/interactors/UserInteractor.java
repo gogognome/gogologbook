@@ -10,6 +10,18 @@ import nl.gogognome.gogologbook.util.DaoFactory;
 
 public class UserInteractor {
 
+	public void createUser(UserCreateParams params) {
+		User user = new User();
+		user.name = params.name;
+		DaoFactory.getInstance(UserDAO.class).createUser(user);
+	}
+
+	public void updateUser(UserUpdateParams params) {
+		User user = new User(params.userId);
+		user.name = params.name;
+		DaoFactory.getInstance(UserDAO.class).updateUser(user);
+	}
+
 	public List<User> findAllUsers() {
 		List<User> users = DaoFactory.getInstance(UserDAO.class).findAllUsers();
 		Collections.sort(users, new CaseInsensitiveUserNameComparator());

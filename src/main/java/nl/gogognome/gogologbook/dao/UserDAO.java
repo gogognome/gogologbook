@@ -6,7 +6,9 @@ import nl.gogognome.gogologbook.entities.User;
 
 public interface UserDAO {
 
-	public User createUser(User user);
+	User createUser(User user);
 
-	public List<User> findAllUsers();
+	void updateUser(User user);
+
+	List<User> findAllUsers();
 }
