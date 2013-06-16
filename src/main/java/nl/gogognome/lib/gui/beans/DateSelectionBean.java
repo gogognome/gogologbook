@@ -39,6 +39,7 @@ public class DateSelectionBean extends AbstractTextFieldBean<DateModel> {
 
 	private static final long serialVersionUID = 1L;
 	private final String dateFormatId;
+	private JButton popupButton;
 
 	public static DateSelectionBean createBeanForTimestampWithMinuteAccuracy(DateModel model) {
 		return new DateSelectionBean(model, "gen.timestampFormat.hhmm", 12);
@@ -59,10 +60,10 @@ public class DateSelectionBean extends AbstractTextFieldBean<DateModel> {
 
 	@Override
 	public void initBean() {
-		super.initBean();
 		WidgetFactory wf = Factory.getInstance(WidgetFactory.class);
-		JButton button = wf.createIconButton("gen.btnCalendar", new ShowCalendarPopupAction(), 21);
-		add(button);
+		popupButton = wf.createIconButton("gen.btnCalendar", new ShowCalendarPopupAction(), 21);
+		super.initBean();
+		add(popupButton);
 	}
 
 	@Override
@@ -73,6 +74,12 @@ public class DateSelectionBean extends AbstractTextFieldBean<DateModel> {
 		} else {
 			return "";
 		}
+	}
+
+	@Override
+	protected void updateTextFieldWithValueFromModel() {
+		super.updateTextFieldWithValueFromModel();
+		popupButton.setEnabled(model.isEnabled());
 	}
 
 	@Override
