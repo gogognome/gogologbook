@@ -17,7 +17,7 @@ public class LogMessageOverviewModel {
 	public LogMessageTableModel logMessageTableModel = new LogMessageTableModel();
 	public ListSelectionModel selectionModel = new DefaultListSelectionModel();
 
-	public DateModel fromDate = new DateModel(DateUtil.addDays(new Date(), -14));
+	public DateModel fromDate = new DateModel(DateUtil.addYears(new Date(), -1));
 	public DateModel toDate = new DateModel(new Date());
 	public ListModel<User> usersModel = new ListModel<User>();
 	public StringModel project = new StringModel();
