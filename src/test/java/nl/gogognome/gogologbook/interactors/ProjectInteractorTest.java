@@ -10,12 +10,15 @@ import java.util.List;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
+import nl.gogognome.gogologbook.interactors.boundary.ProjectCreateParams;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
+import nl.gogognome.gogologbook.interactors.boundary.ProjectUpdateParams;
 import nl.gogognome.gogologbook.util.DaoFactory;
 import nl.gogognome.gogologbook.utils.UnitTest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.google.common.collect.Lists;
 
@@ -28,6 +31,64 @@ public class ProjectInteractorTest extends UnitTest {
 	@Before
 	public void registerMocks() {
 		DaoFactory.register(ProjectDAO.class, projectDao);
+	}
+
+	@Test
+	public void shouldUseDaoToCreateProject() {
+		ProjectCreateParams params = new ProjectCreateParams();
+
+		projectInteractor.createProject(params);
+
+		verify(projectDao).createProject(any(Project.class));
+	}
+
+	@Test
+	public void shouldConvertCreateParamsToProject() {
+		ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
+		ProjectCreateParams params = new ProjectCreateParams();
+		params.customer = "Custoemr";
+		params.projectNr = "Projectnr";
+		params.street = "Street";
+		params.town = "Town";
+
+		projectInteractor.createProject(params);
+
+		verify(projectDao).createProject(projectCaptor.capture());
+		Project project = projectCaptor.getValue();
+		assertEquals(params.customer, project.customer);
+		assertEquals(params.projectNr, project.projectNr);
+		assertEquals(params.street, project.street);
+		assertEquals(params.town, project.town);
+	}
+
+	@Test
+	public void shouldUseDaoToUpdateProject() {
+		ProjectUpdateParams params = new ProjectUpdateParams();
+
+		projectInteractor.updateProject(params);
+
+		verify(projectDao).updateProject(any(Project.class));
+	}
+
+	@Test
+	public void shouldConvertUpdateParamsToProject() {
+		ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
+		ProjectUpdateParams params = new ProjectUpdateParams();
+		params.id = 123;
+		params.customer = "Custoemr";
+		params.projectNr = "Projectnr";
+		params.street = "Street";
+		params.town = "Town";
+
+		projectInteractor.updateProject(params);
+
+		verify(projectDao).updateProject(projectCaptor.capture());
+		Project project = projectCaptor.getValue();
+		assertEquals(params.id, project.id);
+		assertEquals(params.customer, project.customer);
+		assertEquals(params.projectNr, project.projectNr);
+		assertEquals(params.street, project.street);
+		assertEquals(params.town, project.town);
 	}
 
 	@Test
