@@ -11,6 +11,7 @@ import javax.swing.ListSelectionModel;
 import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
 import nl.gogognome.gogologbook.gui.session.SessionListener;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
+import nl.gogognome.gogologbook.interactors.CannotDeleteProjectThatIsInUseException;
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
@@ -42,7 +43,7 @@ public class ProjectController implements Closeable, SessionListener {
 
 	@Override
 	public void sessionChanged(SessionChangeEvent event) {
-		if (event instanceof ProjectChangedEvent) {
+		if (event instanceof ProjectChangedEvent || event instanceof ProjectDeletedEvent) {
 			refreshProjects();
 		}
 	}
@@ -106,7 +107,12 @@ public class ProjectController implements Closeable, SessionListener {
 		ProjectFindResult project = model.projectsTableModel.getRow(index);
 		int choice = MessageDialog.showYesNoQuestion(parent, "gen.confirmation", "editProjects_confirm_delete_project", project.projectNr);
 		if (choice == MessageDialog.YES_OPTION) {
-			projectInteractor.deleteProject(project.id);
+			try {
+				projectInteractor.deleteProject(project.id);
+				SessionManager.getInstance().notifyListeners(new ProjectDeletedEvent(project.id));
+			} catch (CannotDeleteProjectThatIsInUseException e) {
+				MessageDialog.showWarningMessage(parent, "editProjects_cannotDeleteProjectBecauseItIsUsed", project.projectNr);
+			}
 		}
 
 	}

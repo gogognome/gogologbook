@@ -50,7 +50,7 @@ public class ProjectInteractor {
 		return results;
 	}
 
-	public void deleteProject(int projectId) {
+	public void deleteProject(int projectId) throws CannotDeleteProjectThatIsInUseException {
 		if (logMessageDao.isProjectUsed(projectId)) {
 			throw new CannotDeleteProjectThatIsInUseException();
 		}

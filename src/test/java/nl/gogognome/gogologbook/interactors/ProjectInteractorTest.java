@@ -41,7 +41,7 @@ public class ProjectInteractorTest extends UnitTest {
 	}
 
 	@Test
-	public void shouldUseDaoToDeleteProject() {
+	public void shouldUseDaoToDeleteProject() throws Exception {
 		when(logMessageDao.isProjectUsed(anyInt())).thenReturn(false);
 		projectInteractor.deleteProject(123);
 

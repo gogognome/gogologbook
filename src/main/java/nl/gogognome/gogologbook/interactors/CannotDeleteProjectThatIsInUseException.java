@@ -1,8 +1,6 @@
 package nl.gogognome.gogologbook.interactors;
 
-import nl.gogognome.gogologbook.dao.DAOException;
-
-public class CannotDeleteProjectThatIsInUseException extends DAOException {
+public class CannotDeleteProjectThatIsInUseException extends Exception {
 
 	public CannotDeleteProjectThatIsInUseException() {
 		super();
