@@ -109,6 +109,12 @@ public class ProjectInteractorTest extends UnitTest {
 		verify(projectDao).deleteProject(eq(123));
 	}
 
+	@Test(expected = CannotDeleteProjectThatIsInUseException.class)
+	public void shouldThrowExceptionWhenProjectIsDeletedThasIsInUse() throws Exception {
+		when(logMessageDao.isProjectUsed(anyInt())).thenReturn(true);
+		projectInteractor.deleteProject(123);
+	}
+
 	@Test
 	public void shouldSortProjectNumbersLexicographically() {
 		Project projectA = createProject(1, "AB123", "Alice");
