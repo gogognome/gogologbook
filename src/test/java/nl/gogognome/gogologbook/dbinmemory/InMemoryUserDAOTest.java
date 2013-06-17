@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.entities.User;
 
 import org.junit.Test;
@@ -66,4 +67,21 @@ public class InMemoryUserDAOTest {
 		assertEquals(user2.name, founduser2.name);
 	}
 
+	@Test
+	public void shouldDeleteExistingUser() {
+		User user = new User();
+		user.name = "Peter";
+		userDao.createUser(user);
+
+		List<User> foundUsers = userDao.findAllUsers();
+		userDao.deleteUser(foundUsers.get(0).id);
+
+		foundUsers = userDao.findAllUsers();
+		assertTrue(foundUsers.isEmpty());
+	}
+
+	@Test(expected = DAOException.class)
+	public void shouldThrowExceptionWhenDeletingNonExistingUser() {
+		userDao.deleteUser(123);
+	}
 }

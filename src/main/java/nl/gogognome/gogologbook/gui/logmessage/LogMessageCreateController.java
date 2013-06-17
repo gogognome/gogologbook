@@ -8,9 +8,12 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import nl.gogognome.gogologbook.gui.project.ProjectChangedEvent;
+import nl.gogognome.gogologbook.gui.project.ProjectDeletedEvent;
 import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
 import nl.gogognome.gogologbook.gui.session.SessionListener;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
+import nl.gogognome.gogologbook.gui.user.UserChangedEvent;
+import nl.gogognome.gogologbook.gui.user.UserDeletedEvent;
 import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageInteractor;
 import nl.gogognome.gogologbook.interactors.ProjectInteractor;
@@ -107,8 +110,11 @@ public class LogMessageCreateController implements Closeable, SessionListener, M
 
 	@Override
 	public void sessionChanged(SessionChangeEvent event) {
-		if (event instanceof ProjectChangedEvent) {
+		if (event instanceof ProjectDeletedEvent || event instanceof ProjectChangedEvent) {
 			model.projectsModel.setItems(projectInteractor.findAllProjects());
+		}
+		if (event instanceof UserDeletedEvent || event instanceof UserChangedEvent) {
+			model.usersModel.setItems(userInteractor.findAllUsers());
 		}
 	}
 

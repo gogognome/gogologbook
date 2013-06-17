@@ -68,6 +68,17 @@ public class SingleFileLogMessageDAO implements LogMessageDAO, SingleFileDatabas
 	}
 
 	@Override
+	public boolean isUserUsed(int userId) {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+		return inMemoryLogMessageDao.isUserUsed(userId);
+	}
+
+	@Override
 	public void removeAllRecordsFromInMemoryDatabase() {
 		inMemoryLogMessageDao = new InMemoryLogMessageDAO();
 	}

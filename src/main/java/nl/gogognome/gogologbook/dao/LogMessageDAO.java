@@ -15,4 +15,6 @@ public interface LogMessageDAO {
 
 	boolean isProjectUsed(int projectId);
 
+	boolean isUserUsed(int userId);
+
 }

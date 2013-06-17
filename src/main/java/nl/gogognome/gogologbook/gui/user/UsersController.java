@@ -12,6 +12,7 @@ import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
 import nl.gogognome.gogologbook.gui.session.SessionListener;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
+import nl.gogognome.gogologbook.interactors.CannotDeleteUserThatIsInUseException;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
 import nl.gogognome.lib.gui.Closeable;
@@ -106,12 +107,12 @@ public class UsersController implements Closeable, SessionListener {
 		User user = model.usersTableModel.getRow(index);
 		int choice = MessageDialog.showYesNoQuestion(parent, "gen.confirmation", "editUser_confirm_delete_user", user.name);
 		if (choice == MessageDialog.YES_OPTION) {
-			//			try {
-			//				userInteractor.deleteUser(user.id);
-			//				SessionManager.getInstance().notifyListeners(new UserDeletedEvent(user.id));
-			//			} catch (CannotDeleteUserThatIsInUseException e) {
-			//				MessageDialog.showWarningMessage(parent, "editUser_cannotDeleteUserBecauseItIsUsed", user.name);
-			//			}
+			try {
+				userInteractor.deleteUser(user.id);
+				SessionManager.getInstance().notifyListeners(new UserDeletedEvent(user.id));
+			} catch (CannotDeleteUserThatIsInUseException e) {
+				MessageDialog.showWarningMessage(parent, "editUser_cannotDeleteUserBecauseItIsUsed", user.name);
+			}
 		}
 
 	}

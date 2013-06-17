@@ -29,11 +29,19 @@ public class InMemoryUserDAO implements UserDAO {
 	@Override
 	public void updateUser(User user) {
 		if (!idToUser.containsKey(user.id)) {
-			throw new DAOException("User with " + user.id + " does not exist. It cannot be updated.");
+			throw new DAOException("User " + user.id + " does not exist. It cannot be updated.");
 		}
 
 		User storedUser = cloneUser(user, user.id);
 		idToUser.put(storedUser.id, storedUser);
+	}
+
+	@Override
+	public void deleteUser(int userId) {
+		if (!idToUser.containsKey(userId)) {
+			throw new DAOException("User " + userId + " does not exist. It cannot de deleted.");
+		}
+		idToUser.remove(userId);
 	}
 
 	@Override

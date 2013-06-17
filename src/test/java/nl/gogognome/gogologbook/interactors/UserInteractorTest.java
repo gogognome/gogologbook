@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 
+import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.gogologbook.util.DaoFactory;
@@ -20,12 +21,15 @@ import com.google.common.collect.Lists;
 
 public class UserInteractorTest {
 
-	private final UserInteractor userInteractor = new UserInteractor();
+	private final LogMessageDAO logMessageDao = mock(LogMessageDAO.class);
 	private final UserDAO userDao = mock(UserDAO.class);
+	private UserInteractor userInteractor;
 
 	@Before
 	public void registerMocks() {
+		DaoFactory.register(LogMessageDAO.class, logMessageDao);
 		DaoFactory.register(UserDAO.class, userDao);
+		userInteractor = new UserInteractor();
 	}
 
 	@After
@@ -62,6 +66,20 @@ public class UserInteractorTest {
 		userInteractor.updateUser(params);
 
 		verify(userDao).updateUser(any(User.class));
+	}
+
+	@Test
+	public void shouldUseDaoToDeleteUser() throws Exception {
+		when(logMessageDao.isUserUsed(anyInt())).thenReturn(false);
+		userInteractor.deleteUser(123);
+
+		verify(userDao).deleteUser(123);
+	}
+
+	@Test(expected = CannotDeleteUserThatIsInUseException.class)
+	public void shouldThrowExceptionWhenProjectIsDeletedThasIsInUse() throws Exception {
+		when(logMessageDao.isUserUsed(anyInt())).thenReturn(true);
+		userInteractor.deleteUser(123);
 	}
 
 	@Test

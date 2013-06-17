@@ -135,6 +135,16 @@ public class SingleFileLogMessageDAOTest extends AbstractSingleFileDAOTest {
 	}
 
 	@Test
+	public void testUserUsed() {
+		LogMessage message = new LogMessage();
+		message.userId = 2;
+		logMessageDao.createMessage(message);
+
+		assertTrue(logMessageDao.isUserUsed(message.userId));
+		assertFalse(logMessageDao.isUserUsed(message.userId + 1));
+	}
+
+	@Test
 	public void testLockingMechanismWithMultipleThreads() throws Exception {
 		RecordCreationThread[] threads = new RecordCreationThread[10];
 		for (int i = 0; i < threads.length; i++) {

@@ -83,6 +83,24 @@ public class SingleFileUserDAOTest extends AbstractSingleFileDAOTest {
 		assertEquals(newUser.name, foundUsers.get(0).name);
 	}
 
+	@Test
+	public void shouldDeleteExistingUser() {
+		User user = new User();
+		user.name = "Peter";
+		userDao.createUser(user);
+
+		List<User> foundUsers = userDao.findAllUsers();
+		userDao.deleteUser(foundUsers.get(0).id);
+
+		foundUsers = userDao.findAllUsers();
+		assertTrue(foundUsers.isEmpty());
+	}
+
+	@Test(expected = DAOException.class)
+	public void shouldThrowExceptionWhenDeletingNonExistingUser() {
+		userDao.deleteUser(123);
+	}
+
 	private String getContentsOfDbFile() throws IOException {
 		return Joiner.on("\n").join(Files.readLines(dbFile, Charsets.ISO_8859_1));
 	}
