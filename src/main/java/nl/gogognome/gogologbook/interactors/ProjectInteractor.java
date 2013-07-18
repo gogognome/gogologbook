@@ -7,6 +7,7 @@ import java.util.List;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.ProjectDAO;
 import nl.gogognome.gogologbook.entities.Project;
+import nl.gogognome.gogologbook.interactors.boundary.CannotDeleteProjectThatIsInUseException;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectCreateParams;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectFindResult;
 import nl.gogognome.gogologbook.interactors.boundary.ProjectUpdateParams;

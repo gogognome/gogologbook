@@ -7,6 +7,9 @@ import java.util.List;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
 import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.entities.User;
+import nl.gogognome.gogologbook.interactors.boundary.CannotDeleteUserThatIsInUseException;
+import nl.gogognome.gogologbook.interactors.boundary.UserCreateParams;
+import nl.gogognome.gogologbook.interactors.boundary.UserUpdateParams;
 import nl.gogognome.gogologbook.util.DaoFactory;
 
 public class UserInteractor {
