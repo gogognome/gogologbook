@@ -70,6 +70,16 @@ public class InMemoryLogMessageDAO implements LogMessageDAO {
 		return false;
 	}
 
+	@Override
+	public boolean isCategoryUsed(String categoryName) {
+		for (LogMessage logMessage : idToMessage.values()) {
+			if (categoryName.equals(logMessage.category)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private LogMessage cloneLogMessage(LogMessage origMessage, int clonedId) {
 		LogMessage clonedMessage = new LogMessage(clonedId);
 		clonedMessage.category = origMessage.category;

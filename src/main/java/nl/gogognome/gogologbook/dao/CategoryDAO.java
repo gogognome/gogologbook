@@ -8,5 +8,12 @@ public interface CategoryDAO {
 
 	public Category createCategory(Category category);
 
+	public void updateCategory(Category category);
+
+	public void deleteCategory(int categoryId);
+
 	public List<Category> findAllCategories();
+
+	public Category getCategory(int categoryId);
+
 }

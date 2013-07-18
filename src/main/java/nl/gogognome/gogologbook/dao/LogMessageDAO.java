@@ -17,4 +17,6 @@ public interface LogMessageDAO {
 
 	boolean isUserUsed(int userId);
 
+	boolean isCategoryUsed(String categoryName);
+
 }

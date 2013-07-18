@@ -3,8 +3,8 @@ package nl.gogognome.gogologbook.gui.user;
 import nl.gogognome.gogologbook.entities.User;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
-import nl.gogognome.gogologbook.interactors.UserUpdateParams;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
+import nl.gogognome.gogologbook.interactors.boundary.UserUpdateParams;
 import nl.gogognome.lib.swing.MessageDialog;
 
 import org.slf4j.LoggerFactory;

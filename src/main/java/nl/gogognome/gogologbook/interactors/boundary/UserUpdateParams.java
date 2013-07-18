@@ -1,4 +1,4 @@
-package nl.gogognome.gogologbook.interactors;
+package nl.gogognome.gogologbook.interactors.boundary;
 
 public class UserUpdateParams {
 

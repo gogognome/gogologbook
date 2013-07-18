@@ -33,6 +33,44 @@ public class SingleFileCategoryDAO implements CategoryDAO, SingleFileDatabaseDAO
 	}
 
 	@Override
+	public Category getCategory(int categoryId) {
+		Category category;
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+			category = inMemoryCategoryDao.getCategory(categoryId);
+			singleFileDatabase.appendInsertToFile(TABLE_NAME, category);
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+		return category;
+	}
+
+	@Override
+	public void updateCategory(Category category) {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+			inMemoryCategoryDao.updateCategory(category);
+			singleFileDatabase.appendUpdateToFile(TABLE_NAME, category);
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+	}
+
+	@Override
+	public void deleteCategory(int categoryId) {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+			inMemoryCategoryDao.deleteCategory(categoryId);
+			singleFileDatabase.appendDeleteToFile(TABLE_NAME, categoryId);
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+	}
+
+	@Override
 	public List<Category> findAllCategories() {
 		try {
 			singleFileDatabase.acquireLock();
