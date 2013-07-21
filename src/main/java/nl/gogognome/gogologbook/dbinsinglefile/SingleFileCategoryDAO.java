@@ -3,7 +3,6 @@ package nl.gogognome.gogologbook.dbinsinglefile;
 import java.util.List;
 
 import nl.gogognome.gogologbook.dao.CategoryDAO;
-import nl.gogognome.gogologbook.dao.DAOException;
 import nl.gogognome.gogologbook.dbinmemory.InMemoryCategoryDAO;
 import nl.gogognome.gogologbook.entities.Category;
 
@@ -94,12 +93,13 @@ public class SingleFileCategoryDAO implements CategoryDAO, SingleFileDatabaseDAO
 
 	@Override
 	public void updateRecordInMemoryDatabase(Object record) {
-		throw new DAOException("Unsupported operation");
+		Category category = (Category) record;
+		inMemoryCategoryDao.updateCategory(category);
 	}
 
 	@Override
-	public void deleteRecordFromInMemoryDatabase(int id) {
-		throw new DAOException("Not implemented yet");
+	public void deleteRecordFromInMemoryDatabase(int categoryId) {
+		inMemoryCategoryDao.deleteCategory(categoryId);
 	}
 
 	@Override
