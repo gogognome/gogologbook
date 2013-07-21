@@ -17,6 +17,7 @@ public class MenuBarCreator {
 		public ActionListener openLogMessageCreateView;
 		public ActionListener openProjectsView;
 		public ActionListener openUsersView;
+		public ActionListener openCategoriesView;
 		public ActionListener exit;
 	}
 
@@ -25,6 +26,7 @@ public class MenuBarCreator {
 		viewMenu.add(widgetFactory.createMenuItem("mi.openLogMessageCreateView", listeners.openLogMessageCreateView));
 		viewMenu.add(widgetFactory.createMenuItem("mi.openProjectsView", listeners.openProjectsView));
 		viewMenu.add(widgetFactory.createMenuItem("mi.openUsersView", listeners.openUsersView));
+		viewMenu.add(widgetFactory.createMenuItem("mi.openCategoriesView", listeners.openCategoriesView));
 		viewMenu.addSeparator();
 		viewMenu.add(widgetFactory.createMenuItem("mi.exit", listeners.exit));
 

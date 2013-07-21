@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import nl.gogognome.gogologbook.gui.MenuBarCreator.ActionListeners;
+import nl.gogognome.gogologbook.gui.category.CategoriesView;
 import nl.gogognome.gogologbook.gui.logmessage.LogMessageCreateAndOverviewView;
 import nl.gogognome.gogologbook.gui.project.ProjectsView;
 import nl.gogognome.gogologbook.gui.user.UsersView;
@@ -66,6 +67,7 @@ public class MainFrame extends JFrame {
 		listeners.openLogMessageCreateView = new OpenViewAction(LogMessageCreateAndOverviewView.class);
 		listeners.openProjectsView = new OpenViewAction(ProjectsView.class);
 		listeners.openUsersView = new OpenViewAction(UsersView.class);
+		listeners.openCategoriesView = new OpenViewAction(CategoriesView.class);
 
 		listeners.exit = new ActionListener() {
 			@Override
