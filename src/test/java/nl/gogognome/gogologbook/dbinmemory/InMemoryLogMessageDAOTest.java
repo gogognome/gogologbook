@@ -160,4 +160,13 @@ public class InMemoryLogMessageDAOTest {
 		assertFalse(logMessageDao.isUserUsed(message.userId + 1));
 	}
 
+	@Test
+	public void testCategoryUsed() {
+		LogMessage message = new LogMessage();
+		message.category = "test";
+		logMessageDao.createMessage(message);
+
+		assertTrue(logMessageDao.isCategoryUsed("test"));
+		assertFalse(logMessageDao.isCategoryUsed("bla"));
+	}
 }
