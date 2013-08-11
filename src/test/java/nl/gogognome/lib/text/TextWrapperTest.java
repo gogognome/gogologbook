@@ -47,5 +47,28 @@ public class TextWrapperTest {
 		List<String> wrappedText = textWrapper.getWrappedText(Lists.newArrayList("Ha hi ho!"));
 		assertEquals(Lists.newArrayList("Ha", "hi", "ho!"), wrappedText);
 	}
+	
+	@Test
+	public void tooLongWordsAreNotHyphenated() {
+		TextWrapper textWrapper = new TextWrapper(3, lengthCalculactor);
+		List<String> wrappedText = textWrapper.getWrappedText(Lists.newArrayList("abcd efgh"));
+		assertEquals(Lists.newArrayList("abcd", "efgh"), wrappedText);
+	}
 
+	@Test
+	public void wrapLongLine() {
+		TextWrapper textWrapper = new TextWrapper(20, lengthCalculactor);
+		List<String> wrappedText = textWrapper.getWrappedText(Lists.newArrayList("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."));
+		assertEquals(Lists.newArrayList(
+				//2345678901234567890 
+				"Lorem ipsum dolor", 
+				"sit amet," , 
+				"consectetur", 
+				"adipisicing elit,", 
+				"sed do eiusmod", 
+				"tempor incididunt ut", 
+				"labore et dolore", 
+				"magna aliqua."), 
+				wrappedText);
+	}
 }

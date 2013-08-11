@@ -3,58 +3,83 @@ package nl.gogognome.lib.swing.table;
 import java.awt.Component;
 import java.awt.FontMetrics;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.TableCellRenderer;
 
-import com.google.common.collect.Lists;
+import nl.gogognome.lib.text.TextWrapper;
+import nl.gogognome.lib.text.TextWrapper.TextWidthCalculator;
+
+import com.google.common.base.Joiner;
 
 public class MultilineCellRenderer extends JTextArea implements TableCellRenderer {
 
 	private static final long serialVersionUID = 1L;
-
+	private TextWidthCalculator textWidthCalculator;
+	private final Joiner joiner = Joiner.on('\n');
+	
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		int width = table.getColumnModel().getColumn(column).getWidth();
-		FontMetrics fontMetrics = getFontMetrics(getFont());
-		setText(wrapText((String) value, width, fontMetrics));
+		initLayout(table, isSelected);
+		  
+		int width = table.getColumnModel().getColumn(column).getWidth() - 1;
+		setText(wrapText(width, (String) value));
 		setWrapStyleWord(true);
 		setLineWrap(true);
 
-		int height = calcRowHeight(fontMetrics);
+		int height = calcRowHeight();
 		table.setRowHeight(row, height);
 		return this;
 	}
 
-	private String wrapText(String text, int width, FontMetrics fontMetrics) {
-		StringBuilder sb = new StringBuilder(text.length() * 4 / 3);
-		LinkedList<String> remainingLines = Lists.newLinkedList(Arrays.asList(text.split("\n")));
-		while (!remainingLines.isEmpty()) {
-			String line = remainingLines.removeFirst();
-			int index = line.length();
-			while (fontMetrics.stringWidth(line.substring(0, index)) > width && index > 1) {
-				index--;
-			}
-			sb.append(line, 0, index);
-
-			if (index < line.length()) {
-				remainingLines.addFirst(line.substring(index));
-			}
-
-			if (!remainingLines.isEmpty()) {
-				sb.append('\n');
-			}
+	private void initLayout(JTable table, boolean isSelected) {
+		if (isSelected) {
+			setForeground(table.getSelectionForeground());
+			setBackground(table.getSelectionBackground());
+		} else {
+			setForeground(table.getForeground());
+			setBackground(table.getBackground());
 		}
-		return sb.toString();
 	}
 
-	private int calcRowHeight(FontMetrics fontMetrics) {
+	private String wrapText(int width, String text) {
+		List<String> lines = Arrays.asList((text).split("\n"));
+		List<String> wrappedLines = new TextWrapper(width, getTextWidthCalculator()).getWrappedText(lines);
+		return joiner.join(wrappedLines);
+	}
+
+	private TextWidthCalculator getTextWidthCalculator() {
+		if (textWidthCalculator == null) {
+			FontMetrics fontMetrics = getFontMetrics(getFont());
+			textWidthCalculator = new TextWidthCalculatorImpl(fontMetrics); 
+		}
+		return textWidthCalculator;
+	}
+
+	private int calcRowHeight() {
+		FontMetrics fontMetrics =getFontMetrics(getFont());
 		int fontHeight = fontMetrics.getHeight();
 		int lines = getLineCount();
 		int height = fontHeight * lines;
 		return height;
 	}
 
+}
+
+class TextWidthCalculatorImpl implements TextWidthCalculator {
+	
+	private final FontMetrics fontMetrics;
+	
+	
+	public TextWidthCalculatorImpl(FontMetrics fontMetrics) {
+		this.fontMetrics = fontMetrics;
+	}
+
+	@Override
+	public int getWidthOfLine(String line) {
+		return fontMetrics.stringWidth(line);
+	}
+	
 }

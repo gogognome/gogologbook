@@ -48,8 +48,9 @@ public class TextWrapper {
 	}
 
 	private void wrapSingleLine(List<String> words, int totalWidth) {
-		int nrWords = maxLineWidth * words.size() / totalWidth;
+		int nrWords;
 		for (int startIndex = 0; startIndex < words.size(); startIndex += nrWords) {
+			nrWords = Math.min(words.size() - startIndex, Math.max(1, maxLineWidth * words.size() / totalWidth));
 			if (wordsFit(words, startIndex, nrWords)) {
 				while (startIndex + nrWords < words.size() && wordsFit(words, startIndex, nrWords + 1)) {
 					nrWords++;
@@ -58,7 +59,9 @@ public class TextWrapper {
 				while (nrWords > 0 && !wordsFit(words, startIndex, nrWords - 1)) {
 					nrWords--;
 				}
+				nrWords = Math.max(1, nrWords-1);
 			}
+			// nrWords fit and nrWords + 1 does not fit
 			wrappedLines.add(joiner.join(words.subList(startIndex, startIndex + nrWords)));
 		}
 	}
