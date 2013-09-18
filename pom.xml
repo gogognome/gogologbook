@@ -18,6 +18,46 @@
           <target>1.6</target>
         </configuration>
       </plugin>
+
+      
+	  <plugin>
+	    <groupId>nl.gogognome</groupId>
+	    <artifactId>image-modifier-maven-plugin</artifactId>
+	    <executions>
+	      <execution>
+	      	<id>generateSplashImage</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>modifyImage</goal>
+            </goals>
+	        <configuration>
+	          <sourceImage>sketches/splash.png</sourceImage>
+	          <destinationImage>target/classes/splash.png</destinationImage>
+	          <commands>
+	            <command>color: 0, 0, 0</command>
+	            <command>font: Arial Bold, 60</command>
+	            <command>text: 40, 450, gogo logbook ${version}</command>
+	          </commands>
+	        </configuration>
+	      </execution>
+	      <execution>
+	      	<id>generateAboutImage</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>modifyImage</goal>
+            </goals>
+	        <configuration>
+	          <sourceImage>sketches/about.png</sourceImage>
+	          <destinationImage>target/classes/about.png</destinationImage>
+	          <commands>
+	            <command>color: 0, 0, 0</command>
+	            <command>font: Arial Bold, 22</command>
+	            <command>text: 200, 30, gogo logbook ${version}</command>
+	          </commands>
+	        </configuration>
+	      </execution>
+	    </executions>
+	  </plugin>
       
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
