@@ -28,12 +28,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.*;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
 
 import nl.gogognome.lib.swing.table.AbstractTableModelWithColumnDefinitions;
 import nl.gogognome.lib.swing.table.ColumnDefinition;
@@ -274,9 +291,9 @@ public class WidgetFactory {
      * @param ids the ids of the values.
      * @return the <tt>JComboBox</tt>.
      */
-    public JComboBox createComboBox(String[] ids)
+    public JComboBox<String> createComboBox(String[] ids)
     {
-        JComboBox result = new JComboBox();
+        JComboBox<String> result = new JComboBox<String>();
         for (int i = 0; i < ids.length; i++)
         {
             result.addItem(textResource.getString(ids[i]));
@@ -393,7 +410,7 @@ public class WidgetFactory {
      * @return the table
      */
     public JTable createTable(AbstractTableModelWithColumnDefinitions tableModel) {
-    	JTable table = new JTable(tableModel);
+    	JTable table = new TableWithLayoutableColumns(tableModel);
     	initTableColumns(table, tableModel);
     	return table;
     }
@@ -406,7 +423,7 @@ public class WidgetFactory {
      * @return the table
      */
     public JTable createSortedTable(AbstractTableModelWithColumnDefinitions tableModel) {
-    	JTable table = new JTable(tableModel);
+    	JTable table = new TableWithLayoutableColumns(tableModel);
     	TableRowSorter<AbstractTableModelWithColumnDefinitions> sorter = new TableRowSorter<AbstractTableModelWithColumnDefinitions>(tableModel);
     	initTableColumns(table, tableModel);
     	initSorterForTableModel(sorter, tableModel);
