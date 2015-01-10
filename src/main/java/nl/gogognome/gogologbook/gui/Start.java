@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Locale;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import nl.gogognome.gogologbook.dao.CategoryDAO;
 import nl.gogognome.gogologbook.dao.LogMessageDAO;
@@ -24,7 +25,6 @@ import nl.gogognome.lib.util.Factory;
 
 public class Start {
 
-	private MainFrame mainFrame;
 	private File dbFile;
 
 	public static void main(String[] args) {
@@ -98,9 +98,11 @@ public class Start {
 	}
 
 	private void initFrame() {
-		mainFrame = new MainFrame();
-		mainFrame.setVisible(true);
-		SwingUtils.center(mainFrame);
-		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		SwingUtilities.invokeLater(() -> {
+			MainFrame mainFrame = new MainFrame();
+			mainFrame.setVisible(true);
+			SwingUtils.center(mainFrame);
+			mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		});
 	}
 }
