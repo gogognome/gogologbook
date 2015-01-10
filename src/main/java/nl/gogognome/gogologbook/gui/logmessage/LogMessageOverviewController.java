@@ -1,6 +1,7 @@
 package nl.gogognome.gogologbook.gui.logmessage;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -63,7 +64,9 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 			return;
 		}
 		LogMessageEditView view = new LogMessageEditView(model.logMessageTableModel.getRow(index));
-		new ViewDialog(parentComponent, view).showDialog();
+		ViewDialog dialog = new ViewDialog(parentComponent, view);
+		dialog.setMinimumSize(new Dimension(300, 250));
+		dialog.showDialog();
 	}
 
 	public void filterMessages() {

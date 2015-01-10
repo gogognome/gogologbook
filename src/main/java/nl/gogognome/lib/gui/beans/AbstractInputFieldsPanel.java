@@ -27,12 +27,17 @@ import javax.swing.JPanel;
 
 import nl.gogognome.lib.gui.Closeable;
 import nl.gogognome.lib.swing.WidgetFactory;
-import nl.gogognome.lib.swing.models.*;
+import nl.gogognome.lib.swing.models.BooleanModel;
+import nl.gogognome.lib.swing.models.DateModel;
+import nl.gogognome.lib.swing.models.DoubleModel;
+import nl.gogognome.lib.swing.models.FileModel;
+import nl.gogognome.lib.swing.models.ListModel;
+import nl.gogognome.lib.swing.models.StringModel;
 import nl.gogognome.lib.util.Factory;
 
 /**
  * Base class for the InputFieldsColumn and InputFieldsRow.
- * 
+ *
  * @author Sander Kooijmans
  */
 public abstract class AbstractInputFieldsPanel extends JPanel implements Closeable {
@@ -61,7 +66,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a field to edit a string.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the text field
 	 * @param model
@@ -73,7 +78,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a field to edit a string.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the text field
 	 * @param model
@@ -87,7 +92,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a field to edit a double.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the text field
 	 * @param model
@@ -99,7 +104,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a field to edit a double.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the text field
 	 * @param model
@@ -113,7 +118,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a field to edit a password.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the text field
 	 * @param model
@@ -127,7 +132,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a check box.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the check box
 	 * @param model
@@ -139,7 +144,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a field to select a file.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the file selection bean.
 	 * @param model
@@ -151,7 +156,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a component. Use this method to add components for which the general models (StringModel, DateModel etc.) cannot be used.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the component
 	 * @param component
@@ -161,14 +166,25 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 		addLabelAndFieldWithConstraints(labelId, component, getVariableSizeFieldConstraints());
 	}
 
-	public void addTetxtArea(String labelId, StringModel model) {
-		addVariableSizeField(labelId, beanFactory.createTextAreaBean(model, 0, 5));
+	public void addTetxtArea(String labelId, StringModel model, int nrColumns, int nrRows) {
+		JComponent component = beanFactory.createTextAreaBean(model, nrColumns, nrRows);
+		JLabel label = Factory.getInstance(WidgetFactory.class).createLabel(labelId, component);
+		GridBagConstraints constraints = getLabelConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weighty = 1;
+		add(label, constraints);
 
+		constraints = getVariableSizeFieldConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weighty = 1;
+
+		add(component, constraints);
+		components.add(component);
 	}
 
 	/**
 	 * Adds a combo box to select a single item from a list of items.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the combo box
 	 * @param model
@@ -182,7 +198,7 @@ public abstract class AbstractInputFieldsPanel extends JPanel implements Closeab
 
 	/**
 	 * Adds a field to edit a date.
-	 * 
+	 *
 	 * @param labelId
 	 *            the id of the label that is put in front of the text field
 	 * @param model

@@ -15,17 +15,16 @@
  */
 package nl.gogognome.lib.gui.beans;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import nl.gogognome.lib.swing.SwingUtils;
 import nl.gogognome.lib.swing.models.AbstractModel;
 import nl.gogognome.lib.swing.models.ModelChangeListener;
 import nl.gogognome.lib.swing.models.StringModel;
@@ -54,7 +53,7 @@ public class TextAreaBean extends JPanel implements Bean {
 	@Override
 	public void initBean() {
 		setOpaque(false);
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
 
 		textArea = new JTextArea();
 		if (nrColumns > 0) {
@@ -71,8 +70,9 @@ public class TextAreaBean extends JPanel implements Bean {
 		documentListener = new ParseUserInputOnDocumentChangeListener();
 		textArea.getDocument().addDocumentListener(documentListener);
 
-		add(textArea, SwingUtils.createGBConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, nrColumns == 0 ? GridBagConstraints.HORIZONTAL
-				: GridBagConstraints.NONE, 0, 0, 0, 0));
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setOpaque(false);
+		add(scrollPane, BorderLayout.CENTER);
 	}
 
 	@Override

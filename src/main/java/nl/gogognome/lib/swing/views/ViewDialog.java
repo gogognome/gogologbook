@@ -83,7 +83,7 @@ public class ViewDialog {
         this.parentBounds = parentBounds;
         setView(view);
 
-        dialog.addWindowListener( new WindowAdapter() {
+        dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) { dispose(); } }
         );
@@ -93,13 +93,10 @@ public class ViewDialog {
         dialog.getRootPane().getActionMap().put("ESC_ACTION", closeAction);
     }
 
-    /**
-     * Shows the dialog.
-     */
     final public void showDialog() {
-        // Show the dialog.
+    	Dimension d = dialog.getPreferredSize();
+    	dialog.setMaximumSize(d);
         dialog.pack();
-        Dimension d = dialog.getPreferredSize();
         dialog.setLocation( parentBounds.x + (parentBounds.width-d.width)/2,
             parentBounds.y + (parentBounds.height-d.height)/2 );
         dialog.setVisible(true);
@@ -129,9 +126,12 @@ public class ViewDialog {
         }
     }
 
-    /** Disposes the dialog. */
     public void dispose() {
         view.doClose();
         dialog.dispose();
+    }
+
+    public void setMinimumSize(Dimension minimumSize) {
+    	dialog.setMinimumSize(minimumSize);
     }
 }

@@ -63,7 +63,7 @@ public class LogMessageEditView extends View {
 		ifc.addComboBoxField("logMessageCreateView_username", model.usersModel, new UserFormatter());
 		ifc.addComboBoxField("logMessageCreateView_project", model.projectsModel, new ProjectFormatter());
 		ifc.addComboBoxField("logMessageCreateView_category", model.categoriesModel, new CategoryFormatter());
-		ifc.addTetxtArea("logMessageCreateView_message", model.messageModel);
+		ifc.addTetxtArea("logMessageCreateView_message", model.messageModel, 0, 0);
 
 		return ifc;
 	}
