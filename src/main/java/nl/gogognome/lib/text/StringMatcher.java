@@ -15,6 +15,8 @@
 */
 package nl.gogognome.lib.text;
 
+import com.google.common.base.Strings;
+
 /**
  * This class implements a fast string matching algorithm (the Boyer-Moore string search algorithm).
  * A StringMatcher instance contains a string which is considered a pattern.
@@ -66,6 +68,8 @@ public class StringMatcher {
 			return 0;
 		}
 
+		text = Strings.nullToEmpty(text);
+		
 		// Searching
 		int i = pattern.length() - 1;
 		int j = pattern.length() - 1;
