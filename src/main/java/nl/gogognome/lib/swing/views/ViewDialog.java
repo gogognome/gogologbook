@@ -94,9 +94,11 @@ public class ViewDialog {
     }
 
     final public void showDialog() {
-    	Dimension d = dialog.getPreferredSize();
-    	dialog.setMaximumSize(d);
+    	dialog.setMaximumSize(new Dimension(parentBounds.width, parentBounds.height));
         dialog.pack();
+        Dimension d = dialog.getPreferredSize();
+        d.width = Math.min(d.width, parentBounds.width);
+        d.height = Math.min(d.height, parentBounds.height);
         dialog.setLocation( parentBounds.x + (parentBounds.width-d.width)/2,
             parentBounds.y + (parentBounds.height-d.height)/2 );
         dialog.setVisible(true);
