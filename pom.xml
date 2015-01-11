@@ -37,6 +37,9 @@
 	            <command>color: 0, 0, 0</command>
 	            <command>font: Arial Bold, 60</command>
 	            <command>text: 40, 450, gogo logbook ${project.version}</command>
+	            <command>font: Arial Bold, 30</command>
+	            <command>text: 40, 500, Copyright 2013-2015 Sander Kooijmans</command>
+	            <command>text: 40, 540, www.gogognome.nl</command>
 	          </commands>
 	        </configuration>
 	      </execution>
