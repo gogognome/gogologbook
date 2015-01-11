@@ -16,10 +16,11 @@
 package nl.gogognome.lib.gui.beans;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.FocusListener;
 import java.text.ParseException;
+import java.util.Arrays;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -27,7 +28,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import nl.gogognome.lib.swing.SwingUtils;
 import nl.gogognome.lib.swing.models.AbstractModel;
 import nl.gogognome.lib.swing.models.ModelChangeListener;
 
@@ -77,7 +77,7 @@ public abstract class AbstractTextFieldBean<M extends AbstractModel> extends JPa
 	@Override
 	public void initBean() {
 		setOpaque(false);
-		setLayout(new GridBagLayout());
+		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		textfield = createTextField(nrColumns);
 
@@ -88,9 +88,10 @@ public abstract class AbstractTextFieldBean<M extends AbstractModel> extends JPa
 		documentListener = new ParseUserInputOnDocumentChangeListener();
 		textfield.getDocument().addDocumentListener(documentListener);
 
-		add(textfield, SwingUtils.createGBConstraints(0, 0, 1, 1, 1.0, 0.0,
-				GridBagConstraints.WEST, nrColumns == 0 ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE,
-				0, 0, 0, 0));
+		add(textfield);
+		if (nrColumns != 0) {
+			setMinimumSize(textfield.getPreferredSize());
+		}
 	}
 
 	protected JTextField createTextField(int nrColumns) {
@@ -190,5 +191,13 @@ public abstract class AbstractTextFieldBean<M extends AbstractModel> extends JPa
 		public void removeUpdate(DocumentEvent evt) {
 			parseUserInput();
 		}
+	}
+
+	// Override necessary to prevent text field to disappear when user shrinks a dialog containing this text field bean.
+	@Override
+	public Dimension getMinimumSize() {
+		int preferredWidth = Arrays.stream(getComponents()).mapToInt(c -> c.getPreferredSize().width).sum();
+		int preferredHeight = Arrays.stream(getComponents()).mapToInt(c -> c.getPreferredSize().height).max().getAsInt();
+		return new Dimension(preferredWidth, preferredHeight);
 	}
 }

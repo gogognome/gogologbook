@@ -15,7 +15,6 @@
 */
 package nl.gogognome.lib.gui.beans;
 
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.util.Date;
@@ -64,8 +63,9 @@ public class DateSelectionBean extends AbstractTextFieldBean<DateModel> {
 		WidgetFactory wf = Factory.getInstance(WidgetFactory.class);
 		popupButton = wf.createIconButton("gen.btnCalendar", new ShowCalendarPopupAction(), 21);
 		super.initBean();
-		add(popupButton, SwingUtils.createGBConstraints(1, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.WEST, GridBagConstraints.NONE, 0, 0, 0, 0));
+		add(popupButton);
+
+		popupButton.setMinimumSize(popupButton.getPreferredSize());
 	}
 
 	@Override
