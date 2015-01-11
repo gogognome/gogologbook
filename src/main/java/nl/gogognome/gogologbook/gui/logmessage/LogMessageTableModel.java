@@ -12,6 +12,8 @@ import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
 import nl.gogognome.lib.swing.table.AbstractListTableModel;
 import nl.gogognome.lib.swing.table.ColumnDefinition;
 import nl.gogognome.lib.swing.table.MultilineCellRenderer;
+import nl.gogognome.lib.text.TextResource;
+import nl.gogognome.lib.util.Factory;
 
 import com.google.common.collect.Lists;
 
@@ -40,7 +42,7 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists
 			.newArrayList(TIMESTAMP, USERNAME, PROJECT, CUSTOMER, TOWN, STREET, CATEGORY, MESSAGE);
 
-	private final static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+	private final static DateFormat dateFormat = new SimpleDateFormat(Factory.getInstance(TextResource.class).getString("gen.timestampFormat"));
 
 	public LogMessageTableModel() {
 		super(COLUMN_DEFINTIIONS, Collections.<LogMessageFindResult> emptyList());
