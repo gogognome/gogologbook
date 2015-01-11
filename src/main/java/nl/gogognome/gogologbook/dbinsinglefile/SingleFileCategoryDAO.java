@@ -38,7 +38,6 @@ public class SingleFileCategoryDAO implements CategoryDAO, SingleFileDatabaseDAO
 			singleFileDatabase.acquireLock();
 			singleFileDatabase.initInMemDatabaseFromFile();
 			category = inMemoryCategoryDao.getCategory(categoryId);
-			singleFileDatabase.appendInsertToFile(TABLE_NAME, category);
 		} finally {
 			singleFileDatabase.releaseLock();
 		}
