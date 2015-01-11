@@ -42,7 +42,7 @@ public class LogMessageTableModel extends AbstractListTableModel<LogMessageFindR
 	private final static List<ColumnDefinition> COLUMN_DEFINTIIONS = Lists
 			.newArrayList(TIMESTAMP, USERNAME, PROJECT, CUSTOMER, TOWN, STREET, CATEGORY, MESSAGE);
 
-	private final static DateFormat dateFormat = new SimpleDateFormat(Factory.getInstance(TextResource.class).getString("gen.timestampFormat"));
+	private final static DateFormat dateFormat = new SimpleDateFormat(Factory.getInstance(TextResource.class).getString("gen.timestampFormat.hhmm"));
 
 	public LogMessageTableModel() {
 		super(COLUMN_DEFINTIIONS, Collections.<LogMessageFindResult> emptyList());
