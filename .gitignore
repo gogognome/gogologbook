@@ -4,4 +4,4 @@
 .settings/
 target/
 /bin
-.idea/
+/.idea
