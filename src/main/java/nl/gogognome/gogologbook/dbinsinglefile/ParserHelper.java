@@ -5,6 +5,9 @@ public class ParserHelper {
 	public String getSerializedRecord(String line) {
 		int index = line.indexOf(';');
 		index = line.indexOf(';', index + 1);
+		if (index == -1) {
+            throw new IllegalArgumentException("Line does not contain semicolon: " + line);
+        }
 		String serializedRecord = line.substring(index + 1);
 		return serializedRecord;
 	}
@@ -12,7 +15,7 @@ public class ParserHelper {
 	public String getAction(String line) {
 		int index = line.indexOf(';');
 		if (index == -1) {
-			throw new RuntimeException("Line does not contain semicolon: " + line);
+			throw new IllegalArgumentException("Line does not contain semicolon: " + line);
 		}
 		return line.substring(0, index);
 	}
@@ -20,12 +23,12 @@ public class ParserHelper {
 	public String getTableName(String line) {
 		int index = line.indexOf(';');
 		if (index == -1) {
-			throw new RuntimeException("Line does not contain semicolon: " + line);
+			throw new IllegalArgumentException("Line does not contain semicolon: " + line);
 		}
 		int start = index + 1;
 		index = line.indexOf(';', start);
 		if (index == -1) {
-			throw new RuntimeException("Line does not contain two semicolons: " + line);
+			throw new IllegalArgumentException("Line does not contain two semicolons: " + line);
 		}
 
 		return line.substring(start, index);
