@@ -1,10 +1,10 @@
 package nl.gogognome.gogologbook.dbinsinglefile;
 
-import java.util.List;
-
 import nl.gogognome.gogologbook.dao.UserDAO;
 import nl.gogognome.gogologbook.dbinmemory.InMemoryUserDAO;
 import nl.gogognome.gogologbook.entities.User;
+
+import java.util.List;
 
 public class SingleFileUserDAO implements UserDAO, SingleFileDatabaseDAO {
 

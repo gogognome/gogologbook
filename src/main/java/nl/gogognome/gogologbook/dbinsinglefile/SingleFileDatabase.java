@@ -136,7 +136,10 @@ public class SingleFileDatabase {
 			}
 
 			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-				parseAndExecuteStatement(line);
+				line = line.trim();
+                if (!line.isEmpty()) {
+                    parseAndExecuteStatement(line);
+                }
 			}
 		} catch (FileNotFoundException e) {
 			return;
