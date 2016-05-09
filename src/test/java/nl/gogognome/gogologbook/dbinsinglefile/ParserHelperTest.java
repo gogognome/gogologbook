@@ -1,92 +1,82 @@
 package nl.gogognome.gogologbook.dbinsinglefile;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ParserHelperTest {
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Test
-    public void givenNoLineWhenActionIsAskedShouldThrowException() {
-        expectNullPointerException();
-
-        new ParserHelper().getAction(null);
+    public void testGetAction() {
+        assertGetActionFails(null, NullPointerException.class);
+        assertGetActionFails("", IllegalArgumentException.class);
+        assertGetActionEquals("one;two", "one");
+        assertGetActionEquals("one;two;", "one");
+        assertGetActionEquals("one;two;three", "one");
+        assertGetActionEquals("one;two;three four", "one");
+        assertGetActionEquals("one;two;three four;five", "one");
     }
 
-    @Test
-    public void givenEmptyLineWhenActionIsAskedShouldThrowException() {
-        expectIllegalArgumentException("Line does not contain semicolon: ");
-
-        new ParserHelper().getAction("");
+    private void assertGetActionEquals(String line, String expectedTable) {
+        assertEquals(expectedTable, new ParserHelper().getAction(line));
     }
 
-    @Test
-    public void givenLineWithoutSemicolonWhenActionIsAskedShouldThrowException() {
-        expectIllegalArgumentException("Line does not contain semicolon: asdasd");
-
-        new ParserHelper().getAction("asdasd");
-    }
-
-    @Test
-    public void givenNoLineWhenSerializedRecordIsAskedShouldThrowException() {
-        expectNullPointerException();
-
-        new ParserHelper().getSerializedRecord(null);
+    private void assertGetActionFails(String line, Class<? extends Exception> expectedExceptionClass) {
+        try {
+            new ParserHelper().getAction(line);
+            fail("Expected message not thrown for line " + line);
+        } catch (Exception e) {
+            assertEquals(expectedExceptionClass, e.getClass());
+        }
     }
 
     @Test
-    public void givenEmptyLineWhenSerializedRecordIsAskedShouldThrowException() {
-        expectIllegalArgumentException("Line does not contain semicolon: ");
+    public void testGetTable() {
+        assertGetTableFails(null, NullPointerException.class);
+        assertGetTableFails("", IllegalArgumentException.class);
+        assertGetTableFails("one;two", IllegalArgumentException.class);
+        assertGetTableEquals("one;two;", "two");
+        assertGetTableEquals("one;two;three", "two");
+        assertGetTableEquals("one;two;three four", "two");
+        assertGetTableEquals("one;two;three four;five", "two");
+    }
 
-        new ParserHelper().getSerializedRecord("");
+    private void assertGetTableEquals(String line, String expectedTable) {
+        assertEquals(expectedTable, new ParserHelper().getTableName(line));
+    }
+
+    private void assertGetTableFails(String line, Class<? extends Exception> expectedExceptionClass) {
+        try {
+            new ParserHelper().getTableName(line);
+            fail("Expected message not thrown for line " + line);
+        } catch (Exception e) {
+            assertEquals(expectedExceptionClass, e.getClass());
+        }
     }
 
     @Test
-    public void givenLineWithoutSemicolonWhenSerializedRecordIsAskedShouldThrowException() {
-        expectIllegalArgumentException("Line does not contain semicolon: asdasd");
-
-        new ParserHelper().getSerializedRecord("asdasd");
+    public void testGetSerializedRecord() {
+        assertGetSerializedRecordFails(null, NullPointerException.class);
+        assertGetSerializedRecordFails("", IllegalArgumentException.class);
+        assertGetSerializedRecordFails("one;two", IllegalArgumentException.class);
+        assertGetSerializedRecordEquals("one;two;", "");
+        assertGetSerializedRecordEquals("one;two;three", "three");
+        assertGetSerializedRecordEquals("one;two;three four", "three four");
+        assertGetSerializedRecordEquals("one;two;three four;five", "three four;five");
     }
 
-    @Test
-    public void givenNoLineWhenTableNameIsAskedShouldThrowException() {
-        expectNullPointerException();
-
-        new ParserHelper().getTableName(null);
+    private void assertGetSerializedRecordEquals(String line, String expectedSerializedRecord) {
+        assertEquals(expectedSerializedRecord, new ParserHelper().getSerializedRecord(line));
     }
 
-    @Test
-    public void givenEmptyLineWhenTableNameIsAskedShouldThrowException() {
-        expectIllegalArgumentException("Line does not contain semicolon: ");
-
-        new ParserHelper().getTableName("");
+    private void assertGetSerializedRecordFails(String line, Class<? extends Exception> expectedExceptionClass) {
+        try {
+            new ParserHelper().getSerializedRecord(line);
+            fail("Expected message not thrown for line " + line);
+        } catch (Exception e) {
+            assertEquals(expectedExceptionClass, e.getClass());
+        }
     }
 
-    @Test
-    public void givenLineWithoutSemicolonWhenTableNameIsAskedShouldThrowException() {
-        expectIllegalArgumentException("Line does not contain semicolon: asdasd");
-
-        new ParserHelper().getTableName("asdasd");
-    }
-
-    @Test
-    public void givenLineWithOneSemicolonWhenTableNameIsAskedShouldThrowException() {
-        expectIllegalArgumentException("Line does not contain two semicolons: insert;bladiable");
-
-        new ParserHelper().getTableName("insert;bladiable");
-    }
-
-    private void expectNullPointerException() {
-        exception.expect(NullPointerException.class);
-    }
-
-    private void expectIllegalArgumentException(String expectedMessage) {
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(expectedMessage);
-    }
 }
