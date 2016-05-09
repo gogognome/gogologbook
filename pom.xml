@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.gogognome</groupId>
   <artifactId>gogologbook</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
   <name>GogoLogBook</name>
   <description>Simple log book that stores its data in a single file. It can be used by multiple users when the file is stored on a network share.</description>
 
@@ -38,7 +38,7 @@
 	            <command>font: Arial Bold, 60</command>
 	            <command>text: 40, 450, gogo logbook ${project.version}</command>
 	            <command>font: Arial Bold, 30</command>
-	            <command>text: 40, 500, Copyright 2013-2015 Sander Kooijmans</command>
+	            <command>text: 40, 500, Copyright 2013-2016 Sander Kooijmans</command>
 	            <command>text: 40, 540, www.gogognome.nl</command>
 	          </commands>
 	        </configuration>
