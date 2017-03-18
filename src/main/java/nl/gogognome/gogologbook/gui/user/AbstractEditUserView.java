@@ -38,6 +38,7 @@ public abstract class AbstractEditUserView extends View {
 		addCloseable(ifc);
 
 		ifc.addField("editUser_name", model.nameModel);
+		ifc.addField("editUser_active", model.activeModel);
 		ifc.setMinimumWidth(300);
 		return ifc;
 	}

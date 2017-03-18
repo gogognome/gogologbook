@@ -18,6 +18,7 @@ public class EditUserController extends AbstractEditUserController {
 
 		((EditUserModel) model).userUnderEdit = user;
 		model.nameModel.setString(user.name);
+		model.activeModel.setBoolean(user.active);
 	}
 
 	@Override
@@ -25,6 +26,7 @@ public class EditUserController extends AbstractEditUserController {
 		UserUpdateParams params = new UserUpdateParams();
 		params.userId = ((EditUserModel) model).userUnderEdit.id;
 		params.name = model.nameModel.getString();
+		params.active = model.activeModel.getBoolean();
 
 		try {
 			userInteractor.updateUser(params);

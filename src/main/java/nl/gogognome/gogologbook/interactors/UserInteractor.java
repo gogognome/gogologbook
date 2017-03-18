@@ -14,41 +14,49 @@ import nl.gogognome.gogologbook.util.DaoFactory;
 
 public class UserInteractor {
 
-	private final LogMessageDAO logMessageDao = DaoFactory.getInstance(LogMessageDAO.class);
-	private final UserDAO userDao = DaoFactory.getInstance(UserDAO.class);
+    private final LogMessageDAO logMessageDao = DaoFactory.getInstance(LogMessageDAO.class);
+    private final UserDAO userDao = DaoFactory.getInstance(UserDAO.class);
 
-	public void createUser(UserCreateParams params) {
-		User user = new User();
-		user.name = params.name;
-		userDao.createUser(user);
-	}
+    public void createUser(UserCreateParams params) {
+        User user = new User();
+        user.name = params.name;
+        user.active = params.active;
+        userDao.createUser(user);
+    }
 
-	public void updateUser(UserUpdateParams params) {
-		User user = new User(params.userId);
-		user.name = params.name;
-		userDao.updateUser(user);
-	}
+    public void updateUser(UserUpdateParams params) {
+        User user = new User(params.userId);
+        user.name = params.name;
+        user.active = params.active;
+        userDao.updateUser(user);
+    }
 
-	public List<User> findAllUsers() {
-		List<User> users = userDao.findAllUsers();
-		Collections.sort(users, new CaseInsensitiveUserNameComparator());
-		return users;
-	}
+    public List<User> findAllUsers() {
+        List<User> users = userDao.findAllUsers();
+        Collections.sort(users, new CaseInsensitiveUserNameComparator());
+        return users;
+    }
 
-	public void deleteUser(int userId) throws CannotDeleteUserThatIsInUseException {
-		if (logMessageDao.isUserUsed(userId)) {
-			throw new CannotDeleteUserThatIsInUseException();
-		}
-		DaoFactory.getInstance(UserDAO.class).deleteUser(userId);
-	}
+    public List<User> findAllActiveUsers() {
+        List<User> users = userDao.findAllActiveUsers();
+        Collections.sort(users, new CaseInsensitiveUserNameComparator());
+        return users;
+    }
+
+    public void deleteUser(int userId) throws CannotDeleteUserThatIsInUseException {
+        if (logMessageDao.isUserUsed(userId)) {
+            throw new CannotDeleteUserThatIsInUseException();
+        }
+        DaoFactory.getInstance(UserDAO.class).deleteUser(userId);
+    }
 
 }
 
 class CaseInsensitiveUserNameComparator implements Comparator<User> {
 
-	@Override
-	public int compare(User user1, User user2) {
-		return user1.name.compareToIgnoreCase(user2.name);
-	}
+    @Override
+    public int compare(User user1, User user2) {
+        return user1.name.compareToIgnoreCase(user2.name);
+    }
 
 }

@@ -39,7 +39,7 @@ public class LogMessageCreateController implements Closeable, SessionListener, M
 
 	public LogMessageCreateController(Component parentComponent) {
 		this.parentComponent = parentComponent;
-		model.usersModel.setItems(userInteractor.findAllUsers());
+		model.usersModel.setItems(userInteractor.findAllActiveUsers());
 		model.projectsModel.setItems(projectInteractor.findAllProjects());
 		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
 		model.manuallySpecifyTimestamp.addModelChangeListener(this);
@@ -114,7 +114,7 @@ public class LogMessageCreateController implements Closeable, SessionListener, M
 			model.projectsModel.setItems(projectInteractor.findAllProjects());
 		}
 		if (event instanceof UserDeletedEvent || event instanceof UserChangedEvent) {
-			model.usersModel.setItems(userInteractor.findAllUsers());
+			model.usersModel.setItems(userInteractor.findAllActiveUsers());
 		}
 	}
 

@@ -67,6 +67,17 @@ public class SingleFileUserDAO implements UserDAO, SingleFileDatabaseDAO {
 	}
 
 	@Override
+	public List<User> findAllActiveUsers() {
+		try {
+			singleFileDatabase.acquireLock();
+			singleFileDatabase.initInMemDatabaseFromFile();
+		} finally {
+			singleFileDatabase.releaseLock();
+		}
+		return inMemoryUserDao.findAllActiveUsers();
+	}
+
+	@Override
 	public void removeAllRecordsFromInMemoryDatabase() {
 		inMemoryUserDao = new InMemoryUserDAO();
 	}

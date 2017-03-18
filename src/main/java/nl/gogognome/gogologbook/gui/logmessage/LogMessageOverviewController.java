@@ -15,14 +15,13 @@ import nl.gogognome.gogologbook.gui.project.ProjectChangedEvent;
 import nl.gogognome.gogologbook.gui.session.SessionChangeEvent;
 import nl.gogognome.gogologbook.gui.session.SessionListener;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
+import nl.gogognome.gogologbook.gui.user.UserChangedEvent;
+import nl.gogognome.gogologbook.gui.user.UserDeletedEvent;
 import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageFindInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageInteractor;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
-import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
-import nl.gogognome.gogologbook.interactors.boundary.LogMessageDeleteParams;
-import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindParams;
-import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
+import nl.gogognome.gogologbook.interactors.boundary.*;
 import nl.gogognome.lib.gui.Closeable;
 import nl.gogognome.lib.swing.MessageDialog;
 import nl.gogognome.lib.swing.views.ViewDialog;
@@ -44,7 +43,7 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
         model.categoriesModel.addItem(new Category());
         model.categoriesModel.addItems(categoryInteractor.findAllCategories());
         model.selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        refresh();
+        refreshLogMessages();
     }
 
     @Override
@@ -56,7 +55,7 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
         return model;
     }
 
-    public void refresh() {
+    public void refreshLogMessages() {
         filterMessages();
     }
 
@@ -79,7 +78,7 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
             return;
         }
 
-        int choice = MessageDialog.showYesNoQuestion(parentComponent, "gen.titleWarning", "logMessageOverview_areYouSureYouWantToDeleteThisLogMessage");
+        int choice = MessageDialog.showYesNoQuestion(parentComponent, "gen.confirmation", "logMessageOverview_areYouSureYouWantToDeleteThisLogMessage");
         if (choice != MessageDialog.YES_OPTION) {
             return;
         }
@@ -132,8 +131,17 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
     public void sessionChanged(SessionChangeEvent event) {
         if (event instanceof LogMessageCreatedEvent || event instanceof LogMessageUpdateEvent
                 || event instanceof LogMessageDeleteEvent || event instanceof ProjectChangedEvent) {
-            refresh();
+            refreshLogMessages();
         }
+        if (event instanceof UserDeletedEvent || event instanceof UserChangedEvent) {
+            refreshUsers();
+        }
+    }
+
+    private void refreshUsers() {
+        model.usersModel.clearItems();
+        model.usersModel.addItem(new User());
+        model.usersModel.addItems(userInteractor.findAllUsers());
     }
 
     private class RefreshAction extends AbstractAction {
@@ -141,7 +149,7 @@ public class LogMessageOverviewController implements Closeable, SessionListener 
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            refresh();
+            refreshLogMessages();
         }
     }
 

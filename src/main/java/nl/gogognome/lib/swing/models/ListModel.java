@@ -58,6 +58,15 @@ public class ListModel<T> extends AbstractModel {
 		notifyListeners(source);
 	}
 
+    public void clearItems() {
+        clearItems(null);
+    }
+
+    public void clearItems(ModelChangeListener source) {
+        this.items.clear();
+        notifyListeners(source);
+    }
+
 	/**
 	 * Adds an item to the list model.
 	 * @param item the item

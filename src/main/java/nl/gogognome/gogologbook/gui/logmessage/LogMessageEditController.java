@@ -38,7 +38,7 @@ public class LogMessageEditController {
 	public LogMessageEditController(Component parentComponent) {
 		this.parentComponent = parentComponent;
 
-		model.usersModel.setItems(userInteractor.findAllUsers());
+		model.usersModel.setItems(userInteractor.findAllActiveUsers());
 		model.projectsModel.setItems(projectInteractor.findAllProjects());
 		model.categoriesModel.setItems(categoryInteractor.findAllCategories());
 	}

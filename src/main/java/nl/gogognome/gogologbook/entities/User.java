@@ -4,13 +4,15 @@ import nl.gogognome.gogologbook.util.AbstractEntity;
 
 public class User extends AbstractEntity {
 
-	public User() {
-		super();
-	}
+    public User() {
+        super();
+    }
 
-	public User(int id) {
-		super(id);
-	}
+    public User(int id) {
+        super(id);
+    }
 
-	public String name;
+    public String name;
+
+    public boolean active;
 }
