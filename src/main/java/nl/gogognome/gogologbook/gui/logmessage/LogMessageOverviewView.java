@@ -37,6 +37,7 @@ public class LogMessageOverviewView extends View {
 		ButtonPanel buttonPanel = new ButtonPanel(SwingConstants.LEFT);
 		buttonPanel.addButton("logMessageOverview_refresh", controller.getRefreshAction());
 		buttonPanel.addButton("logMessageOverview_edit", controller.getEditAction());
+		buttonPanel.addButton("logMessageOverview_delete", controller.getDeleteAction());
 		add(buttonPanel, BorderLayout.SOUTH);
 
 		InputFieldsRow searchCriteria = new InputFieldsRow();

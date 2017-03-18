@@ -17,8 +17,10 @@ import nl.gogognome.gogologbook.gui.session.SessionListener;
 import nl.gogognome.gogologbook.gui.session.SessionManager;
 import nl.gogognome.gogologbook.interactors.CategoryInteractor;
 import nl.gogognome.gogologbook.interactors.LogMessageFindInteractor;
+import nl.gogognome.gogologbook.interactors.LogMessageInteractor;
 import nl.gogognome.gogologbook.interactors.UserInteractor;
 import nl.gogognome.gogologbook.interactors.boundary.InteractorFactory;
+import nl.gogognome.gogologbook.interactors.boundary.LogMessageDeleteParams;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindParams;
 import nl.gogognome.gogologbook.interactors.boundary.LogMessageFindResult;
 import nl.gogognome.lib.gui.Closeable;
@@ -27,113 +29,147 @@ import nl.gogognome.lib.swing.views.ViewDialog;
 
 public class LogMessageOverviewController implements Closeable, SessionListener {
 
-	private final LogMessageOverviewModel model = new LogMessageOverviewModel();
-	private final LogMessageFindInteractor logMessageFindInteractor = InteractorFactory.getInteractor(LogMessageFindInteractor.class);
-	private final CategoryInteractor categoryInteractor = InteractorFactory.getInteractor(CategoryInteractor.class);
-	private final UserInteractor userInteractor = InteractorFactory.getInteractor(UserInteractor.class);
-	private final Component parentComponent;
+    private final LogMessageOverviewModel model = new LogMessageOverviewModel();
+    private final LogMessageInteractor logMessageInteractor = InteractorFactory.getInteractor(LogMessageInteractor.class);
+    private final LogMessageFindInteractor logMessageFindInteractor = InteractorFactory.getInteractor(LogMessageFindInteractor.class);
+    private final CategoryInteractor categoryInteractor = InteractorFactory.getInteractor(CategoryInteractor.class);
+    private final UserInteractor userInteractor = InteractorFactory.getInteractor(UserInteractor.class);
+    private final Component parentComponent;
 
-	public LogMessageOverviewController(Component parentComponent) {
-		SessionManager.getInstance().addSessionListener(this);
-		this.parentComponent = parentComponent;
-		model.usersModel.addItem(new User());
-		model.usersModel.addItems(userInteractor.findAllUsers());
-		model.categoriesModel.addItem(new Category());
-		model.categoriesModel.addItems(categoryInteractor.findAllCategories());
-		model.selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		refresh();
-	}
+    public LogMessageOverviewController(Component parentComponent) {
+        SessionManager.getInstance().addSessionListener(this);
+        this.parentComponent = parentComponent;
+        model.usersModel.addItem(new User());
+        model.usersModel.addItems(userInteractor.findAllUsers());
+        model.categoriesModel.addItem(new Category());
+        model.categoriesModel.addItems(categoryInteractor.findAllCategories());
+        model.selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        refresh();
+    }
 
-	@Override
-	public void close() {
-		SessionManager.getInstance().removeSessionListener(this);
-	}
+    @Override
+    public void close() {
+        SessionManager.getInstance().removeSessionListener(this);
+    }
 
-	public LogMessageOverviewModel getModel() {
-		return model;
-	}
+    public LogMessageOverviewModel getModel() {
+        return model;
+    }
 
-	public void refresh() {
-		filterMessages();
-	}
+    public void refresh() {
+        filterMessages();
+    }
 
-	public void editLogMessage() {
-		int index = model.selectionModel.getMinSelectionIndex();
-		if (index == -1) {
-			MessageDialog.showInfoMessage(parentComponent, "logMessageOverview_selectRowFirst");
-			return;
-		}
-		LogMessageEditView view = new LogMessageEditView(model.logMessageTableModel.getRow(index));
-		ViewDialog dialog = new ViewDialog(parentComponent, view);
-		dialog.setMinimumSize(new Dimension(300, 250));
-		dialog.showDialog();
-	}
+    public void editLogMessage() {
+        int index = model.selectionModel.getMinSelectionIndex();
+        if (index == -1) {
+            MessageDialog.showInfoMessage(parentComponent, "logMessageOverview_selectRowFirst");
+            return;
+        }
+        LogMessageEditView view = new LogMessageEditView(model.logMessageTableModel.getRow(index));
+        ViewDialog dialog = new ViewDialog(parentComponent, view);
+        dialog.setMinimumSize(new Dimension(300, 250));
+        dialog.showDialog();
+    }
 
-	public void filterMessages() {
-		LogMessageFindParams params = createLogMessageFindParameters();
-		List<LogMessageFindResult> logMessages = logMessageFindInteractor.findLogMessagesByDescendingDate(params);
-		model.logMessageTableModel.setLogMessages(logMessages);
-	}
+    private void deleteLogMessage() {
+        int index = model.selectionModel.getMinSelectionIndex();
+        if (index == -1) {
+            MessageDialog.showInfoMessage(parentComponent, "logMessageOverview_selectRowFirst");
+            return;
+        }
 
-	private LogMessageFindParams createLogMessageFindParameters() {
-		LogMessageFindParams params = new LogMessageFindParams();
-		params.from = model.fromDate.getDate();
-		params.to = model.toDate.getDate();
-		User user = model.usersModel.getSelectedItem();
-		params.user = user != null ? user.name : null;
-		params.project = model.project.getString();
-		params.customer = model.customer.getString();
-		params.town = model.town.getString();
-		Category category = model.categoriesModel.getSelectedItem();
-		params.category = category != null ? category.name : null;
-		params.message = model.message.getString();
-		return params;
-	}
+        int choice = MessageDialog.showYesNoQuestion(parentComponent, "gen.titleWarning", "logMessageOverview_areYouSureYouWantToDeleteThisLogMessage");
+        if (choice != MessageDialog.YES_OPTION) {
+            return;
+        }
 
-	public Action getRefreshAction() {
-		return new RefreshAction();
-	}
+        LogMessageDeleteParams params = new LogMessageDeleteParams();
+        params.id = model.logMessageTableModel.getRow(index).id;
+        logMessageInteractor.deleteMessage(params);
 
-	public Action getEditAction() {
-		return new EditAction();
-	}
+        SessionManager.getInstance().notifyListeners(new LogMessageUpdateEvent());
+    }
 
-	public Action getFilterAction() {
-		return new FilterAction();
-	}
+    public void filterMessages() {
+        LogMessageFindParams params = createLogMessageFindParameters();
+        List<LogMessageFindResult> logMessages = logMessageFindInteractor.findLogMessagesByDescendingDate(params);
+        model.logMessageTableModel.setLogMessages(logMessages);
+    }
 
-	@Override
-	public void sessionChanged(SessionChangeEvent event) {
-		if (event instanceof LogMessageCreatedEvent || event instanceof LogMessageUpdateEvent || event instanceof ProjectChangedEvent) {
-			refresh();
-		}
-	}
+    private LogMessageFindParams createLogMessageFindParameters() {
+        LogMessageFindParams params = new LogMessageFindParams();
+        params.from = model.fromDate.getDate();
+        params.to = model.toDate.getDate();
+        User user = model.usersModel.getSelectedItem();
+        params.user = user != null ? user.name : null;
+        params.project = model.project.getString();
+        params.customer = model.customer.getString();
+        params.town = model.town.getString();
+        Category category = model.categoriesModel.getSelectedItem();
+        params.category = category != null ? category.name : null;
+        params.message = model.message.getString();
+        return params;
+    }
 
-	private class RefreshAction extends AbstractAction {
-		private static final long serialVersionUID = 1L;
+    public Action getRefreshAction() {
+        return new RefreshAction();
+    }
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			refresh();
-		}
-	}
+    public Action getEditAction() {
+        return new EditAction();
+    }
 
-	private class EditAction extends AbstractAction {
-		private static final long serialVersionUID = 1L;
+    public Action getDeleteAction() {
+        return new DeleteAction();
+    }
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			editLogMessage();
-		}
-	}
+    public Action getFilterAction() {
+        return new FilterAction();
+    }
 
-	private class FilterAction extends AbstractAction {
-		private static final long serialVersionUID = 1L;
+    @Override
+    public void sessionChanged(SessionChangeEvent event) {
+        if (event instanceof LogMessageCreatedEvent || event instanceof LogMessageUpdateEvent
+                || event instanceof LogMessageDeleteEvent || event instanceof ProjectChangedEvent) {
+            refresh();
+        }
+    }
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			filterMessages();
-		}
-	}
+    private class RefreshAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            refresh();
+        }
+    }
+
+    private class EditAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            editLogMessage();
+        }
+    }
+
+    private class DeleteAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            deleteLogMessage();
+        }
+    }
+
+    private class FilterAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            filterMessages();
+        }
+    }
 
 }
