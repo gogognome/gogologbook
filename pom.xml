@@ -2,13 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.gogognome</groupId>
   <artifactId>gogologbook</artifactId>
-  <version>1.5</version>
+  <version>1.6</version>
   <name>GogoLogBook</name>
   <description>Simple log book that stores its data in a single file. It can be used by multiple users when the file is stored on a network share.</description>
 
   <build>
   	<plugins>
-      <!-- specify Java 6 source code and class files -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -19,46 +18,46 @@
         </configuration>
       </plugin>
 
-      
 	  <plugin>
-	    <groupId>nl.gogognome</groupId>
-	    <artifactId>image-modifier-maven-plugin</artifactId>
-	    <executions>
-	      <execution>
-	      	<id>generateSplashImage</id>
+        <groupId>nl.gogognome</groupId>
+        <artifactId>image-modifier-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <id>generateSplashImage</id>
             <phase>compile</phase>
             <goals>
               <goal>modifyImage</goal>
             </goals>
-	        <configuration>
-	          <sourceImage>sketches/splash.png</sourceImage>
-	          <destinationImage>target/classes/splash.png</destinationImage>
-	          <commands>
-	            <command>color: 0, 0, 0</command>
-	            <command>font: Arial Bold, 60</command>
-	            <command>text: 40, 450, gogo logbook ${project.version}</command>
-	            <command>font: Arial Bold, 30</command>
-	            <command>text: 40, 500, Copyright 2013-2016 Sander Kooijmans</command>
-	            <command>text: 40, 540, www.gogognome.nl</command>
-	          </commands>
-	        </configuration>
-	      </execution>
-	      <execution>
-	      	<id>generateAboutImage</id>
+            <configuration>
+              <sourceImage>sketches/splash.png</sourceImage>
+              <destinationImage>target/classes/splash.png</destinationImage>
+              <commands>
+                <command>color: 0, 0, 0</command>
+                <command>font: Arial Bold, 60</command>
+                <command>text: 40, 450, gogo logbook ${project.version}</command>
+                <command>font: Arial Bold, 30</command>
+                <command>text: 40, 500, Copyright 2013-2016 Sander Kooijmans</command>
+                <command>text: 40, 540, www.gogognome.nl</command>
+              </commands>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generateAboutImage</id>
             <phase>compile</phase>
             <goals>
               <goal>modifyImage</goal>
             </goals>
-	        <configuration>
-	          <sourceImage>sketches/about.png</sourceImage>
-	          <destinationImage>target/classes/about.png</destinationImage>
-	          <commands>
-	            <command>color: 0, 0, 0</command>
-	            <command>font: Arial Bold, 22</command>
-	            <command>text: 200, 30, gogo logbook ${project.version}</command>
-	          </commands>
-	        </configuration>
-	      </execution>
+            <configuration>
+              <sourceImage>sketches/about.png</sourceImage>
+              <destinationImage>target/classes/about.png</destinationImage>
+              <commands>
+                <command>color: 0, 0, 0</command>
+                <command>font: Arial Bold, 22</command>
+                <command>text: 200, 30, gogo logbook ${project.version}</command>
+              </commands>
+            </configuration>
+          </execution>
 	    </executions>
 	  </plugin>
       
